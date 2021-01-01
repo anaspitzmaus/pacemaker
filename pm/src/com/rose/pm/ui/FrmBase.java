@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
 import javax.swing.JMenuBar;
 import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.JButton;
 
 
 public class FrmBase extends JFrame {
@@ -18,9 +20,10 @@ public class FrmBase extends JFrame {
 	 */
 	private static final long serialVersionUID = 7479382775386573822L;
 	private JPanel contentPane;
-	JMenuBar menuBar;
+	
 	JTabbedPane tabbedPane;
 	JPanel pnlStatistics;
+	
 
 	
 	
@@ -38,8 +41,10 @@ public class FrmBase extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		
-		menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
+//		menuBar = new FrmMenuBar();
+//		setJMenuBar(menuBar);
+		
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
