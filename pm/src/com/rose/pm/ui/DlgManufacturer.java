@@ -29,13 +29,17 @@ import net.miginfocom.swing.MigLayout;
 
 public class DlgManufacturer extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2802805532264066262L;
 	private final JPanel contentPanel = new JPanel();
 	private JTable tblManufacturer;
 	private JTextField txtNotation;
 	private JTextField txtContact;
 	JFormattedTextField ftxtMobil;
 	JButton okButton;
-	JButton cancelButton;
+	
 	JButton btnCreate;
 	JToggleButton tglMode;
 	NumberFormat mobileFormat;
@@ -221,26 +225,18 @@ public class DlgManufacturer extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
+				okButton = new JButton("Schlieﬂen");
+				okButton.setActionCommand("Schlieﬂen");				
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
-			{
-				cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-			}
+			
 		}
 	}
 	
 	protected void addOKListener(ActionListener l) {
 		okButton.addActionListener(l);
-	}
-	
-	protected void addCancelListener(ActionListener l) {
-		cancelButton.addActionListener(l);
-	}
+	}	
 	
 	protected void addNotationListener (DocumentListener l){
 		txtNotation.getDocument().addDocumentListener(l);

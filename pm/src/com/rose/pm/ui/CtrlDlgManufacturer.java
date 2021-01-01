@@ -29,7 +29,7 @@ import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.Manufacturer;
 
 
-public class CtrlManufacturer {
+public class CtrlDlgManufacturer {
 	DlgManufacturer dlgManufacturer;
 	Manufacturer manufacturer;
 	String notation, contactPerson, mobile;
@@ -46,12 +46,13 @@ public class CtrlManufacturer {
 	MobileMaskFormatter displayFormatter;
 	MobileMaskFormatter defaultFormatter;
 	MobileFormatterFactory mobileFormatterFactory;
+	DlgCloseListener dlgCloseListener;
 	
 	
-	public CtrlManufacturer() {
+	public CtrlDlgManufacturer() {
 		dlgManufacturer = new DlgManufacturer();
-		connectDB();
-		if (DB.getConnection() != null) {
+		//connectDB();
+		//if (DB.getConnection() != null) {
 			setListener();
 			
 			mobileMaskFormatter = null;
@@ -72,7 +73,7 @@ public class CtrlManufacturer {
 			dlgManufacturer.addTblRowSelectionListener(tblRowSelectionListener);
 			modusChange = false;
 			showDialog();
-		}
+		//}
 		
 	}
 	
@@ -87,6 +88,8 @@ public class CtrlManufacturer {
 		dlgManufacturer.addMobilListener(mobileListener);
 		modeListener = new ModeListener();
 		dlgManufacturer.addModeListener(modeListener);
+		dlgCloseListener = new DlgCloseListener();
+		dlgManufacturer.addOKListener(dlgCloseListener);
 		
 	}
 	
@@ -363,6 +366,16 @@ public class CtrlManufacturer {
 			dlgManufacturer.getTxtNotation().setText("");
 	        dlgManufacturer.getTxtContact().setText("");
 	        dlgManufacturer.getFtxtMobile().setText("");	
+			
+		}
+		
+	}
+	
+	class DlgCloseListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			dlgManufacturer.dispose();
 			
 		}
 		

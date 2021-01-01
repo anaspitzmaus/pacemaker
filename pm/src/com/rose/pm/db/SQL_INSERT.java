@@ -44,7 +44,7 @@ public class SQL_INSERT {
 			if(!rs.isBeforeFirst()){				
 				try {
 					stmt.executeUpdate("INSERT INTO staff (firstname, sex, alias, onset, username, password, admin) VALUES ('Ekkehard', '0', 'OA Rose', '2015-06-30', '" + hashUN +"' , '" + hashPW + "', '1')");
-					stmt.executeUpdate("INSERT INTO physician(idstaff, surname, title, status) VALUES ((SELECT last_insert_id()), 'Rose', 'Dr. med.', 'Oberarzt')");
+					stmt.executeUpdate("INSERT INTO physician(idstaff, surname, title, status, alias) VALUES ((SELECT last_insert_id()), 'Rose', 'Dr. med.', 'Oberarzt', 'Dr. Rose')");
 					
 					return true;
 				} catch (SQLException e) {

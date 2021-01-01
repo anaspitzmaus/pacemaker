@@ -18,7 +18,7 @@ public class Start {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
+					checkDBConnection();
 					CtrlFrmBase ctrlFrmBase = new CtrlFrmBase();
 					ctrlFrmBase.showFrame();
 				} catch (Exception e) {

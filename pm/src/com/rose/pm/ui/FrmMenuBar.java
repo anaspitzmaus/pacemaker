@@ -20,6 +20,10 @@ public class FrmMenuBar extends JMenuBar{
 		
 	}
 	
+	protected void setBtnManufacturerText(String txt) {
+		btnManufacturer.setText(txt);
+	}
+	
 	protected void addManufacturerListener(ActionListener l) {
 		btnManufacturer.addActionListener(l);
 	}
