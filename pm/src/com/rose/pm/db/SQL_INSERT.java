@@ -383,13 +383,14 @@ public class SQL_INSERT {
 		}
 			try {
 				DB.getConnection().setAutoCommit(true);
-				stmt.executeUpdate("INSERT INTO pm_type (notation, id_manufacturer, ra, rv, lv, mri) "
+				stmt.executeUpdate("INSERT INTO pm_type (notation, id_manufacturer, ra, rv, lv, mri, notice) "
 						+ "VALUES ('" + pmModel.getNotation() + "', '" 
 						+ pmModel.getManufacturer().getId() + "', '"
 						+ ra + "', '"
 						+ rv + "', '"
 						+ lv + "', '"
-						+ mri + "')");
+						+ mri + "', '"
+						+ pmModel.getNotice() + "')");
 				ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
 				if(rs.isBeforeFirst()){
 					rs.next();

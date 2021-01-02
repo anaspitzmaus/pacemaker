@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 
 
+
 public class PnlElectrode extends PnlBase {
 
 	/**
@@ -13,6 +14,7 @@ public class PnlElectrode extends PnlBase {
 	 * Create the panel.
 	 */
 	public PnlElectrode() {
+		
 
 	}
 

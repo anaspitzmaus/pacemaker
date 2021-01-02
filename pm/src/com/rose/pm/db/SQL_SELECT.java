@@ -434,14 +434,19 @@ public class SQL_SELECT {
 //		
 //	}
 
+	/**
+	 * selection of all manufacturers that are not expired
+	 * @return
+	 */
 	public static ArrayList<Manufacturer> manufacturers() {
 		stmt = DB.getStatement();
 		ArrayList<Manufacturer> manufacturers;
 		manufacturers = new ArrayList<Manufacturer>();
 		try {
 			rs = stmt.executeQuery(
-					 "SELECT idmanufacturer, notation, contact_person, mobil "
-					+ "FROM manufacturer");
+					 "SELECT idmanufacturer, notation, contact_person, mobil "					
+					+ "FROM manufacturer "
+					+ "WHERE expire IS NULL");
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
@@ -468,7 +473,7 @@ public class SQL_SELECT {
 		pmKinds = new ArrayList<AggregatModel>();
 		try {
 			rs = stmt.executeQuery(
-					 "SELECT idpm_type, pm_type.notation AS pmNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri "
+					 "SELECT idpm_type, pm_type.notation AS pmNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice "
 					+ "FROM pm_type "
 					+ "INNER JOIN manufacturer "
 					+ "ON pm_type.id_manufacturer = manufacturer.idmanufacturer");
@@ -481,6 +486,7 @@ public class SQL_SELECT {
 					pm.setRv(rs.getBoolean("rv"));
 					pm.setLv(rs.getBoolean("lv"));
 					pm.setMri(rs.getBoolean("mri"));
+					pm.setNotice(rs.getString("notice"));
 					
 					Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
 					manufacturer.setId(rs.getInt("id_manufacturer"));

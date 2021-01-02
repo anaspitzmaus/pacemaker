@@ -27,12 +27,12 @@ public class AggregatModel extends Material
 
 	
 
-	protected PM_Type getType() {
+	public PM_Type getType() {
 		return type;
 	}
 
 
-	protected void setType(PM_Type type) {
+	public void setType(PM_Type type) {
 		this.type = type;
 	}	
 
@@ -65,6 +65,8 @@ public class AggregatModel extends Material
 		super(notation);
 		// TODO Auto-generated constructor stub
 	}
+
+	
 	
 	
 

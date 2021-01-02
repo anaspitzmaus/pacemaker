@@ -3,6 +3,7 @@ package com.rose.pm.material;
 public abstract class Material {
 	String notation;
 	Manufacturer manufacturer;
+	String notice;
 
 	
 	public Manufacturer getManufacturer() {
@@ -28,4 +29,16 @@ public abstract class Material {
 	public Material(String notation) {
 		this.notation = notation;
 	}
+
+
+	public String getNotice() {
+		return notice;
+	}
+
+
+	public void setNotice(String notice) {
+		this.notice = notice;
+	}
+	
+	
 }
