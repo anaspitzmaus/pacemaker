@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.rose.pm.material.AggregatModel;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeModel;
 import com.rose.pm.material.ICD_Model;
@@ -467,10 +467,10 @@ public class SQL_SELECT {
 	 * select all types of pacemakers
 	 * @return an arraylist with the types of pacemakers
 	 */
-	public static ArrayList<AggregatModel>pacemakerKinds(){
+	public static ArrayList<AggregateType>pacemakerKinds(){
 		stmt = DB.getStatement();
-		ArrayList<AggregatModel> pmKinds;
-		pmKinds = new ArrayList<AggregatModel>();
+		ArrayList<AggregateType> pmKinds;
+		pmKinds = new ArrayList<AggregateType>();
 		try {
 			rs = stmt.executeQuery(
 					 "SELECT idpm_type, pm_type.notation AS pmNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice "
@@ -480,7 +480,7 @@ public class SQL_SELECT {
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
-					AggregatModel pm = new AggregatModel(rs.getString("pmNotation"));
+					AggregateType pm = new AggregateType(rs.getString("pmNotation"));
 					pm.setId(rs.getInt("idpm_type"));					
 					pm.setRa(rs.getBoolean("ra"));
 					pm.setRv(rs.getBoolean("rv"));
@@ -550,12 +550,12 @@ public class SQL_SELECT {
 	 * @param pmModel
 	 * @return the pacemakers of a specific pacemaker model
 	 */
-	public static ArrayList<PM> pacemakers(AggregatModel pmModel) {
+	public static ArrayList<PM> pacemakers(AggregateType pmModel) {
 		stmt = DB.getStatement();
 		ArrayList<PM> pms;
 		pms = new ArrayList<PM>();
 		try {
-			if(pmModel instanceof AggregatModel) {//select pacemakers of a selected model
+			if(pmModel instanceof AggregateType) {//select pacemakers of a selected model
 				rs = stmt.executeQuery(
 					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, notice "
 					+ "FROM pm_implant "

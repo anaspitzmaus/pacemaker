@@ -29,10 +29,11 @@ import javax.swing.table.TableCellRenderer;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.AggregatModel;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ElectrodeModel;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
+import com.rose.pm.ui.Listener.ManufacturerListener;
 import com.rose.pm.ui.Listener.NotationListener;
 
 
@@ -40,10 +41,10 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	
 	ComboBoxModel<Manufacturer> manufacturerModel;
 	ManufacturerRenderer manufacturerRenderer;
+	Listener listener;
 	ManufacturerListener manufacturerListener;
 	FixModeListener fixModeListener;
-	MRIListener mriListener;
-	Listener listener;
+	MRIListener mriListener;	
 	NotationListener notationListener, noticeListener;
 	LengthListener lengthListener;
 	TblElectrodesModel tblElectrodesModel;
@@ -75,7 +76,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		((PnlElectrodeType)panel).addNotationListener(notationListener);
 		noticeListener = listener.new NotationListener();
 		((PnlElectrodeType)panel).addNoticeListener(noticeListener);
-		manufacturerListener = new ManufacturerListener();
+		manufacturerListener = listener.new ManufacturerListener();
 		((PnlElectrodeType)panel).addManufacturerListener(manufacturerListener);
 		fixModeListener = new FixModeListener();
 		((PnlElectrodeType)panel).addfixModeListener(fixModeListener);
@@ -231,30 +232,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		
 	}
 	
-	class ManufacturerListener implements ItemListener{
-		Manufacturer manufacturer;
-				
-		/**
-		 * return the selected manufacturer
-		 * @return
-		 */
-		public Manufacturer getManufacturer() {
-			return manufacturer;
-		}
-
-		@Override
-		public void itemStateChanged(ItemEvent event) {
-			if (event.getStateChange() == ItemEvent.SELECTED) {
-				try {
-					manufacturer = (Manufacturer) event.getItem();			        
-				} catch (ClassCastException e) {
-					manufacturer = null;
-				}
-				
-		       }
-			
-		}
-	}
+	
 	
 	class FixModeListener implements ActionListener{
 		String fixMode = "Schraube";

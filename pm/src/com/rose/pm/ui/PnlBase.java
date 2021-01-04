@@ -1,11 +1,12 @@
 package com.rose.pm.ui;
 
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ItemListener;
 
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import javax.swing.JTable;
 
 
@@ -17,6 +18,7 @@ public class PnlBase extends JPanel {
 	JTable table;
 	JPanel pnlInput;
 	JPanel pnlSouth;
+	Font font;
 	
 
 	/**
@@ -39,7 +41,13 @@ public class PnlBase extends JPanel {
 		pnlSouth = new JPanel();
 		pnlSouth.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		add(pnlSouth, BorderLayout.SOUTH);
+		
+		font = new Font("Tahoma", Font.PLAIN, 14);
 
+	}
+	
+	protected void addManufacturerListener(ItemListener listener) {
+		
 	}
 
 }

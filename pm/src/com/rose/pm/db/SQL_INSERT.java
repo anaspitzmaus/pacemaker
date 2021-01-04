@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.rose.pm.MD5;
-import com.rose.pm.material.AggregatModel;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeModel;
 import com.rose.pm.material.ICD_Model;
@@ -358,7 +358,7 @@ public class SQL_INSERT {
 	 * @param pmModel
 	 * @return the id of the inserted type of pacemaker
 	 */
-	public static Integer pacemakerModel(AggregatModel pmModel) {
+	public static Integer pacemakerModel(AggregateType pmModel) {
 		Integer id = null;
 		stmt = DB.getStatement();
 		Integer ra = 0; 

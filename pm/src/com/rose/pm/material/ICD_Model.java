@@ -1,6 +1,6 @@
 package com.rose.pm.material;
 
-public class ICD_Model extends AggregatModel{
+public class ICD_Model extends AggregateType{
 
 	Boolean atp = false;
 	

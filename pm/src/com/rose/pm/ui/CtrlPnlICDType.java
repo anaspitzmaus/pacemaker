@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.AggregatModel;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ICD_Model;
 import com.rose.pm.ui.CtrlPnlPMType.CreateListener;
 
@@ -46,7 +46,7 @@ public class CtrlPnlICDType extends CtrlPnlPMType{
 		
 		
 		
-		public ICDTypeTblModel(ArrayList<? extends AggregatModel> paceMakers) {
+		public ICDTypeTblModel(ArrayList<? extends AggregateType> paceMakers) {
 			super(paceMakers);
 			
 		}
@@ -109,7 +109,7 @@ public class CtrlPnlICDType extends CtrlPnlPMType{
 		}
 	
 		@Override
-		protected void updateDBAndModel(AggregatModel aggModel) {
+		protected void updateDBAndModel(AggregateType aggModel) {
 			
 			SQL_INSERT.icd_Model((ICD_Model) aggModel);
 			tblModel.setAggregats(SQL_SELECT.ICD_Kinds());

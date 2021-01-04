@@ -1,8 +1,13 @@
 package com.rose.pm.ui;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+
+import com.rose.pm.material.Manufacturer;
 
 public class Listener {
 
@@ -40,5 +45,30 @@ public class Listener {
 			return this.notation;
 		}
 		
+	}
+	
+	class ManufacturerListener implements ItemListener{
+		Manufacturer manufacturer;
+				
+		/**
+		 * return the selected manufacturer
+		 * @return
+		 */
+		public Manufacturer getManufacturer() {
+			return manufacturer;
+		}
+
+		@Override
+		public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+				try {
+					manufacturer = (Manufacturer) event.getItem();			        
+				} catch (ClassCastException e) {
+					manufacturer = null;
+				}
+				
+		       }
+			
+		}
 	}
 }

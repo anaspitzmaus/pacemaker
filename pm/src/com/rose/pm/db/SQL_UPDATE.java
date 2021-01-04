@@ -8,7 +8,7 @@ import java.sql.Statement;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.rose.pm.material.AggregatModel;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeModel;
 import com.rose.pm.material.ICD_Model;
@@ -279,9 +279,9 @@ public class SQL_UPDATE {
 	 * @param model
 	 * @return
 	 */
-	public static Boolean deleteAggregatModel(AggregatModel model) {
+	public static Boolean deleteAggregatModel(AggregateType model) {
 		stmt = DB.getStatement();
-		if(model instanceof AggregatModel && model.getId() != null) {
+		if(model instanceof AggregateType && model.getId() != null) {
 			if(model instanceof ICD_Model) {
 				try {
 					stmt.executeUpdate("DELETE FROM icd_type WHERE idicd_type = " + model.getId() + " LIMIT 1");

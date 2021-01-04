@@ -30,7 +30,7 @@ import javax.swing.text.BadLocationException;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.AggregatModel;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
 import com.rose.pm.ui.Listener.NotationListener;
@@ -117,7 +117,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		tblStringRenderer = new TblStringRenderer();
 		((PnlPMType)panel).setTableStringRenderer(String.class, tblStringRenderer);
 		tblPMIDRenderer = new TblPMIDRenderer();
-		((PnlPMType)panel).setTableIDRenderer(AggregatModel.class, tblPMIDRenderer);
+		((PnlPMType)panel).setTableIDRenderer(AggregateType.class, tblPMIDRenderer);
 		tblBooleanRenderer = new TblBooleanRenderer();
 		((PnlPMType)panel).setTableBooleanRenderer(Boolean.class, tblBooleanRenderer);
 	}
@@ -218,10 +218,10 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		private static final long serialVersionUID = -8444808544442905721L;
 
 		protected ArrayList<String> columnNames;
-		ArrayList<? extends AggregatModel> aggregates;
+		ArrayList<? extends AggregateType> aggregates;
 		PM_Kind type;
 		
-		public PMTypeTblModel(ArrayList<? extends AggregatModel> paceMakers) {
+		public PMTypeTblModel(ArrayList<? extends AggregateType> paceMakers) {
 			this.aggregates = paceMakers;
 			columnNames = new ArrayList<String>();
 			columnNames.add("Id");
@@ -278,7 +278,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 			
 		}
 		
-		protected void setType(AggregatModel pm) {
+		protected void setType(AggregateType pm) {
 			if(pm.getRa() && pm.getRv() && pm.getLv()) {
 				pm.setType(PM_Kind.CRT);
 			}else if(pm.getRa() && pm.getRv() || pm.getRa() && pm.getLv() || pm.getRv() && pm.getLv()) {
@@ -290,7 +290,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 			}
 		}
 		
-		protected void setAggregats(ArrayList<? extends AggregatModel> pm) {
+		protected void setAggregats(ArrayList<? extends AggregateType> pm) {
 			this.aggregates = pm;
 //			if(icd) {
 //				if(!columnNames.contains("ATP")) {
@@ -584,7 +584,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	class CreateListener implements ActionListener{
 		
 		 
-		AggregatModel aggModel;
+		AggregateType aggModel;
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			
@@ -605,13 +605,13 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 							
 		}
 		
-		protected void updateDBAndModel(AggregatModel aggModel) {
+		protected void updateDBAndModel(AggregateType aggModel) {
 			SQL_INSERT.pacemakerModel(aggModel);
 			tblModel.setAggregats(SQL_SELECT.pacemakerKinds());
 		}
 		
 		protected void initiate() {
-			aggModel = new AggregatModel(notationListener.getNotation());
+			aggModel = new AggregateType(notationListener.getNotation());
 		}
 		/**
 		 * check if at least one Electrode was selected
@@ -697,7 +697,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
 				int column) {
-			Integer id = ((AggregatModel)value).getId();
+			Integer id = ((AggregateType)value).getId();
 			setText(id.toString());
 			if(isSelected) {
 				setBackground(Color.ORANGE);
@@ -762,15 +762,15 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	}
 
 	class TblRowSelectionListener implements ListSelectionListener{
-		AggregatModel pmType;
+		AggregateType pmType;
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
 			if (((PnlPMType)panel).getSelectedTblRow() > -1) {			
 				int row = ((PnlPMType)panel).getSelectedTblRow();
-	            pmType = (AggregatModel) ((PnlPMType)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
+	            pmType = (AggregateType) ((PnlPMType)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
 	        }			
 		}
-		protected AggregatModel getAggregatSelected() {
+		protected AggregateType getAggregatSelected() {
 			return pmType;
 		}		
 	}
@@ -779,7 +779,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(tblRowSelectionListener.getAggregatSelected() instanceof AggregatModel) {
+			if(tblRowSelectionListener.getAggregatSelected() instanceof AggregateType) {
 				if(SQL_UPDATE.deleteAggregatModel(tblRowSelectionListener.getAggregatSelected())){
 					tblModel.aggregates.remove(tblRowSelectionListener.getAggregatSelected());
 					tblModel.fireTableDataChanged();

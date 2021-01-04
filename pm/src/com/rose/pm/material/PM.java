@@ -11,7 +11,7 @@ public class PM {
 	String serialNr;
 	LocalDate expireDate;
 //	Examination exam;
-	AggregatModel aggregatModel;
+	AggregateType aggregatModel;
 	Integer id;
 	String notice;
 	
@@ -43,13 +43,13 @@ public class PM {
 
 
 
-	public PM(AggregatModel pmModel) {		
+	public PM(AggregateType pmModel) {		
 		this.aggregatModel = pmModel;
 	}		
 	
 	
 
-	public AggregatModel getAggregatModel() {
+	public AggregateType getAggregatModel() {
 		return aggregatModel;
 	}
 

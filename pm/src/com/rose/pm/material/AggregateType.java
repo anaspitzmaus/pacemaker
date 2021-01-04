@@ -1,6 +1,6 @@
 package com.rose.pm.material;
 
-public class AggregatModel extends Material
+public class AggregateType extends Material
 {	
 	PM_Kind type;	
 	Integer id;
@@ -61,7 +61,7 @@ public class AggregatModel extends Material
 		this.lv = lv;
 	}
 
-	public AggregatModel(String notation) {
+	public AggregateType(String notation) {
 		super(notation);
 		// TODO Auto-generated constructor stub
 	}

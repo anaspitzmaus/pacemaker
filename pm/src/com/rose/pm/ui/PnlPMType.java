@@ -17,7 +17,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import com.rose.pm.material.AggregatModel;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
 import com.rose.pm.ui.CtrlPnlPMType.DeleteListener;
@@ -72,7 +72,7 @@ public class PnlPMType extends PnlBase{
 		pnlInput.add(checkMRI, "cell 5 0");
 		
 		cbxType = new JComboBox<PM_Kind>();
-		cbxType.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		cbxType.setFont(font);
 		pnlInput.add(cbxType, "cell 6 0");
 		
 		
@@ -239,7 +239,7 @@ public class PnlPMType extends PnlBase{
 		table.setDefaultRenderer(colclass, renderer);
 	}
 
-	protected void setTableIDRenderer(Class<AggregatModel> idClass, TableCellRenderer renderer) {
+	protected void setTableIDRenderer(Class<AggregateType> idClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(idClass, renderer);
 	}
 	
@@ -251,8 +251,8 @@ public class PnlPMType extends PnlBase{
 		return table.getSelectedRow();
 	}
 	
-	protected AggregatModel getTableValueAt(int row, int column) {
-		return (AggregatModel) table.getValueAt(row, column);
+	protected AggregateType getTableValueAt(int row, int column) {
+		return (AggregateType) table.getValueAt(row, column);
 	}
 
 	public void addTblRowSelectionListener(ListSelectionListener listener) {
