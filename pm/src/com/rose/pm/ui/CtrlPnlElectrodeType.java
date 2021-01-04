@@ -17,6 +17,7 @@ import javax.swing.JList;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataListener;
@@ -46,6 +47,8 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	TblElectrodeModelEMRenderer tblElectrodeModelEMRenderer;
 	TblElectrodeModelIDRenderer tblElectrodeModelIDRenderer;
 	TblElectrodeModelStringRenderer tblElectrodeModelStringRenderer;
+	TblIntegerRenderer tblLengthRenderer;
+	CreateListener createListener;
 	
 	
 	
@@ -57,6 +60,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		setRenderer();
 		setComponentText();
 		((PnlElectrodeType)panel).setManufacturerIndex(-1);
+		((PnlElectrodeType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	
 	private void setListener() {
@@ -72,6 +76,10 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		lengthListener = new LengthListener();
 		((PnlElectrodeType)panel).addLengthListener(lengthListener);
 		lengthListener.length = ((PnlElectrodeType)panel).getLength();
+		mriListener = new MRIListener();
+		((PnlElectrodeType)panel).addMRIListener(mriListener);
+		createListener = new CreateListener();
+		((PnlElectrodeType)panel).addCreateListener(createListener);
 	}
 	
 	private void setModel() {
@@ -95,9 +103,11 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		tblElectrodeModelBooleanRenderer = new TblElectrodeModelBooleanRenderer();
 		((PnlElectrodeType)panel).setTableBooleanRenderer(Boolean.class, tblElectrodeModelBooleanRenderer);
 		tblElectrodeModelEMRenderer = new TblElectrodeModelEMRenderer();
-//		((PnlElectrodeType)panel).setTableEMTypeRenderer(ElectrodeModel.class, tblElectrodeModelEMRenderer);
+		((PnlElectrodeType)panel).setTableEMTypeRenderer(ElectrodeModel.class, tblElectrodeModelEMRenderer);
 //		tblElectrodeModelIDRenderer = new TblElectrodeModelIDRenderer();
-		((PnlElectrodeType)panel).setTableIDRenderer(ElectrodeModel.class, tblElectrodeModelIDRenderer);
+//		((PnlElectrodeType)panel).setTableIDRenderer(ElectrodeModel.class, tblElectrodeModelIDRenderer);
+		tblLengthRenderer = new TblIntegerRenderer();
+		((PnlElectrodeType)panel).setTblLengthRenderer(Integer.class, tblLengthRenderer);
 		tblElectrodeModelStringRenderer = new TblElectrodeModelStringRenderer();
 		((PnlElectrodeType)panel).setTableStringRenderer(String.class, tblElectrodeModelStringRenderer);
 	}
@@ -387,8 +397,8 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		}
 		
 		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int column,
-				int row) {
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
 			Integer id = ((ElectrodeModel) value).getId();
 			setText(id.toString());
 			if(isSelected) {
@@ -412,8 +422,8 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 			}
 			
 			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int column,
-					int row) {
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+					int column) {
 				
 				setText(value.toString());
 				if(isSelected) {
@@ -441,8 +451,8 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 			}
 			
 			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int column,
-					int row) {
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+					int column) {
 				
 					setText(value.toString());
 				
@@ -470,10 +480,35 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		}
 		
 		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int column,
-				int row) {
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
 			setSelected((boolean) value);
 			setHorizontalAlignment(CENTER);
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(Color.WHITE);
+			}
+			return this;
+		}
+		
+	}
+	
+	class TblIntegerRenderer extends JLabel implements TableCellRenderer{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4401669427993767316L;
+
+		public TblIntegerRenderer() {
+			super.setOpaque(true);
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			setText(value.toString());
 			if(isSelected) {
 				setBackground(Color.ORANGE);
 			}else {

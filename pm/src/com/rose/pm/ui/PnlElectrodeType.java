@@ -26,7 +26,10 @@ import com.rose.pm.material.AggregatModel;
 import com.rose.pm.material.ElectrodeModel;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
+import com.rose.pm.ui.CtrlPnlElectrodeType.CreateListener;
+import com.rose.pm.ui.CtrlPnlElectrodeType.MRIListener;
 import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodesModel;
+import com.rose.pm.ui.CtrlPnlElectrodeType.TblIntegerRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -201,10 +204,10 @@ public class PnlElectrodeType extends PnlBase {
 		
 	}
 	
-//	protected void setTableEMTypeRenderer(Class<ElectrodeModel> colclass, TableCellRenderer renderer) {
-//		table.setDefaultRenderer(colclass, renderer);
-//		
-//	}
+	protected void setTableEMTypeRenderer(Class<ElectrodeModel> colclass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(colclass, renderer);
+		
+	}
 	
 	protected void setTableStringRenderer(Class<String> colclass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(colclass, renderer);
@@ -216,6 +219,25 @@ public class PnlElectrodeType extends PnlBase {
 	
 	protected void setTableBooleanRenderer(Class<Boolean> bolClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(bolClass, renderer);
+	}
+
+	protected void addCreateListener(ActionListener createListener) {
+		btnCreate.addActionListener(createListener);
+		
+	}
+
+	protected void addMRIListener(ActionListener mriListener) {
+		checkMRI.addActionListener(mriListener);
+		
+	}
+
+	protected void setTblLengthRenderer(Class<Integer> intClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(intClass, renderer);
+		
+	}
+	
+	protected void setTblSelectionMode(int selection) {
+		table.setSelectionMode(selection);
 	}
 
 }
