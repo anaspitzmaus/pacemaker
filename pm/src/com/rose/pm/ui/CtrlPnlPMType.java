@@ -25,14 +25,15 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-
 import javax.swing.text.BadLocationException;
 
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregatModel;
 import com.rose.pm.material.Manufacturer;
-import com.rose.pm.material.PM_Type;
+import com.rose.pm.material.PM_Kind;
+import com.rose.pm.ui.Listener.NotationListener;
 
 
 
@@ -43,6 +44,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	ComboBoxModel<Manufacturer> manufacturerModel;
 	ManufacturerRenderer manufacturerRenderer;
 	ManufacturerListener manufacturerListener;
+	Listener listener;
 	NotationListener notationListener, noticeListener;
 	RAListener raListener;
 	RVListener rvListener;
@@ -52,25 +54,26 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	Boolean rv = false;
 	Boolean lv = false;
 	
-	PM_Type[] pmType;
+	PM_Kind[] pmType;
 	TypeRenderer typeRenderer;
 	TypeListener typeListener;
-	DefaultComboBoxModel<PM_Type> pmTypeModel;
+	DefaultComboBoxModel<PM_Kind> pmTypeModel;
 	CreateListener createListener;
 	TablePMTypeRenderer tablePMTypeRenderer;
 	TblStringRenderer tblStringRenderer;
 	TblPMIDRenderer tblPMIDRenderer;
 	TblBooleanRenderer tblBooleanRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
+	DeleteListener deleteListener;
 	
 	
 	public CtrlPnlPMType() {
 		createPanel();
-		pmType = new PM_Type[]{PM_Type.Single_Chamber, PM_Type.Double_Chamber, PM_Type.CRT};
-		setStandardModels();
-		
+		pmType = new PM_Kind[]{PM_Kind.Single_Chamber, PM_Kind.Double_Chamber, PM_Kind.CRT};
+		setStandardModels();		
 		setModel();
 		setRenderer();
+		setStandardListener();
 		setListener();
 		((PnlPMType)panel).setManufacturerIndex(-1);
 		((PnlPMType)panel).setRVSelection(true);
@@ -100,7 +103,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	
 		((PnlPMType)panel).setManufacturerModel(manufacturerModel);
 		//model of the ComboBox displaying the types of pacemakers
-		pmTypeModel = new DefaultComboBoxModel<PM_Type>(pmType);
+		pmTypeModel = new DefaultComboBoxModel<PM_Kind>(pmType);
 		((PnlPMType)panel).setTypeModel(pmTypeModel);	
 	}
 	
@@ -110,7 +113,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		typeRenderer = new TypeRenderer();
 		((PnlPMType)panel).setTypeRenderer(typeRenderer);
 		tablePMTypeRenderer = new TablePMTypeRenderer();
-		((PnlPMType)panel).setTablePMTypeRenderer(PM_Type.class, tablePMTypeRenderer);
+		((PnlPMType)panel).setTablePMTypeRenderer(PM_Kind.class, tablePMTypeRenderer);
 		tblStringRenderer = new TblStringRenderer();
 		((PnlPMType)panel).setTableStringRenderer(String.class, tblStringRenderer);
 		tblPMIDRenderer = new TblPMIDRenderer();
@@ -120,13 +123,19 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	}
 	
 	protected void setListener() {
+		createListener = new CreateListener();
+		((PnlPMType)panel).addCreateListener(createListener);
+	}
+	
+	protected void setStandardListener() {
+		listener = new Listener();
 		manufacturerListener = new ManufacturerListener();
 		((PnlPMType)panel).addManufacturerListener(manufacturerListener);
-		notationListener = new NotationListener();
+		notationListener = listener.new NotationListener();
 		((PnlPMType)panel).addNotationListener(notationListener);
 		typeListener = new TypeListener();
 		((PnlPMType)panel).addTypeListener(typeListener);
-		noticeListener = new NotationListener();
+		noticeListener = listener.new NotationListener();
 		((PnlPMType)panel).addNoticeListener(noticeListener);
 		mriListener = new MRIListener();
 		((PnlPMType)panel).addMRIListener(mriListener);
@@ -136,11 +145,11 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		((PnlPMType)panel).addLVListener(lvListener);
 		raListener = new RAListener();
 		((PnlPMType)panel).addRALIstener(raListener);
-		createListener = new CreateListener();
-		((PnlPMType)panel).addCreateListener(createListener);
+		
 		tblRowSelectionListener = new TblRowSelectionListener();
 		((PnlPMType)panel).addTblRowSelectionListener(tblRowSelectionListener);
-		
+		deleteListener = new DeleteListener();
+		((PnlPMType)panel).addDeleteListener(deleteListener);
 	}
 	
 	protected void setComponentText() {
@@ -149,6 +158,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		((PnlPMType)panel).setLblMRIText("MRT");
 		((PnlPMType)panel).setLblNoticeText("Bemerkung");
 		((PnlPMType)panel).setBtnCreateText("Eintragen");
+		((PnlPMType)panel).setBtnDeleteTest("Löschen");
 	}
 	
 	protected void checkChambers() {
@@ -167,8 +177,8 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		}
 	}
 	
-	protected void selectChamber(PM_Type type) {
-		if(type instanceof PM_Type) {
+	protected void selectChamber(PM_Kind type) {
+		if(type instanceof PM_Kind) {
 			 switch (type) {
 				case Single_Chamber:
 					((PnlPMType)panel).setRASelection(false);
@@ -209,7 +219,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends AggregatModel> aggregates;
-		PM_Type type;
+		PM_Kind type;
 		
 		public PMTypeTblModel(ArrayList<? extends AggregatModel> paceMakers) {
 			this.aggregates = paceMakers;
@@ -270,11 +280,11 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		
 		protected void setType(AggregatModel pm) {
 			if(pm.getRa() && pm.getRv() && pm.getLv()) {
-				pm.setType(PM_Type.CRT);
+				pm.setType(PM_Kind.CRT);
 			}else if(pm.getRa() && pm.getRv() || pm.getRa() && pm.getLv() || pm.getRv() && pm.getLv()) {
-				pm.setType(PM_Type.Double_Chamber);
+				pm.setType(PM_Kind.Double_Chamber);
 			}else if(pm.getRa() || pm.getRv() || pm.getLv()) {
-				pm.setType(PM_Type.Single_Chamber);
+				pm.setType(PM_Kind.Single_Chamber);
 			}else {
 				pm.setType(null);
 			}
@@ -416,41 +426,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		}
 	}
 	
-	/**
-	 * listener for the JTextField txtNotation
-	 * @author Ekkehard
-	 *
-	 */
-	class NotationListener implements DocumentListener{
-		String notation = "";
-		@Override
-		public void changedUpdate(DocumentEvent e) {			
-			setNotation(e);	
-		}
-
-		@Override
-		public void insertUpdate(DocumentEvent e) {
-			setNotation(e);	
-		}
-
-		@Override
-		public void removeUpdate(DocumentEvent e) {
-			setNotation(e);	
-		}
-		
-		private void setNotation(DocumentEvent e) {
-			try {
-				notation = e.getDocument().getText(0, e.getDocument().getLength());
-			} catch (BadLocationException e1) {
-				notation = "";
-			}
-		}
-		
-		protected String getNotation() {
-			return this.notation;
-		}
-		
-	}
+	
 	
 	class MRIListener implements ActionListener{
 		Boolean mri;
@@ -467,11 +443,11 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		
 	}
 	
-	class TypeModel implements ComboBoxModel<PM_Type>{
+	class TypeModel implements ComboBoxModel<PM_Kind>{
 
 		int indexSel;
-		PM_Type[] types;		
-		public TypeModel(PM_Type[] types) {
+		PM_Kind[] types;		
+		public TypeModel(PM_Kind[] types) {
 			this.types = types;
 
 		}
@@ -483,7 +459,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		}
 
 		@Override
-		public PM_Type getElementAt(int index) {
+		public PM_Kind getElementAt(int index) {
 			// TODO Auto-generated method stub
 			return types[index];
 		}
@@ -522,7 +498,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	 * @author user2
 	 *
 	 */
-	class TypeRenderer extends JLabel implements ListCellRenderer<PM_Type>{
+	class TypeRenderer extends JLabel implements ListCellRenderer<PM_Kind>{
 
 
 		/**
@@ -531,9 +507,9 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		private static final long serialVersionUID = 5665803606940459417L;
 
 		@Override
-		public Component getListCellRendererComponent(JList<? extends PM_Type> list, PM_Type type, int index,
+		public Component getListCellRendererComponent(JList<? extends PM_Kind> list, PM_Kind type, int index,
 				boolean isSelected, boolean hasFocus) {
-			if(type instanceof PM_Type) {
+			if(type instanceof PM_Kind) {
 				switch(type) {
 					case Single_Chamber:
 						setText("Einkammer");
@@ -561,8 +537,8 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			JComboBox<PM_Type> cb = (JComboBox<PM_Type>)e.getSource();
-	        PM_Type type = (PM_Type)cb.getSelectedItem();
+			JComboBox<PM_Kind> cb = (JComboBox<PM_Kind>)e.getSource();
+	        PM_Kind type = (PM_Kind)cb.getSelectedItem();
 	       selectChamber(type);
 			
 		}
@@ -606,44 +582,42 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	}
 	
 	class CreateListener implements ActionListener{
-
+		
+		 
+		AggregatModel aggModel;
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			
 			if(manufacturerListener.getManufacturer() != null && notationListener.getNotation() != null && checkElectrodes()) {
-//				if(icd) {
-//					ICD_Model aggModel = new ICD_Model(notation);
-//					aggModel.setManufacturer(manufacturer);
-//					aggModel.setRa(ra);
-//					aggModel.setRv(rv);
-//					aggModel.setLv(lv);
-//					aggModel.setMri(mri);
-//					SQL_INSERT.icd_Model((ICD_Model) aggModel);
-//					tblPMKindModel.setAggregats(SQL_SELECT.ICD_Kinds());
-//				}else {
-					AggregatModel aggModel = new AggregatModel(notationListener.getNotation());
-					aggModel.setManufacturer(manufacturerListener.getManufacturer());
-					aggModel.setRa(ra);
-					aggModel.setRv(rv);
-					aggModel.setLv(lv);
-					aggModel.setMri(mriListener.getMRI());
-					aggModel.setNotice(noticeListener.getNotation());
-					SQL_INSERT.pacemakerModel(aggModel);
-					tblModel.setAggregats(SQL_SELECT.pacemakerKinds());
-				//}	
+				
+				initiate();					
+				aggModel.setManufacturer(manufacturerListener.getManufacturer());
+				aggModel.setRa(ra);
+				aggModel.setRv(rv);
+				aggModel.setLv(lv);
+				aggModel.setMri(mriListener.getMRI());
+				aggModel.setNotice(noticeListener.getNotation());
+				updateDBAndModel(aggModel);
+			}	
 				
 				tblModel.fireTableDataChanged();
 				((PnlPMType)panel).emptyTextFields();
-				System.out.println(notationListener.getNotation());
-			}
-			
+							
 		}
 		
+		protected void updateDBAndModel(AggregatModel aggModel) {
+			SQL_INSERT.pacemakerModel(aggModel);
+			tblModel.setAggregats(SQL_SELECT.pacemakerKinds());
+		}
+		
+		protected void initiate() {
+			aggModel = new AggregatModel(notationListener.getNotation());
+		}
 		/**
 		 * check if at least one Electrode was selected
 		 * @return
 		 */
-		Boolean checkElectrodes() {
+		protected Boolean checkElectrodes() {
 			if(ra || rv || lv) {
 				return true;
 			}
@@ -672,8 +646,8 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			
-			if(value instanceof PM_Type) {
-				changeChamberNotation((PM_Type) value);
+			if(value instanceof PM_Kind) {
+				changeChamberNotation((PM_Kind) value);
 				setText(notation);
 			}else {
 				setText("");
@@ -691,7 +665,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 			return this;
 		}
 		
-		private void changeChamberNotation(PM_Type type) {
+		private void changeChamberNotation(PM_Kind type) {
 			switch(type) {
 			case Single_Chamber:
 				notation = "Einkammer";
@@ -795,8 +769,28 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 				int row = ((PnlPMType)panel).getSelectedTblRow();
 	            pmType = (AggregatModel) ((PnlPMType)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
 	        }			
+		}
+		protected AggregatModel getAggregatSelected() {
+			return pmType;
 		}		
 	}
+	
+	class DeleteListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(tblRowSelectionListener.getAggregatSelected() instanceof AggregatModel) {
+				if(SQL_UPDATE.deleteAggregatModel(tblRowSelectionListener.getAggregatSelected())){
+					tblModel.aggregates.remove(tblRowSelectionListener.getAggregatSelected());
+					tblModel.fireTableDataChanged();
+				}
+			}
+			
+		}
+		
+	}
+
+	
 	
 	
 	

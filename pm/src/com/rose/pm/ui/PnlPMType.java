@@ -19,7 +19,8 @@ import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.material.AggregatModel;
 import com.rose.pm.material.Manufacturer;
-import com.rose.pm.material.PM_Type;
+import com.rose.pm.material.PM_Kind;
+import com.rose.pm.ui.CtrlPnlPMType.DeleteListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -27,7 +28,7 @@ public class PnlPMType extends PnlBase{
 	JTextField txtNotation;
 	JTextField txtNotice;
 	JComboBox<Manufacturer> cbxManufacturer;
-	JComboBox<PM_Type> cbxType;
+	JComboBox<PM_Kind> cbxType;
 	JCheckBox checkRA, checkRV, checkLV;
 	JCheckBox checkMRI;
 	JButton btnCreate, btnDelete;
@@ -70,7 +71,7 @@ public class PnlPMType extends PnlBase{
 		checkMRI = new JCheckBox();
 		pnlInput.add(checkMRI, "cell 5 0");
 		
-		cbxType = new JComboBox<PM_Type>();
+		cbxType = new JComboBox<PM_Kind>();
 		cbxType.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		pnlInput.add(cbxType, "cell 6 0");
 		
@@ -130,6 +131,10 @@ public class PnlPMType extends PnlBase{
 		btnCreate.setText(txt);
 	}
 	
+	protected void setBtnDeleteTest(String txt) {
+		btnDelete.setText(txt);
+	}
+	
 	protected void setTblModel(AbstractTableModel model) {
 		table.setModel(model);
 	}
@@ -161,7 +166,7 @@ public class PnlPMType extends PnlBase{
 		
 	}
 
-	protected void setTypeModel(ComboBoxModel<PM_Type> model) {
+	protected void setTypeModel(ComboBoxModel<PM_Kind> model) {
 		cbxType.setModel(model);
 		
 	}
@@ -178,11 +183,11 @@ public class PnlPMType extends PnlBase{
 		checkLV.setSelected(sel);
 	}
 	
-	protected ComboBoxModel<PM_Type> getTypeModel() {
+	protected ComboBoxModel<PM_Kind> getTypeModel() {
 		return cbxType.getModel();
 	}
 	
-	protected void setTypeRenderer(ListCellRenderer<PM_Type> r) {
+	protected void setTypeRenderer(ListCellRenderer<PM_Kind> r) {
 		cbxType.setRenderer(r);
 	}	
 	
@@ -222,9 +227,10 @@ public class PnlPMType extends PnlBase{
 	
 	protected void addCreateListener(ActionListener l) {
 		btnCreate.addActionListener(l);
+		
 	}
 	
-	protected void setTablePMTypeRenderer(Class<PM_Type> colclass, TableCellRenderer renderer) {
+	protected void setTablePMTypeRenderer(Class<PM_Kind> colclass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(colclass, renderer);
 		
 	}
@@ -251,6 +257,11 @@ public class PnlPMType extends PnlBase{
 
 	public void addTblRowSelectionListener(ListSelectionListener listener) {
 		table.getSelectionModel().addListSelectionListener(listener);
+		
+	}
+
+	protected void addDeleteListener(ActionListener listener) {
+		btnDelete.addActionListener(listener);
 		
 	}
 }

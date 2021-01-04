@@ -9,7 +9,7 @@ public class ICD_Model extends AggregatModel{
 		// TODO Auto-generated constructor stub
 	}
 
-	protected Boolean getAtp() {
+	public Boolean getAtp() {
 		return atp;
 	}
 

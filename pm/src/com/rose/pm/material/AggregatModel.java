@@ -2,7 +2,7 @@ package com.rose.pm.material;
 
 public class AggregatModel extends Material
 {	
-	PM_Type type;	
+	PM_Kind type;	
 	Integer id;
 	Boolean ra, rv, lv;
 	Boolean mri;
@@ -27,12 +27,12 @@ public class AggregatModel extends Material
 
 	
 
-	public PM_Type getType() {
+	public PM_Kind getType() {
 		return type;
 	}
 
 
-	public void setType(PM_Type type) {
+	public void setType(PM_Kind type) {
 		this.type = type;
 	}	
 

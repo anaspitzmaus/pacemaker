@@ -1,12 +1,16 @@
 package com.rose.pm.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-
-
+import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregatModel;
-import com.rose.pm.material.PM_Type;
+import com.rose.pm.material.ICD_Model;
+import com.rose.pm.ui.CtrlPnlPMType.CreateListener;
+
 
 
 public class CtrlPnlICDType extends CtrlPnlPMType{
@@ -27,6 +31,12 @@ public class CtrlPnlICDType extends CtrlPnlPMType{
 		((PnlICDType)panel).setTblModel(tblModel);
 	}
 	
+	@Override
+	protected void setListener() {
+		createListener = new ICDTypeCreateListener();
+		((PnlPMType)panel).addCreateListener(createListener);
+	}
+	
 	class ICDTypeTblModel extends PMTypeTblModel{
 
 		/**
@@ -38,7 +48,7 @@ public class CtrlPnlICDType extends CtrlPnlPMType{
 		
 		public ICDTypeTblModel(ArrayList<? extends AggregatModel> paceMakers) {
 			super(paceMakers);
-			columnNames.add("ATP");
+			
 		}
 		
 		@Override
@@ -79,26 +89,34 @@ public class CtrlPnlICDType extends CtrlPnlPMType{
 				
 				case 4: return aggregates.get(rowIndex).getMri();
 				
+				case 5: return aggregates.get(rowIndex).getNotice();
+				
+				
+				
 				default: return null;
 				
 				}	
 			
+		}		
+	}
+	
+
+	class ICDTypeCreateListener extends CreateListener{	
+		
+		@Override
+		protected void initiate() {
+			aggModel = new ICD_Model(notationListener.getNotation());
+		}
+	
+		@Override
+		protected void updateDBAndModel(AggregatModel aggModel) {
+			
+			SQL_INSERT.icd_Model((ICD_Model) aggModel);
+			tblModel.setAggregats(SQL_SELECT.ICD_Kinds());
 		}
 		
 		
-		
-//		protected void setAggregats(ArrayList<? extends AggregatModel> pm) {
-//			this.aggregates = pm;
-//			if(icd) {
-//				if(!columnNames.contains("ATP")) {
-//					columnNames.add("ATP");//add columns for ICD-Model
-//				}				
-//			}else {//if pacemaker
-//				columnNames.remove("ATP");
-//			}
-			
-//		}
-		
 	}
+	
 	
 }

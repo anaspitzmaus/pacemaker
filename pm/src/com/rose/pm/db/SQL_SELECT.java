@@ -486,7 +486,11 @@ public class SQL_SELECT {
 					pm.setRv(rs.getBoolean("rv"));
 					pm.setLv(rs.getBoolean("lv"));
 					pm.setMri(rs.getBoolean("mri"));
-					pm.setNotice(rs.getString("notice"));
+					if(rs.getString("notice") != null) {
+						pm.setNotice(rs.getString("notice"));
+					}else {
+						pm.setNotice("");
+					}
 					
 					Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
 					manufacturer.setId(rs.getInt("id_manufacturer"));
@@ -510,7 +514,7 @@ public class SQL_SELECT {
 		icdKinds = new ArrayList<ICD_Model>();
 		try {
 			rs = stmt.executeQuery(
-					 "SELECT idicd_type, icd_type.notation AS icdNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri "
+					 "SELECT idicd_type, icd_type.notation AS icdNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice "
 					+ "FROM icd_type "
 					+ "INNER JOIN manufacturer "
 					+ "ON icd_type.id_manufacturer = manufacturer.idmanufacturer");
@@ -523,6 +527,11 @@ public class SQL_SELECT {
 					icd.setRv(rs.getBoolean("rv"));
 					icd.setLv(rs.getBoolean("lv"));
 					icd.setMri(rs.getBoolean("mri"));
+					if(rs.getString("notice") != null) {
+						icd.setNotice(rs.getString("notice"));
+					}else {
+						icd.setNotice("");
+					}
 					
 					Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
 					manufacturer.setId(rs.getInt("id_manufacturer"));

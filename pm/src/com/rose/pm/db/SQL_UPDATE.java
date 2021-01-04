@@ -8,8 +8,10 @@ import java.sql.Statement;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.rose.pm.material.AggregatModel;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeModel;
+import com.rose.pm.material.ICD_Model;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM;
 
@@ -265,6 +267,39 @@ public class SQL_UPDATE {
 						"Message:\n" +  e.getMessage() + "\n\nClass:\n" + SQL_UPDATE.class.getSimpleName() + "\n\nBoolean electrode(Electrode electrode)", "SQL Exception warning",
 					    JOptionPane.WARNING_MESSAGE);
 				return false;
+			}
+		}else {
+			return false;
+		}
+		
+	}
+
+	/**
+	 * delete an aggregat_model (can be pacemaker_model or icd_model)
+	 * @param model
+	 * @return
+	 */
+	public static Boolean deleteAggregatModel(AggregatModel model) {
+		stmt = DB.getStatement();
+		if(model instanceof AggregatModel && model.getId() != null) {
+			if(model instanceof ICD_Model) {
+				try {
+					stmt.executeUpdate("DELETE FROM icd_type WHERE idicd_type = " + model.getId() + " LIMIT 1");
+					return true;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+			}else {
+				try {
+					stmt.executeUpdate("DELETE FROM pm_type WHERE idpm_type = " + model.getId() + " LIMIT 1");
+					return true;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}		
 			}
 		}else {
 			return false;
