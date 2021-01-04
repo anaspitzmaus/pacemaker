@@ -93,10 +93,13 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		manufacturerRenderer = new ManufacturerRenderer();
 		((PnlElectrodeType)panel).setManufacturerRenderer(manufacturerRenderer);
 		tblElectrodeModelBooleanRenderer = new TblElectrodeModelBooleanRenderer();
+		((PnlElectrodeType)panel).setTableBooleanRenderer(Boolean.class, tblElectrodeModelBooleanRenderer);
 		tblElectrodeModelEMRenderer = new TblElectrodeModelEMRenderer();
-		
-		tblElectrodeModelIDRenderer = new TblElectrodeModelIDRenderer();
+//		((PnlElectrodeType)panel).setTableEMTypeRenderer(ElectrodeModel.class, tblElectrodeModelEMRenderer);
+//		tblElectrodeModelIDRenderer = new TblElectrodeModelIDRenderer();
+		((PnlElectrodeType)panel).setTableIDRenderer(ElectrodeModel.class, tblElectrodeModelIDRenderer);
 		tblElectrodeModelStringRenderer = new TblElectrodeModelStringRenderer();
+		((PnlElectrodeType)panel).setTableStringRenderer(String.class, tblElectrodeModelStringRenderer);
 	}
 
 	protected void setComponentText() {

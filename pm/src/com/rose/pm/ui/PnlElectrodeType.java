@@ -23,6 +23,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.material.AggregatModel;
+import com.rose.pm.material.ElectrodeModel;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
 import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodesModel;
@@ -200,16 +201,16 @@ public class PnlElectrodeType extends PnlBase {
 		
 	}
 	
-	protected void setTableEMTypeRenderer(Class<PM_Kind> colclass, TableCellRenderer renderer) {
-		table.setDefaultRenderer(colclass, renderer);
-		
-	}
+//	protected void setTableEMTypeRenderer(Class<ElectrodeModel> colclass, TableCellRenderer renderer) {
+//		table.setDefaultRenderer(colclass, renderer);
+//		
+//	}
 	
 	protected void setTableStringRenderer(Class<String> colclass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(colclass, renderer);
 	}
 
-	protected void setTableIDRenderer(Class<AggregatModel> idClass, TableCellRenderer renderer) {
+	protected void setTableIDRenderer(Class<ElectrodeModel> idClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(idClass, renderer);
 	}
 	
