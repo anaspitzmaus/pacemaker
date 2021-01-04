@@ -251,8 +251,8 @@ public class PnlPMType extends PnlBase{
 		return table.getSelectedRow();
 	}
 	
-	protected Object getTableValueAt(int row, int column) {
-		return table.getValueAt(row, column);
+	protected AggregatModel getTableValueAt(int row, int column) {
+		return (AggregatModel) table.getValueAt(row, column);
 	}
 
 	public void addTblRowSelectionListener(ListSelectionListener listener) {

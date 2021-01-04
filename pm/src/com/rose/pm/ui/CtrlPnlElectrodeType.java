@@ -21,11 +21,15 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.db.SQL_UPDATE;
+import com.rose.pm.material.AggregatModel;
 import com.rose.pm.material.ElectrodeModel;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
@@ -49,6 +53,8 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	TblElectrodeModelStringRenderer tblElectrodeModelStringRenderer;
 	TblIntegerRenderer tblLengthRenderer;
 	CreateListener createListener;
+	TblRowSelectionListener tblRowSelectionListener;
+	DeleteListener deleteListener;
 	
 	
 	
@@ -80,6 +86,10 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		((PnlElectrodeType)panel).addMRIListener(mriListener);
 		createListener = new CreateListener();
 		((PnlElectrodeType)panel).addCreateListener(createListener);
+		tblRowSelectionListener = new TblRowSelectionListener();
+		((PnlElectrodeType)panel).addTblRowSelectionListener(tblRowSelectionListener);
+		deleteListener = new DeleteListener();
+		((PnlElectrodeType)panel).addDeleteListener(deleteListener);
 	}
 	
 	private void setModel() {
@@ -536,6 +546,36 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 				tblElectrodesModel.fireTableDataChanged();
 				
 			}
+		}
+		
+	}
+	
+	class TblRowSelectionListener implements ListSelectionListener{
+		ElectrodeModel elModel;
+		@Override
+		public void valueChanged(ListSelectionEvent arg0) {
+			if (((PnlElectrodeType)panel).getSelectedTblRow() > -1) {			
+				int row = ((PnlElectrodeType)panel).getSelectedTblRow();
+	            elModel = (ElectrodeModel) ((PnlElectrodeType)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
+	        }			
+		}
+		
+		protected ElectrodeModel getElectrodeModelSelected() {
+			return elModel;
+		}		
+	}
+	
+	class DeleteListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(tblRowSelectionListener.getElectrodeModelSelected() instanceof ElectrodeModel) {
+				if(SQL_UPDATE.deleteElectrodeModel(tblRowSelectionListener.getElectrodeModelSelected())){
+					tblElectrodesModel.electrodeModels.remove(tblRowSelectionListener.getElectrodeModelSelected());
+					tblElectrodesModel.fireTableDataChanged();
+				}
+			}
+			
 		}
 		
 	}

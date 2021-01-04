@@ -19,17 +19,13 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import com.rose.pm.material.AggregatModel;
 import com.rose.pm.material.ElectrodeModel;
 import com.rose.pm.material.Manufacturer;
-import com.rose.pm.material.PM_Kind;
-import com.rose.pm.ui.CtrlPnlElectrodeType.CreateListener;
-import com.rose.pm.ui.CtrlPnlElectrodeType.MRIListener;
-import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodesModel;
-import com.rose.pm.ui.CtrlPnlElectrodeType.TblIntegerRenderer;
+import com.rose.pm.ui.CtrlPnlElectrodeType.DeleteListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -238,6 +234,24 @@ public class PnlElectrodeType extends PnlBase {
 	
 	protected void setTblSelectionMode(int selection) {
 		table.setSelectionMode(selection);
+	}
+
+	protected int getSelectedTblRow() {
+		return table.getSelectedRow();
+	}
+
+	protected ElectrodeModel getTableValueAt(int row, int column) {
+		return (ElectrodeModel) table.getValueAt(row, column);
+	}
+
+	protected void addTblRowSelectionListener(ListSelectionListener listener) {
+		table.getSelectionModel().addListSelectionListener(listener);
+		
+	}
+
+	protected void addDeleteListener(ActionListener listener) {
+		btnDelete.addActionListener(listener);
+		
 	}
 
 }
