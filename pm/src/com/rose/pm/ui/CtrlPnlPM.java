@@ -203,8 +203,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 				pm.setNotice(noticeListener.getNotation());
 				SQL_INSERT.pacemaker(pm);	
 					
-//				tblElectrodesModel.setElectrodeModels(SQL_SELECT.electrodeModels());
-//				tblElectrodesModel.fireTableDataChanged();
+				aggregateTblModel.setAggregats(SQL_SELECT.pacemakers((AggregateType) aggregateTypeModel.getSelectedItem()));
+				aggregateTblModel.fireTableDataChanged();
 				
 			}
 		}
