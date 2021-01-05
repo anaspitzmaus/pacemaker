@@ -27,7 +27,7 @@ public class PnlPM extends PnlBase{
 	JLabel lblSerialNr, lblNotice, lblAggregateType;
 	JTextField txtSerialNr, txtNotice;
 	JComboBox<AggregateType> cbxPMType;
-	JButton btnCreate, btnDelete;
+	JButton btnCreate, btnDelete, btnShowAll;
 	
 	protected void setLblSerialNrText(String txt) {
 		lblSerialNr.setText(txt);
@@ -48,41 +48,50 @@ public class PnlPM extends PnlBase{
 	protected void setBtnDeleteText(String txt) {
 		btnDelete.setText(txt);
 	}
+	
+	protected void setBtnShowAllText(String txt) {
+		btnShowAll.setText(txt);
+	}
+	
 	/**
 	 * Create the panel.
 	 */
 	public PnlPM() {
-		pnlInput.setLayout(new MigLayout("", "[][][][][][][grow][]", "[]"));
+		pnlInput.setLayout(new MigLayout("", "[][][][][][][grow][]", "[][]"));
+		
+		btnShowAll = new JButton("btnShowAll");
+		btnShowAll.setFont(font);
+		pnlInput.add(btnShowAll, "cell 1 0");
 		
 		lblAggregateType = new JLabel("lblPM_Type");
 		lblAggregateType.setFont(font);
-		pnlInput.add(lblAggregateType, "cell 0 0");
+		pnlInput.add(lblAggregateType, "cell 0 1");
 		
 		cbxPMType = new JComboBox<AggregateType>();
 		cbxPMType.setFont(font);
-		pnlInput.add(cbxPMType, "cell 1 0");
+		pnlInput.add(cbxPMType, "cell 1 1, growx");
 		
 		lblSerialNr = new JLabel("lblNotation");
 		lblSerialNr.setFont(font);
-		pnlInput.add(lblSerialNr, "cell 2 0");
+		pnlInput.add(lblSerialNr, "cell 2 1");
 		
 		txtSerialNr = new JTextField();
 		txtSerialNr.setFont(font);
-		pnlInput.add(txtSerialNr, "cell 3 0");
+		pnlInput.add(txtSerialNr, "cell 3 1");
 		txtSerialNr.setColumns(10);
 		
 		lblNotice = new JLabel("lblNotice");
 		lblNotice.setFont(font);
-		pnlInput.add(lblNotice, "cell 5 0");
+		pnlInput.add(lblNotice, "cell 5 1");
 		
 		txtNotice = new JTextField();
 		txtNotice.setFont(font);
 		txtNotice.setColumns(10);
-		pnlInput.add(txtNotice, "cell 6 0, growx");
+		pnlInput.add(txtNotice, "cell 6 1, growx");
 		
 		btnCreate = new JButton("btnCreate");
 		btnCreate.setFont(font);
-		pnlInput.add(btnCreate, "cell 7 0");
+		pnlInput.add(btnCreate, "cell 7 1");
 		
 		btnDelete = new JButton("btnDelete");
 		btnDelete.setFont(font);
@@ -91,7 +100,7 @@ public class PnlPM extends PnlBase{
 	}
 	
 	protected void integratePnlDate(Pnl_SetDate pnlDate) {
-		pnlInput.add(pnlDate, "cell 4 0");
+		pnlInput.add(pnlDate, "cell 4 1");
 	}
 
 	protected void addSerialNrListener(DocumentListener listener) {
@@ -127,6 +136,14 @@ public class PnlPM extends PnlBase{
 	protected void setAggregateTblModel(AbstractTableModel aggregateTblModel) {
 		table.setModel(aggregateTblModel);
 		
+	}
+	
+	protected void setAggregateTypeSelectionIndex(Integer index) {
+		cbxPMType.setSelectedIndex(index);		
+	}
+	
+	protected void addShowAllListener(ActionListener l) {
+		btnShowAll.addActionListener(l);
 	}
 
 	

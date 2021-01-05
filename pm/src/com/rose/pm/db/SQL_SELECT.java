@@ -557,7 +557,7 @@ public class SQL_SELECT {
 		try {
 			if(pmModel instanceof AggregateType) {//select pacemakers of a selected model
 				rs = stmt.executeQuery(
-					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, notice "
+					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, pm_implant.notice "
 					+ "FROM pm_implant "
 					+ "INNER JOIN pm_type "
 					+ "ON pm_implant.pm_type = pm_type.idpm_type "
