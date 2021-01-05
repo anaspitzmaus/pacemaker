@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.AbstractTableModel;
 
 import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.AggregateType;
@@ -121,6 +122,11 @@ public class PnlPM extends PnlBase{
 	
 	protected void addDeleteListener(ActionListener l) {
 		btnDelete.addActionListener(l);
+	}
+
+	protected void setAggregateTblModel(AbstractTableModel aggregateTblModel) {
+		table.setModel(aggregateTblModel);
+		
 	}
 
 	

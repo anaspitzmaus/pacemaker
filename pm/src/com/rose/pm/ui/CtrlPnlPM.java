@@ -14,14 +14,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ListDataListener;
+import javax.swing.table.AbstractTableModel;
 
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.AggregateType;
-import com.rose.pm.material.ElectrodeModel;
-import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM;
+
 import com.rose.pm.ui.Listener.NotationListener;
 
 public class CtrlPnlPM extends CtrlPnlBase{
@@ -32,6 +32,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	AggregateTypeModel aggregateTypeModel;
 	AggregateTypeRenderer aggregateTypeRenderer;
 	AggregateTypeListener aggregateTypeListener;
+	AggregateTblModel aggregateTblModel;
 	
 	
 	
@@ -66,6 +67,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	private void setModel() {
 		aggregateTypeModel = new AggregateTypeModel();
 		((PnlPM)panel).setAggregatTypeModel(aggregateTypeModel);
+		aggregateTblModel = new AggregateTblModel(SQL_SELECT.pacemakers(aggregateTypeListener.model));
+		((PnlPM)panel).setAggregateTblModel(aggregateTblModel);
 	}
 	
 	private void setRenderer() {
@@ -120,7 +123,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	}
 	
 	/**
-	 * model for the comboBox that displays the manufacturers
+	 * model for the comboBox that displays the types of aggregate
 	 * @author Ekkehard Rose
 	 *
 	 */
@@ -204,6 +207,74 @@ public class CtrlPnlPM extends CtrlPnlBase{
 //				tblElectrodesModel.fireTableDataChanged();
 				
 			}
+		}
+		
+	}
+	
+	class AggregateTblModel extends AbstractTableModel{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8444808544442905721L;
+
+		protected ArrayList<String> columnNames;
+		ArrayList<? extends PM> aggregates;
+		
+		
+		public AggregateTblModel(ArrayList<? extends PM> paceMakers) {
+			this.aggregates = paceMakers;
+			columnNames = new ArrayList<String>();
+			columnNames.add("Id");
+			columnNames.add("Seriennummer");
+			columnNames.add("Ablaufdatum");
+			columnNames.add("Bemerkung");
+		}
+		
+		@Override
+		public int getColumnCount() {
+			// TODO Auto-generated method stub
+			return columnNames.size();
+		}
+		
+		@Override
+		public String getColumnName(int column) {
+	        return columnNames.get(column);
+	    }
+
+		@Override
+		public int getRowCount() {
+			// TODO Auto-generated method stub
+			return this.aggregates.size();
+		}
+		
+		@Override
+		public Class getColumnClass(int col) {
+			return getValueAt(0, col).getClass();
+		}
+
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+						
+			switch(columnIndex) {
+			case 0: return aggregates.get(rowIndex);
+			
+			case 1: return aggregates.get(rowIndex).getSerialNr();
+			
+			case 2: return aggregates.get(rowIndex).getExpireDate();
+			
+			case 3: return aggregates.get(rowIndex).getNotice();
+			
+			default: return null;
+			
+			}	
+			
+		}
+		
+		
+		
+		protected void setAggregats(ArrayList<? extends PM> pm) {
+			this.aggregates = pm;		
 		}
 		
 	}
