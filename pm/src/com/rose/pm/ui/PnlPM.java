@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.time.LocalDate;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
@@ -11,10 +12,13 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.PM;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -145,6 +149,36 @@ public class PnlPM extends PnlBase{
 	protected void addShowAllListener(ActionListener l) {
 		btnShowAll.addActionListener(l);
 	}
+	
+	protected void setPMIDRenderer(Class<PM> pmclass, TableCellRenderer r) {
+		table.setDefaultRenderer(pmclass, r);
+	}
+	
+	protected void setStringRenderer(Class<String> stringClass, TableCellRenderer r) {
+		table.setDefaultRenderer(stringClass, r);
+	}
+	
+	protected void setDateRenderer(Class<LocalDate> dateClass, TableCellRenderer r) {
+		table.setDefaultRenderer(dateClass, r);
+}
+
+	protected void setTblSelectionMode(int selectionMode) {
+		table.setSelectionMode(selectionMode);		
+	}
+	
+	protected void addTblRowSelectionListener(ListSelectionListener listener) {
+		table.getSelectionModel().addListSelectionListener(listener);		
+	}
+	
+	protected int getSelectedTblRow() {		
+		return table.getSelectedRow();
+	}
+	
+	protected PM getTableValueAt(int row, int column) {
+		return (PM) table.getValueAt(row, column);
+	}
+
+	
 
 	
 

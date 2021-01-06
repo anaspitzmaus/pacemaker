@@ -1,6 +1,7 @@
 package com.rose.pm.ui;
 
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,17 +14,20 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
-
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
-
 import com.rose.pm.material.PM;
-
 import com.rose.pm.ui.Listener.NotationListener;
 
 public class CtrlPnlPM extends CtrlPnlBase{
@@ -37,6 +41,10 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	AggregateTblModel aggregateTblModel;
 	CreateListener createListener;
 	ShowAllListener showAllListener;
+	TblPMIDRenderer tblPMIDRenderer;
+	TblStringRenderer tblStringRenderer;
+	TblDateRenderer tblDateRenderer;
+	TblRowSelectionListener tblRowSelectionListener;
 	
 	
 	
@@ -58,6 +66,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		setModel();
 		setRenderer();
 		((PnlPM)panel).setAggregateTypeSelectionIndex(-1);
+		((PnlPM)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	
 	private void setListener() {
@@ -72,6 +81,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		((PnlPM)panel).addCreateListener(createListener);
 		showAllListener = new ShowAllListener();
 		((PnlPM)panel).addShowAllListener(showAllListener);
+		tblRowSelectionListener = new TblRowSelectionListener();
+		((PnlPM)panel).addTblRowSelectionListener(tblRowSelectionListener);
 	}
 	
 	private void setModel() {
@@ -91,6 +102,12 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	private void setRenderer() {
 		aggregateTypeRenderer = new AggregateTypeRenderer();
 		((PnlPM)panel).setAggregatTypeRenderer(aggregateTypeRenderer);
+		tblPMIDRenderer = new TblPMIDRenderer();
+		((PnlPM)panel).setPMIDRenderer(PM.class, tblPMIDRenderer);
+		tblStringRenderer = new TblStringRenderer();
+		((PnlPM)panel).setStringRenderer(String.class, tblStringRenderer);
+		tblDateRenderer = new TblDateRenderer();
+		((PnlPM)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 	}
 	
 	class AggregateTypeListener implements ItemListener{
@@ -306,6 +323,115 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			((PnlPM)panel).setAggregateTypeSelectionIndex(-1);
 			aggregateTblModel.setAggregats(SQL_SELECT.pacemakers(null));			
 			aggregateTblModel.fireTableDataChanged();
+		}
+		
+	}
+	
+	class TblPMIDRenderer extends JLabel implements TableCellRenderer{
+
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7687161924946698926L;
+
+		public TblPMIDRenderer() {
+			super.setOpaque(true);
+		}
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+			Integer id = ((PM)value).getId();
+			setText(id.toString());
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+		}
+		
+	}
+	
+
+	class TblStringRenderer extends JLabel implements TableCellRenderer{
+	
+		/**
+		 * 
+		 */
+		
+		public TblStringRenderer() {
+			super.setOpaque(true);
+		}
+		private static final long serialVersionUID = -523838024295879261L;
+	
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+			setText(value.toString());
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+		}
+		
+	}
+	
+	class TblDateRenderer extends JLabel implements TableCellRenderer{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5861989547138095236L;
+
+		public TblDateRenderer() {
+			super.setOpaque(true);
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			setText(value.toString());
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+			
+			
+		}
+		
+	}
+	
+	class TblRowSelectionListener implements ListSelectionListener{
+		PM pm;
+		@Override
+		public void valueChanged(ListSelectionEvent arg0) {
+			if (((PnlPM)panel).getSelectedTblRow() > -1) {			
+				int row = ((PnlPM)panel).getSelectedTblRow();
+	            pm = (PM) ((PnlPM)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
+	        }			
+		}
+		
+		protected PM getAggregatSelected() {
+			return pm;
+		}		
+	}
+	
+	class DeleteListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(tblRowSelectionListener.getAggregatSelected() instanceof PM) {
+				if(SQL_UPDATE.deleteAggregate(tblRowSelectionListener.getAggregatSelected())){
+					aggregateTblModel.aggregates.remove(tblRowSelectionListener.getAggregatSelected());
+					aggregateTblModel.fireTableDataChanged();
+				}
+			}
+			
 		}
 		
 	}

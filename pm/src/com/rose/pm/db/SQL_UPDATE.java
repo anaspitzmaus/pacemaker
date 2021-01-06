@@ -306,4 +306,9 @@ public class SQL_UPDATE {
 		}
 		
 	}
+
+	public static boolean deleteAggregate(PM aggregatSelected) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
