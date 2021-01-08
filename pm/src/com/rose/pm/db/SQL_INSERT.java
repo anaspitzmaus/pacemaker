@@ -11,8 +11,9 @@ import javax.swing.JOptionPane;
 import com.rose.pm.MD5;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
-import com.rose.pm.material.ElectrodeModel;
-import com.rose.pm.material.ICD_Model;
+import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.material.ICD;
+import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM;
 
@@ -411,7 +412,7 @@ public class SQL_INSERT {
 	 * @param icdModel
 	 * @return the id of the inserted type of icd
 	 */
-	public static Integer icd_Model(ICD_Model icdModel) {
+	public static Integer icd_Model(ICD_Type icdModel) {
 		Integer id = null;
 		stmt = DB.getStatement();
 		Integer ra = 0; 
@@ -485,8 +486,35 @@ public class SQL_INSERT {
 	return id;
 		
 	}
+	
+	public static Integer icd(ICD icd) {
+		Integer id = null;
+		stmt = DB.getStatement();
+		
+		try {
+			DB.getConnection().setAutoCommit(true);
+			stmt.executeUpdate("INSERT INTO icd (icd_type, expiry, serialNr, notice) "
+					+ "VALUES ('" + icd.getAggregatModel().getId() + "', '" 
+					+ Date.valueOf(icd.getExpireDate()) + "', '"
+					+ icd.getSerialNr() + "', '"
+					+ icd.getNotice() + "')");
+					
+			ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
+			if(rs.isBeforeFirst()){
+				rs.next();
+				id = rs.getInt("ID");
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(new JFrame(),
+				    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT icd(ICD icd)", "SQL Exception warning",
+				    JOptionPane.WARNING_MESSAGE);
+		}			
+	
+	return id;
+		
+	}
 
-	public static Integer electrodeModel(ElectrodeModel electrodeModel) {
+	public static Integer electrodeModel(ElectrodeType electrodeModel) {
 		Integer id = null;
 		Integer mri = 0;
 		

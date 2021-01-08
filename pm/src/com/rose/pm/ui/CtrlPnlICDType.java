@@ -1,15 +1,11 @@
 package com.rose.pm.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
-import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
-import com.rose.pm.material.ICD_Model;
-import com.rose.pm.ui.CtrlPnlPMType.CreateListener;
+import com.rose.pm.material.ICD_Type;
 
 
 
@@ -22,7 +18,7 @@ public class CtrlPnlICDType extends CtrlPnlPMType{
 	@Override
 	protected void createPanel() {
 		panel = new PnlICDType();
-		panel.setName("ICD-Typ");
+		panel.setName("ICD-Model");
 	}
 	
 	@Override
@@ -105,13 +101,13 @@ public class CtrlPnlICDType extends CtrlPnlPMType{
 		
 		@Override
 		protected void initiate() {
-			aggModel = new ICD_Model(notationListener.getNotation());
+			aggModel = new ICD_Type(notationListener.getNotation());
 		}
 	
 		@Override
 		protected void updateDBAndModel(AggregateType aggModel) {
 			
-			SQL_INSERT.icd_Model((ICD_Model) aggModel);
+			SQL_INSERT.icd_Model((ICD_Type) aggModel);
 			tblModel.setAggregats(SQL_SELECT.ICD_Kinds());
 		}
 		

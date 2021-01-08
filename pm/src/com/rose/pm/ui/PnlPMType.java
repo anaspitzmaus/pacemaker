@@ -20,7 +20,6 @@ import javax.swing.table.TableCellRenderer;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
-import com.rose.pm.ui.CtrlPnlPMType.DeleteListener;
 
 import net.miginfocom.swing.MigLayout;
 

@@ -10,8 +10,9 @@ import javax.swing.JOptionPane;
 
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
-import com.rose.pm.material.ElectrodeModel;
-import com.rose.pm.material.ICD_Model;
+import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.material.ICD;
+import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM;
 
@@ -172,7 +173,7 @@ public class SQL_UPDATE {
 		
 	}
 
-	public static Boolean electrodeModel(ElectrodeModel electrodeModel) {
+	public static Boolean electrodeModel(ElectrodeType electrodeModel) {
 		stmt = DB.getStatement();
 		Integer mri = 0;
 		if(electrodeModel.getMri()){
@@ -206,9 +207,9 @@ public class SQL_UPDATE {
 	 * @param electrodeModel
 	 * @return
 	 */
-	public static Boolean deleteElectrodeModel(ElectrodeModel electrodeModel) {
+	public static Boolean deleteElectrodeModel(ElectrodeType electrodeModel) {
 		stmt = DB.getStatement();
-		if(electrodeModel instanceof ElectrodeModel) {
+		if(electrodeModel instanceof ElectrodeType) {
 			try {
 				stmt.executeUpdate("DELETE FROM electrode_type WHERE idelectrode_type = " + electrodeModel.getId() + " LIMIT 1");
 				return true;
@@ -282,7 +283,7 @@ public class SQL_UPDATE {
 	public static Boolean deleteAggregatModel(AggregateType model) {
 		stmt = DB.getStatement();
 		if(model instanceof AggregateType && model.getId() != null) {
-			if(model instanceof ICD_Model) {
+			if(model instanceof ICD_Type) {
 				try {
 					stmt.executeUpdate("DELETE FROM icd_type WHERE idicd_type = " + model.getId() + " LIMIT 1");
 					return true;
@@ -306,9 +307,38 @@ public class SQL_UPDATE {
 		}
 		
 	}
+	
+	/**
+	 * delete an aggregate
+	 * @param aggregate
+	 * @return true if the aggregate could be deleted, false if not
+	 */
 
-	public static boolean deleteAggregate(PM aggregatSelected) {
-		// TODO Auto-generated method stub
-		return false;
+	public static boolean deleteAggregate(PM aggregate) {
+		stmt = DB.getStatement();
+		if(aggregate instanceof PM) {
+			if(aggregate instanceof ICD) {
+				try {
+					stmt.executeUpdate("DELETE FROM icd WHERE id_icd = " + aggregate.getId() + " LIMIT 1");
+					return true;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+			}else {
+				try {
+					stmt.executeUpdate("DELETE FROM pm_implant WHERE id_pm_implant = " + aggregate.getId() + " LIMIT 1");
+					return true;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}		
+			}
+		}else {
+			return false;
+		}
+		
 	}
 }

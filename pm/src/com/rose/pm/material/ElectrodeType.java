@@ -1,6 +1,6 @@
 package com.rose.pm.material;
 
-public class ElectrodeModel extends Material{
+public class ElectrodeType extends Material{
 
 	Integer id;
 	Integer length;
@@ -70,7 +70,7 @@ public class ElectrodeModel extends Material{
 
 
 
-	public ElectrodeModel(String notation) {
+	public ElectrodeType(String notation) {
 		super(notation);
 		// TODO Auto-generated constructor stub
 	}

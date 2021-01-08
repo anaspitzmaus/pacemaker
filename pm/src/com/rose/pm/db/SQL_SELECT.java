@@ -11,8 +11,9 @@ import javax.swing.JOptionPane;
 
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
-import com.rose.pm.material.ElectrodeModel;
-import com.rose.pm.material.ICD_Model;
+import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.material.ICD;
+import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM;
 
@@ -508,10 +509,10 @@ public class SQL_SELECT {
 	 * select all types of icds
 	 * @return an arraylist with the types of icds
 	 */
-	public static ArrayList<ICD_Model>ICD_Kinds(){
+	public static ArrayList<ICD_Type>ICD_Kinds(){
 		stmt = DB.getStatement();
-		ArrayList<ICD_Model> icdKinds;
-		icdKinds = new ArrayList<ICD_Model>();
+		ArrayList<ICD_Type> icdKinds;
+		icdKinds = new ArrayList<ICD_Type>();
 		try {
 			rs = stmt.executeQuery(
 					 "SELECT idicd_type, icd_type.notation AS icdNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice "
@@ -521,7 +522,7 @@ public class SQL_SELECT {
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
-					ICD_Model icd = new ICD_Model(rs.getString("icdNotation"));
+					ICD_Type icd = new ICD_Type(rs.getString("icdNotation"));
 					icd.setId(rs.getInt("idicd_type"));					
 					icd.setRa(rs.getBoolean("ra"));
 					icd.setRv(rs.getBoolean("rv"));
@@ -592,9 +593,56 @@ public class SQL_SELECT {
 		return pms;
 	}
 	
-	public static ArrayList<ElectrodeModel> electrodeModels(){
+	/**
+	 * select all icds of a specific icd type
+	 * @param type
+	 * @return the icds of a specific icd icd
+	 */
+	public static ArrayList<ICD> icd(ICD_Type type) {
 		stmt = DB.getStatement();
-		ArrayList<ElectrodeModel> models = new ArrayList<ElectrodeModel>();
+		ArrayList<ICD> icds;
+		icds = new ArrayList<ICD>();
+		try {
+			if(type instanceof ICD_Type) {//select icds of a selected model
+				rs = stmt.executeQuery(
+					 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, icd.notice "
+					+ "FROM icd "
+					+ "INNER JOIN icd_type "
+					+ "ON icd.icd_type = icd_type.idicd_type "
+					+ "WHERE icd.icd_type = " + type.getId() + "");
+			}else {//select all icds
+				rs = stmt.executeQuery(
+						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, notice "
+						+ "FROM icd ");
+			}
+			
+			if(rs.isBeforeFirst()){
+				while(rs.next()) {
+					ICD icd = new ICD(type);
+					icd.setId(rs.getInt("id_icd"));
+					icd.setSerialNr(rs.getString("serialNr"));					
+					icd.setExpireDate(rs.getDate("expiry").toLocalDate());
+					icd.setNotice(rs.getString("notice"));
+					
+					//create and add an examination
+//					if(rs.getObject("id_exam") != null) {
+//						PM_Implant exam = new PM_Implant();
+//						System.out.println(rs.getObject("id_exam"));
+//						exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
+//						pm.setExam(exam);
+//					}					
+					icds.add(icd);
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
+		return icds;
+	}
+	
+	public static ArrayList<ElectrodeType> electrodeModels(){
+		stmt = DB.getStatement();
+		ArrayList<ElectrodeType> models = new ArrayList<ElectrodeType>();
 		try {
 			rs = stmt.executeQuery(
 					"SELECT idelectrode_type, electrode_type.id_manufacturer, length, electrode_type.notation AS electrodeNotation, notice, mri, fixmode, manufacturer.notation AS manufacturerNotation "
@@ -604,7 +652,7 @@ public class SQL_SELECT {
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
-					ElectrodeModel model = new ElectrodeModel(rs.getString("electrodeNotation"));
+					ElectrodeType model = new ElectrodeType(rs.getString("electrodeNotation"));
 					model.setId(rs.getInt("idelectrode_type"));					
 					model.setLength(rs.getInt("length"));
 					model.setFixMode(rs.getString("fixmode"));
@@ -638,7 +686,7 @@ public class SQL_SELECT {
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
-					ElectrodeModel model = new ElectrodeModel(rs.getString("notation"));
+					ElectrodeType model = new ElectrodeType(rs.getString("notation"));
 					model.setId(rs.getInt("modelId"));
 					Electrode electrode = new Electrode(model);
 					electrode.setId(rs.getInt("electrodeId"));					
@@ -657,7 +705,7 @@ public class SQL_SELECT {
 		return electrodes;
 	}
 
-	public static ArrayList<Electrode> electrodes(ElectrodeModel type) {
+	public static ArrayList<Electrode> electrodes(ElectrodeType type) {
 		stmt = DB.getStatement();
 		ArrayList<Electrode> electrodes = new ArrayList<Electrode>();
 		try {
@@ -670,7 +718,7 @@ public class SQL_SELECT {
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
-					ElectrodeModel model = new ElectrodeModel(rs.getString("notation"));
+					ElectrodeType model = new ElectrodeType(rs.getString("notation"));
 					model.setId(rs.getInt("modelId"));
 					Electrode electrode = new Electrode(model);
 					electrode.setId(rs.getInt("electrodeId"));					

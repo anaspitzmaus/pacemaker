@@ -7,7 +7,7 @@ public class Electrode{
 	
 	Integer resistance;
 	String serialNr;
-	ElectrodeModel electrodeModel;
+	ElectrodeType electrodeModel;
 	LocalDate expireDate; 
 	String notice;
 //	Examination exam;
@@ -74,17 +74,17 @@ public class Electrode{
 	}
 
 
-	public ElectrodeModel getElectrodeModel() {
+	public ElectrodeType getElectrodeModel() {
 		return electrodeModel;
 	}
 
 
-	protected void setElectrodeModel(ElectrodeModel electrodeModel) {
+	protected void setElectrodeModel(ElectrodeType electrodeModel) {
 		this.electrodeModel = electrodeModel;
 	}
 
 
-	public Electrode(ElectrodeModel electrodeModel) {
+	public Electrode(ElectrodeType electrodeModel) {
 		this.electrodeModel = electrodeModel;
 	}
 

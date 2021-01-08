@@ -1,10 +1,10 @@
 package com.rose.pm.material;
 
-public class ICD_Model extends AggregateType{
+public class ICD_Type extends AggregateType{
 
 	Boolean atp = false;
 	
-	public ICD_Model(String notation) {
+	public ICD_Type(String notation) {
 		super(notation);
 		// TODO Auto-generated constructor stub
 	}

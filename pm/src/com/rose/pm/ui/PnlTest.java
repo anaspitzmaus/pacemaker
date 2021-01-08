@@ -1,9 +1,10 @@
 package com.rose.pm.ui;
 
-import javax.swing.JPanel;
-import net.miginfocom.swing.MigLayout;
 import javax.swing.JComboBox;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import net.miginfocom.swing.MigLayout;
 
 public class PnlTest extends JPanel {
 	private JTextField textField;

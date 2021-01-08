@@ -14,6 +14,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
@@ -45,23 +46,19 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	TblStringRenderer tblStringRenderer;
 	TblDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
+	DeleteListener deleteListener;
 	
 	
 	
 	
 	public CtrlPnlPM() {
-		panel = new PnlPM();
-		panel.setName("Schrittmacher");
-		((PnlPM)panel).setLblAggregatTypeText("Schrittmachermodel:");
-		((PnlPM)panel).setLblSerialNrText("Seriennummer:");
-		((PnlPM)panel).setLblNoticeText("Bemerkung:");
-		((PnlPM)panel).setBtnCreateText("Einfügen");
-		((PnlPM)panel).setBtnDeleteText("Löschen");
-		((PnlPM)panel).setBtnShowAllText("Alle Modelle");
+		createPanel();
+		setComponentLabeling();
 		
 		ctrlPnlSetDate = new Ctrl_PnlSetDate("dd.MM.yyyy", LocalDate.now(), LocalDate.now());
 		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
 		((PnlPM)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
+		setStandardListener();
 		setListener();
 		setModel();
 		setRenderer();
@@ -69,23 +66,45 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		((PnlPM)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	
-	private void setListener() {
+	protected void createPanel() {
+		panel = new PnlPM();
+		panel.setName("Schrittmacher");
+	}
+	
+	protected void setComponentLabeling() {
+		((PnlPM)panel).setLblAggregatTypeText("Schrittmachermodel:");
+		((PnlPM)panel).setLblSerialNrText("Seriennummer:");
+		((PnlPM)panel).setLblNoticeText("Bemerkung:");
+		((PnlPM)panel).setBtnCreateText("Einfügen");
+		((PnlPM)panel).setBtnDeleteText("Löschen");
+		((PnlPM)panel).setBtnShowAllText("Alle Modelle");
+	}
+	
+	private void setStandardListener() {
 		listener = new Listener();
 		serialNrListener = listener.new NotationListener();
 		((PnlPM)panel).addSerialNrListener(serialNrListener);
 		noticeListener = listener.new NotationListener();
-		((PnlPM)panel).addNoticeListener(noticeListener);
-		aggregateTypeListener = new AggregateTypeListener();
-		((PnlPM)panel).addAggregateTypeListener(aggregateTypeListener);	
-		createListener = new CreateListener();
-		((PnlPM)panel).addCreateListener(createListener);
-		showAllListener = new ShowAllListener();
-		((PnlPM)panel).addShowAllListener(showAllListener);
+		((PnlPM)panel).addNoticeListener(noticeListener);		
 		tblRowSelectionListener = new TblRowSelectionListener();
 		((PnlPM)panel).addTblRowSelectionListener(tblRowSelectionListener);
+		deleteListener = new DeleteListener();
+		((PnlPM)panel).addDeleteListener(deleteListener);
 	}
 	
-	private void setModel() {
+	/**
+	 * overridable Listeners
+	 */
+	protected void setListener() {
+		createListener = new CreateListener();
+		((PnlPM)panel).addCreateListener(createListener);
+		aggregateTypeListener = new AggregateTypeListener();
+		((PnlPM)panel).addAggregateTypeListener(aggregateTypeListener);	
+		showAllListener = new ShowAllListener();
+		((PnlPM)panel).addShowAllListener(showAllListener);
+	}
+	
+	 void setModel() {
 		ArrayList<AggregateType> aggregateTypes = SQL_SELECT.pacemakerKinds();
 		AggregateType[] arr = new AggregateType[aggregateTypes.size()]; 		  
         // ArrayList to Array Conversion 
@@ -123,12 +142,13 @@ public class CtrlPnlPM extends CtrlPnlBase{
 					model = null;
 				}				
 		    }
-			aggregateTblModel.setAggregats(SQL_SELECT.pacemakers(model));			
-			aggregateTblModel.fireTableDataChanged();
-			
-			
+			updateTblModel();		
 		}
 		
+		protected void updateTblModel() {
+			aggregateTblModel.setAggregats(SQL_SELECT.pacemakers(model));			
+			aggregateTblModel.fireTableDataChanged();
+		}		
 	}
 	
 	class AggregateTypeRenderer extends JLabel implements ListCellRenderer<AggregateType>{
@@ -158,92 +178,30 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		
 	}
 	
-	/**
-	 * model for the comboBox that displays the types of aggregate
-	 * @author Ekkehard Rose
-	 *
-	 */
-//	class AggregateTypeModel implements ComboBoxModel<AggregateType>{
-//
-//		
-//		int indexSel;
-//		ArrayList<AggregateType> aggTypes;
-//		
-//		public AggregateTypeModel() {	
-//			
-//			aggTypes = SQL_SELECT.pacemakerKinds();
-//			
-//		}
-//		
-//		@Override
-//		public AggregateType getElementAt(int i) {			
-//			return aggTypes.get(i);
-//		}
-//		
-//		@Override
-//		public int getSize() {
-//			
-//			return aggTypes.size();
-//		}
-//		@Override
-//		public Object getSelectedItem() {
-//			
-//			if (indexSel >= 0) {
-//				return aggTypes.get(indexSel);
-//			}else {
-//				return "";
-//			}
-//		}
-//		@Override
-//		public void setSelectedItem(Object anItem) {
-//			if(anItem instanceof AggregateType) {
-//				for(int i = 0; i<aggTypes.size(); i++) {
-//					if(anItem.equals(aggTypes.get(i))) {
-//						indexSel = i;
-//						break;
-//					}
-//				}
-//			}
-//			
-//		}
-//		
-//			
-//		
-//		
-//		public ArrayList<AggregateType> getAggregatTypes(){
-//			return this.aggTypes;
-//		}
-//
-//		@Override
-//		public void addListDataListener(ListDataListener l) {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//
-//		@Override
-//		public void removeListDataListener(ListDataListener l) {
-//			// TODO Auto-generated method stub
-//			
-//		}	
-//		
-//	}
+	
 	
 	class CreateListener implements ActionListener{
-
+		PM pm;
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if(serialNrListener.getNotation() != "" && aggregateTypeModel.getSelectedItem() instanceof AggregateType) {
-				PM pm = new PM((AggregateType) aggregateTypeModel.getSelectedItem());
+				initiateAggregate();
 				pm.setExpireDate(ctrlPnlSetDate.getDate());
 				pm.setSerialNr(serialNrListener.getNotation());
 				pm.setNotice(noticeListener.getNotation());
-				SQL_INSERT.pacemaker(pm);	
-					
-				aggregateTblModel.setAggregats(SQL_SELECT.pacemakers((AggregateType) aggregateTypeModel.getSelectedItem()));
-				
-				aggregateTblModel.fireTableDataChanged();
+				updateDBAndTblModel();
 				
 			}
+		}
+		
+		protected void initiateAggregate() {
+			pm = new PM((AggregateType) aggregateTypeModel.getSelectedItem());
+		}
+		
+		protected void updateDBAndTblModel() {
+			SQL_INSERT.pacemaker(pm);				
+			aggregateTblModel.setAggregats(SQL_SELECT.pacemakers((AggregateType) aggregateTypeModel.getSelectedItem()));
+			aggregateTblModel.fireTableDataChanged();
 		}
 		
 	}
@@ -321,6 +279,10 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			((PnlPM)panel).setAggregateTypeSelectionIndex(-1);
+			update();
+		}
+		
+		protected void update() {
 			aggregateTblModel.setAggregats(SQL_SELECT.pacemakers(null));			
 			aggregateTblModel.fireTableDataChanged();
 		}
@@ -426,13 +388,15 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(tblRowSelectionListener.getAggregatSelected() instanceof PM) {
-				if(SQL_UPDATE.deleteAggregate(tblRowSelectionListener.getAggregatSelected())){
-					aggregateTblModel.aggregates.remove(tblRowSelectionListener.getAggregatSelected());
-					aggregateTblModel.fireTableDataChanged();
+				if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
+					if(SQL_UPDATE.deleteAggregate(tblRowSelectionListener.getAggregatSelected())){
+						aggregateTblModel.aggregates.remove(tblRowSelectionListener.getAggregatSelected());
+						aggregateTblModel.fireTableDataChanged();
+					}
 				}
-			}
 			
-		}
+			}
 		
+		}
 	}
 }

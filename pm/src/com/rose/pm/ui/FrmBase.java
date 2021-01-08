@@ -1,16 +1,12 @@
 package com.rose.pm.ui;
 
 import java.awt.BorderLayout;
-
+import java.awt.Font;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
-import javax.swing.JMenuBar;
-import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.JButton;
+import javax.swing.border.EmptyBorder;
 
 
 public class FrmBase extends JFrame {

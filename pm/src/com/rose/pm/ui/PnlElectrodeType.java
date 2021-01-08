@@ -23,9 +23,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import com.rose.pm.material.ElectrodeModel;
+import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
-import com.rose.pm.ui.CtrlPnlElectrodeType.DeleteListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -200,7 +199,7 @@ public class PnlElectrodeType extends PnlBase {
 		
 	}
 	
-	protected void setTableEMTypeRenderer(Class<ElectrodeModel> colclass, TableCellRenderer renderer) {
+	protected void setTableEMTypeRenderer(Class<ElectrodeType> colclass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(colclass, renderer);
 		
 	}
@@ -209,7 +208,7 @@ public class PnlElectrodeType extends PnlBase {
 		table.setDefaultRenderer(colclass, renderer);
 	}
 
-	protected void setTableIDRenderer(Class<ElectrodeModel> idClass, TableCellRenderer renderer) {
+	protected void setTableIDRenderer(Class<ElectrodeType> idClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(idClass, renderer);
 	}
 	
@@ -240,8 +239,8 @@ public class PnlElectrodeType extends PnlBase {
 		return table.getSelectedRow();
 	}
 
-	protected ElectrodeModel getTableValueAt(int row, int column) {
-		return (ElectrodeModel) table.getValueAt(row, column);
+	protected ElectrodeType getTableValueAt(int row, int column) {
+		return (ElectrodeType) table.getValueAt(row, column);
 	}
 
 	protected void addTblRowSelectionListener(ListSelectionListener listener) {

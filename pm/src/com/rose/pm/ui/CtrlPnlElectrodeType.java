@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 import javax.swing.AbstractButton;
@@ -29,8 +27,7 @@ import javax.swing.table.TableCellRenderer;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.AggregateType;
-import com.rose.pm.material.ElectrodeModel;
+import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
 import com.rose.pm.ui.Listener.ManufacturerListener;
@@ -61,7 +58,9 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	
 	public CtrlPnlElectrodeType() {
 		panel = new PnlElectrodeType();
-		panel.setName("Elektrodentyp");
+		panel.setName("Elektrodenmodel");
+		panel.setOpaque(false);
+		panel.setBackground(Color.BLUE);
 		setListener();
 		setModel();
 		setRenderer();
@@ -114,7 +113,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		tblElectrodeModelBooleanRenderer = new TblElectrodeModelBooleanRenderer();
 		((PnlElectrodeType)panel).setTableBooleanRenderer(Boolean.class, tblElectrodeModelBooleanRenderer);
 		tblElectrodeModelEMRenderer = new TblElectrodeModelEMRenderer();
-		((PnlElectrodeType)panel).setTableEMTypeRenderer(ElectrodeModel.class, tblElectrodeModelEMRenderer);
+		((PnlElectrodeType)panel).setTableEMTypeRenderer(ElectrodeType.class, tblElectrodeModelEMRenderer);
 //		tblElectrodeModelIDRenderer = new TblElectrodeModelIDRenderer();
 //		((PnlElectrodeType)panel).setTableIDRenderer(ElectrodeModel.class, tblElectrodeModelIDRenderer);
 		tblLengthRenderer = new TblIntegerRenderer();
@@ -300,20 +299,20 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 			 */
 			private static final long serialVersionUID = -5397061877255389159L;
 			protected ArrayList<String> columnNames;
-			ArrayList<ElectrodeModel> electrodeModels;
+			ArrayList<ElectrodeType> electrodeModels;
 			PM_Kind type;
 			
 			
 			
-			protected void setElectrodeModels(ArrayList<ElectrodeModel> electrodeModels) {
+			protected void setElectrodeModels(ArrayList<ElectrodeType> electrodeModels) {
 				this.electrodeModels = electrodeModels;
 			}
 			
-			protected ArrayList<ElectrodeModel> getElectrodeModels(){
+			protected ArrayList<ElectrodeType> getElectrodeModels(){
 				return this.electrodeModels;
 			}
 	
-			public TblElectrodesModel(ArrayList<ElectrodeModel> electrodeModels) {
+			public TblElectrodesModel(ArrayList<ElectrodeType> electrodeModels) {
 				this.electrodeModels = electrodeModels;
 				columnNames = new ArrayList<String>();
 				columnNames.add("Id");
@@ -387,7 +386,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
 				int column) {
-			Integer id = ((ElectrodeModel) value).getId();
+			Integer id = ((ElectrodeType) value).getId();
 			setText(id.toString());
 			if(isSelected) {
 				setBackground(Color.ORANGE);
@@ -512,7 +511,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if(notationListener.getNotation() != "" && manufacturerModel.getSelectedItem() instanceof Manufacturer) {
-				ElectrodeModel model = new ElectrodeModel(notationListener.getNotation());
+				ElectrodeType model = new ElectrodeType(notationListener.getNotation());
 				model.setManufacturer((Manufacturer) manufacturerModel.getSelectedItem());
 				model.setFixMode(fixModeListener.getFixMode());
 				model.setLength(lengthListener.getLength());
@@ -529,16 +528,16 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	}
 	
 	class TblRowSelectionListener implements ListSelectionListener{
-		ElectrodeModel elModel;
+		ElectrodeType elModel;
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
 			if (((PnlElectrodeType)panel).getSelectedTblRow() > -1) {			
 				int row = ((PnlElectrodeType)panel).getSelectedTblRow();
-	            elModel = (ElectrodeModel) ((PnlElectrodeType)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
+	            elModel = (ElectrodeType) ((PnlElectrodeType)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
 	        }			
 		}
 		
-		protected ElectrodeModel getElectrodeModelSelected() {
+		protected ElectrodeType getElectrodeModelSelected() {
 			return elModel;
 		}		
 	}
@@ -547,7 +546,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(tblRowSelectionListener.getElectrodeModelSelected() instanceof ElectrodeModel) {
+			if(tblRowSelectionListener.getElectrodeModelSelected() instanceof ElectrodeType) {
 				if(SQL_UPDATE.deleteElectrodeModel(tblRowSelectionListener.getElectrodeModelSelected())){
 					tblElectrodesModel.electrodeModels.remove(tblRowSelectionListener.getElectrodeModelSelected());
 					tblElectrodesModel.fireTableDataChanged();

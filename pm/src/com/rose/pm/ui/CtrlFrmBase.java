@@ -7,6 +7,7 @@ public class CtrlFrmBase {
 	CtrlPnlPMType ctrlPnlPMType;
 	CtrlPnlPM ctrlPnlPM;
 	CtrlPnlICDType ctrlPnlICDType;
+	CtrlPnlICD ctrlPnlICD;
 	
 	CtrlMenuBar ctrlMenuBar;
 	
@@ -22,6 +23,7 @@ public class CtrlFrmBase {
 		frame.getTabbedPane().add(ctrlPnlPMType.getPanel().getName(), ctrlPnlPMType.getPanel());
 		frame.getTabbedPane().add(ctrlPnlPM.getPanel().getName(), ctrlPnlPM.getPanel());
 		frame.getTabbedPane().add(ctrlPnlICDType.getPanel().getName(), ctrlPnlICDType.getPanel());
+		frame.getTabbedPane().add(ctrlPnlICD.getPanel().getName(), ctrlPnlICD.getPanel());
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
 	}
 	
@@ -31,6 +33,7 @@ public class CtrlFrmBase {
 		ctrlPnlPMType = new CtrlPnlPMType();
 		ctrlPnlPM = new CtrlPnlPM();
 		ctrlPnlICDType = new CtrlPnlICDType();
+		ctrlPnlICD = new CtrlPnlICD();
 		ctrlMenuBar = new CtrlMenuBar();
 	}
 	

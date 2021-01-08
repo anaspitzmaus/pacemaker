@@ -18,14 +18,11 @@ import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.text.BadLocationException;
 
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
@@ -84,7 +81,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	
 	protected void createPanel() {
 		panel = new PnlPMType();
-		panel.setName("Schrittmachertyp");
+		panel.setName("Schrittmachermodel");
 	}
 	
 	protected void setModel() {
