@@ -23,12 +23,14 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.Ctrl_PnlSetDate;
+import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.PM;
-
+import com.rose.pm.ui.CtrlPnlPM.CreateListener;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblDateRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
@@ -43,12 +45,13 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	ElectrodeTypeRenderer electrodeTypeRenderer;
 	Listener listener;
 	Renderer renderer;
-	NotationListener notationListener;
+	NotationListener serialNrListener, noticeListener;
 	TblDateRenderer tblDateRenderer;
 	TblStringRenderer tblStringRenderer;
 	TblElectrodeIDRenderer electrodeRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
-	
+	ShowAllListener showAllListener;
+	CreateListener createListener;
 	
 	public CtrlPnlElectrode() {
 		createPanel();
@@ -95,11 +98,16 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 electrodeTypeListener = new ElectrodeTypeListener();
 		 ((PnlElectrode)panel).addElectrodeTypeListener(electrodeTypeListener);	
 		 listener = new Listener();
-		 notationListener = listener.new NotationListener();
-		 ((PnlElectrode)panel).addSerialNrListener(notationListener);
+		 serialNrListener = listener.new NotationListener();
+		 ((PnlElectrode)panel).addSerialNrListener(serialNrListener);
+		 noticeListener = listener.new NotationListener();
+		 ((PnlElectrode)panel).addNoticeListener(noticeListener);
 		 tblRowSelectionListener = new TblRowSelectionListener();
 		 ((PnlElectrode)panel).addTblRowSelectionListener(tblRowSelectionListener);
-		 
+		 showAllListener = new ShowAllListener();
+		 ((PnlElectrode)panel).addShowAllListener(showAllListener);
+		 createListener = new CreateListener();
+		 ((PnlElectrode)panel).addCreateListener(createListener);
 	 }
 	 
 	 private void setRenderer() {
@@ -234,61 +242,102 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	 class TblElectrodeIDRenderer extends JLabel implements TableCellRenderer{
 
 			
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = -7687161924946698926L;
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7687161924946698926L;
 
-			public TblElectrodeIDRenderer() {
-				super.setOpaque(true);
+		public TblElectrodeIDRenderer() {
+			super.setOpaque(true);
+		}
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+			Integer id = ((Electrode)value).getId();
+			setText(id.toString());
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
 			}
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-					int column) {
-				Integer id = ((Electrode)value).getId();
-				setText(id.toString());
-				if(isSelected) {
-					setBackground(Color.ORANGE);
-				}else {
-					setBackground(row%2==0 ? Color.white : Color.lightGray);   
-				}
-				return this;
-			}
-			
+			return this;
 		}
 		
-	 
-		
-		class TblRowSelectionListener implements ListSelectionListener{
-			Electrode electrode;
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				if (((PnlElectrode)panel).getSelectedTblRow() > -1) {			
-					int row = ((PnlElectrode)panel).getSelectedTblRow();
-		            electrode = (Electrode) ((PnlElectrode)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
-		        }			
-			}
-			
-			protected Electrode getElectrodeSelected() {
-				return electrode;
-			}		
+	}
+	
+ 
+	
+	class TblRowSelectionListener implements ListSelectionListener{
+		Electrode electrode;
+		@Override
+		public void valueChanged(ListSelectionEvent arg0) {
+			if (((PnlElectrode)panel).getSelectedTblRow() > -1) {			
+				int row = ((PnlElectrode)panel).getSelectedTblRow();
+	            electrode = (Electrode) ((PnlElectrode)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
+	        }			
 		}
 		
-		class DeleteListener implements ActionListener{
+		protected Electrode getElectrodeSelected() {
+			return electrode;
+		}		
+	}
+		
+	class DeleteListener implements ActionListener{
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(tblRowSelectionListener.getElectrodeSelected() instanceof Electrode) {
-					if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
-						if(SQL_UPDATE.deleteElectrode(tblRowSelectionListener.getElectrodeSelected())){
-							electrodeTblModel.electrodes.remove(tblRowSelectionListener.getElectrodeSelected());
-							electrodeTblModel.fireTableDataChanged();
-						}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(tblRowSelectionListener.getElectrodeSelected() instanceof Electrode) {
+				if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
+					if(SQL_UPDATE.deleteElectrode(tblRowSelectionListener.getElectrodeSelected())){
+						electrodeTblModel.electrodes.remove(tblRowSelectionListener.getElectrodeSelected());
+						electrodeTblModel.fireTableDataChanged();
 					}
-				
 				}
 			
 			}
+		
 		}
+	}
+	
+	class ShowAllListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			((PnlElectrode)panel).setElectrodeTypeSelectionIndex(-1);
+			update();
+		}
+		
+		protected void update() {
+			electrodeTblModel.setElectrodes(SQL_SELECT.electrodes(null));			
+			electrodeTblModel.fireTableDataChanged();
+		}
+		
+	}
+	
+	class CreateListener implements ActionListener{
+		Electrode electrode;
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			if(serialNrListener.getNotation() != "" && electrodeTypeModel.getSelectedItem() instanceof AggregateType) {
+				initiateAggregate();
+				electrode.setExpireDate(ctrlPnlSetDate.getDate());
+				electrode.setSerialNr(serialNrListener.getNotation());
+				electrode.setNotice(noticeListener.getNotation());
+				updateDBAndTblModel();
+				
+			}
+		}
+		
+		protected void initiateAggregate() {
+			electrode = new Electrode((ElectrodeType) electrodeTypeModel.getSelectedItem());
+		}
+		
+		protected void updateDBAndTblModel() {
+			SQL_INSERT.electrode(electrode);				
+			electrodeTblModel.setElectrodes(SQL_SELECT.electrodes((ElectrodeType) electrodeTypeModel.getSelectedItem()));
+			electrodeTblModel.fireTableDataChanged();
+		}
+		
+	}
 	
 }
