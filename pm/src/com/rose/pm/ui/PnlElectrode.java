@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.time.LocalDate;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
@@ -11,12 +12,14 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.Pnl_SetDate;
-
+import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
-import com.rose.pm.ui.CtrlPnlElectrode.ElectrodeTypeRenderer;
+import com.rose.pm.material.PM;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -148,6 +151,33 @@ public class PnlElectrode extends PnlBase {
 		btnShowAll.addActionListener(l);
 	}
 
+	protected void setElectrodeRenderer(Class<Electrode> elclass, TableCellRenderer r) {
+		table.setDefaultRenderer(elclass, r);
+	}
 	
+	protected void setStringRenderer(Class<String> stringClass, TableCellRenderer r) {
+		table.setDefaultRenderer(stringClass, r);
+	}
+	
+	protected void setDateRenderer(Class<LocalDate> dateClass, TableCellRenderer r) {
+		table.setDefaultRenderer(dateClass, r);
+}
+
+	protected void setTblSelectionMode(int selectionMode) {
+		table.setSelectionMode(selectionMode);		
+	}
+	
+	protected void addTblRowSelectionListener(ListSelectionListener listener) {
+		table.getSelectionModel().addListSelectionListener(listener);		
+	}
+	
+	protected int getSelectedTblRow() {		
+		return table.getSelectedRow();
+	}
+	
+	protected Electrode getTableValueAt(int row, int column) {
+		return (Electrode) table.getValueAt(row, column);
+	}
+
 
 }

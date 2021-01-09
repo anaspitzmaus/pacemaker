@@ -233,7 +233,7 @@ public class SQL_UPDATE {
 		stmt = DB.getStatement();
 		if(electrode instanceof Electrode) {
 			try {
-				stmt.executeUpdate("DELETE FROM electrode_implant WHERE idelectrode_implant = " + electrode.getId() + " LIMIT 1");
+				stmt.executeUpdate("DELETE FROM electrode WHERE idelectrode = " + electrode.getId() + " LIMIT 1");
 				return true;
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

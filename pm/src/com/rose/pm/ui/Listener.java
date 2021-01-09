@@ -1,10 +1,15 @@
 package com.rose.pm.ui;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.text.BadLocationException;
 
 import com.rose.pm.material.Manufacturer;
@@ -71,4 +76,6 @@ public class Listener {
 			
 		}
 	}
+	
+	
 }
