@@ -16,6 +16,7 @@ import javax.swing.table.AbstractTableModel;
 import com.rose.pm.Pnl_SetDate;
 
 import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.ui.CtrlPnlElectrode.ElectrodeTypeRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -146,5 +147,7 @@ public class PnlElectrode extends PnlBase {
 	protected void addShowAllListener(ActionListener l) {
 		btnShowAll.addActionListener(l);
 	}
+
+	
 
 }

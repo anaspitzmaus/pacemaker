@@ -15,7 +15,7 @@ import javax.swing.table.AbstractTableModel;
 
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_SELECT;
-import com.rose.pm.material.AggregateType;
+
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 
@@ -26,6 +26,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	ComboBoxModel<ElectrodeType> electrodeTypeModel;
 	ElectrodeTblModel electrodeTblModel;
 	ElectrodeTypeListener electrodeTypeListener;
+	ElectrodeTypeRenderer electrodeTypeRenderer;
 	
 	public CtrlPnlElectrode() {
 		createPanel();
@@ -40,6 +41,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		panel.setName("Elektroden");
 		setListener();
 		setModel();
+		setRenderer();
 		
 	}
 	
@@ -69,6 +71,11 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	 private void setListener() {
 		 electrodeTypeListener = new ElectrodeTypeListener();
 		 ((PnlElectrode)panel).addElectrodeTypeListener(electrodeTypeListener);		
+	 }
+	 
+	 private void setRenderer() {
+		 electrodeTypeRenderer = new ElectrodeTypeRenderer();
+		 ((PnlElectrode)panel).setElectrodeTypeRenderer(electrodeTypeRenderer);
 	 }
 
 	 class ElectrodeTblModel extends AbstractTableModel{
