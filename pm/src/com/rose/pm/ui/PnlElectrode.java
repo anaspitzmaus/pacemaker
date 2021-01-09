@@ -134,7 +134,7 @@ public class PnlElectrode extends PnlBase {
 		btnDelete.addActionListener(l);
 	}
 
-	protected void setAggregateTblModel(AbstractTableModel aggregateTblModel) {
+	protected void setElectrodeTblModel(AbstractTableModel aggregateTblModel) {
 		table.setModel(aggregateTblModel);
 		
 	}

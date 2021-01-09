@@ -674,48 +674,32 @@ public class SQL_SELECT {
 	}
 
 	
-	public static ArrayList<Electrode> electrodes() {
-		stmt = DB.getStatement();
-		ArrayList<Electrode> electrodes = new ArrayList<Electrode>();
-		try {
-			rs = stmt.executeQuery(
-					"SELECT idelectrode_implant AS electrodeId, serialNr, electrode_implant.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId "
-					+ "FROM electrode_implant "
-					+ "INNER JOIN electrode_type "
-					+ "ON electrode_type.idelectrode_type = electrode_implant.id_electrode_type");
-			
-			if(rs.isBeforeFirst()){
-				while(rs.next()) {
-					ElectrodeType model = new ElectrodeType(rs.getString("notation"));
-					model.setId(rs.getInt("modelId"));
-					Electrode electrode = new Electrode(model);
-					electrode.setId(rs.getInt("electrodeId"));					
-					electrode.setNotice(rs.getString("notice"));
-					electrode.setSerialNr(rs.getString("serialNr"));
-					electrode.setExpireDate(rs.getDate("expire").toLocalDate());
-					
-					electrodes.add(electrode);
-				}
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return electrodes;
-	}
-
+	
+	/**
+	 * select electrodes depending on its type they belong to
+	 * 
+	 * @param type
+	 * @return an ArrayList<Electrode> that contains the electrodes of the specific type
+	 * if no type is known, all electrodes are returned
+	 */
 	public static ArrayList<Electrode> electrodes(ElectrodeType type) {
 		stmt = DB.getStatement();
 		ArrayList<Electrode> electrodes = new ArrayList<Electrode>();
 		try {
-			rs = stmt.executeQuery(
-					"SELECT idelectrode_implant AS electrodeId, serialNr, electrode_implant.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId "
-					+ "FROM electrode_implant "
-					+ "INNER JOIN electrode_type "
-					+ "ON electrode_type.idelectrode_type = electrode_implant.id_electrode_type "
-					+ "WHERE id_electrode_type = " + type.getId() + "");
-			
+			if(type instanceof ElectrodeType) {//if type of electrode is known
+				rs = stmt.executeQuery(
+						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId "
+						+ "FROM electrode "
+						+ "INNER JOIN electrode_type "
+						+ "ON electrode_type.idelectrode_type = electrode.id_electrode_type "
+						+ "WHERE id_electrode_type = " + type.getId() + "");
+			}else {//select all electrodes
+				rs = stmt.executeQuery(
+						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId "
+						+ "FROM electrode "
+						+ "INNER JOIN electrode_type "
+						+ "ON electrode_type.idelectrode_type = electrode.id_electrode_type");
+			}
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
 					ElectrodeType model = new ElectrodeType(rs.getString("notation"));
@@ -729,6 +713,7 @@ public class SQL_SELECT {
 					electrodes.add(electrode);
 				}
 			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
