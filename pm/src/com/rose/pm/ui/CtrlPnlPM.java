@@ -3,10 +3,13 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -28,6 +31,7 @@ import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.Electrode;
 import com.rose.pm.material.PM;
 import com.rose.pm.ui.Listener.NotationListener;
 
@@ -35,6 +39,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 
 	Ctrl_PnlSetDate ctrlPnlSetDate;
 	Listener listener;
+	Renderer renderer;
 	NotationListener serialNrListener, noticeListener;
 	ComboBoxModel<AggregateType> aggregateTypeModel;
 	AggregateTypeRenderer aggregateTypeRenderer;
@@ -44,10 +49,10 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	ShowAllListener showAllListener;
 	TblPMIDRenderer tblPMIDRenderer;
 	TblStringRenderer tblStringRenderer;
-	TblDateRenderer tblDateRenderer;
+	com.rose.pm.ui.Renderer.TblDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
-	
+	TblMouseAdaptor tblMouseAdaptor;
 	
 	
 	
@@ -102,6 +107,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		((PnlPM)panel).addAggregateTypeListener(aggregateTypeListener);	
 		showAllListener = new ShowAllListener();
 		((PnlPM)panel).addShowAllListener(showAllListener);
+		tblMouseAdaptor = new TblMouseAdaptor();
+		((PnlPM)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
 	 void setModel() {
@@ -119,13 +126,14 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	}
 	
 	private void setRenderer() {
+		renderer = new Renderer();
 		aggregateTypeRenderer = new AggregateTypeRenderer();
 		((PnlPM)panel).setAggregatTypeRenderer(aggregateTypeRenderer);
 		tblPMIDRenderer = new TblPMIDRenderer();
 		((PnlPM)panel).setPMIDRenderer(PM.class, tblPMIDRenderer);
 		tblStringRenderer = new TblStringRenderer();
 		((PnlPM)panel).setStringRenderer(String.class, tblStringRenderer);
-		tblDateRenderer = new TblDateRenderer();
+		tblDateRenderer = renderer.new TblDateRenderer();
 		((PnlPM)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 	}
 	
@@ -341,32 +349,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		
 	}
 	
-	class TblDateRenderer extends JLabel implements TableCellRenderer{
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 5861989547138095236L;
-
-		public TblDateRenderer() {
-			super.setOpaque(true);
-		}
-		
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			setText(value.toString());
-			if(isSelected) {
-				setBackground(Color.ORANGE);
-			}else {
-				setBackground(row%2==0 ? Color.white : Color.lightGray);   
-			}
-			return this;
-			
-			
-		}
-		
-	}
+	
 	
 	class TblRowSelectionListener implements ListSelectionListener{
 		PM pm;
@@ -398,5 +381,25 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			}
 		
 		}
+	}
+	
+	class TblMouseAdaptor extends MouseAdapter{
+		int row;
+		 @Override
+	    public void mouseClicked(MouseEvent mouseEvent){
+	        if(mouseEvent.getClickCount()==2){
+	        	 JTable table =(JTable) mouseEvent.getSource();
+	             Point point = mouseEvent.getPoint();
+	             row = table.rowAtPoint(point);
+	             if (table.getSelectedRow() != -1 && row >= 0) {
+	                initiateDialog();
+	             }
+	        }
+	    }
+		 
+		 protected void initiateDialog() {
+			 CtrlDlgChangePM ctrlDlgChangePM = new CtrlDlgChangePM((PM) aggregateTblModel.getValueAt(row, 0), aggregateTblModel);
+             ctrlDlgChangePM.getDialog().setVisible(true);
+		 }
 	}
 }

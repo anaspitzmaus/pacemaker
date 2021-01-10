@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseListener;
 import java.time.LocalDate;
 
 import javax.swing.ComboBoxModel;
@@ -19,7 +20,6 @@ import javax.swing.table.TableCellRenderer;
 import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
-import com.rose.pm.material.PM;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -33,6 +33,8 @@ public class PnlElectrode extends PnlBase {
 	JTextField txtSerialNr, txtNotice;
 	JComboBox<ElectrodeType> cbxElectrodeType;
 	JButton btnCreate, btnDelete, btnShowAll;
+	
+	
 	
 	protected void setLblSerialNrText(String txt) {
 		lblSerialNr.setText(txt);
@@ -102,6 +104,7 @@ public class PnlElectrode extends PnlBase {
 		btnDelete.setHorizontalAlignment(SwingConstants.RIGHT);
 		pnlSouth.add(btnDelete);
 
+		
 	}
 	
 	protected void integratePnlDate(Pnl_SetDate pnlDate) {
@@ -177,6 +180,11 @@ public class PnlElectrode extends PnlBase {
 	
 	protected Electrode getTableValueAt(int row, int column) {
 		return (Electrode) table.getValueAt(row, column);
+	}
+
+	protected void addTblMouseAdaptor(MouseListener mouseAdaptor) {
+		table.addMouseListener(mouseAdaptor);
+		
 	}
 
 

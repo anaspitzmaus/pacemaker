@@ -554,8 +554,8 @@ public class SQL_INSERT {
 		
 		try {
 			DB.getConnection().setAutoCommit(true);
-			stmt.executeUpdate("INSERT INTO electrode_implant (id_electrode_type, serialNr, notice, expire) "
-					+ "VALUES ('" + electrode.getElectrodeModel().getId() + "', '" 
+			stmt.executeUpdate("INSERT INTO electrode (id_electrode_type, serialNr, notice, expire) "
+					+ "VALUES ('" + electrode.getElectrodeType().getId() + "', '" 
 					+ electrode.getSerialNr() + "', '"
 					+ electrode.getNotice() + "', '"
 					+ Date.valueOf(electrode.getExpireDate()) + "')");

@@ -173,6 +173,34 @@ public class SQL_UPDATE {
 		
 	}
 
+	/**
+	 * update an icd
+	 * @param icd, the icd, that has to be updated
+	 * @return true if update was successful, else return false
+	 */
+
+	public static Boolean ICD(ICD icd) {
+		stmt = DB.getStatement();
+		if(icd.getId() != null) {
+			try {
+				stmt.executeUpdate("UPDATE icd SET "
+						+ "serialNr = '" + icd.getSerialNr() + "', "
+						+ "expiry = '" + Date.valueOf(icd.getExpireDate()) + "', "
+						+ "notice = '" + icd.getNotice() + "'"
+						+ "WHERE id_icd = " + icd.getId() + "");
+				return true;
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(new JFrame(),
+						"Message:\n" +  e.getMessage() + "\n\nClass:\n" + SQL_UPDATE.class.getSimpleName() + "\n\nBoolean ICD(ICD icd)", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+				return false;
+			}
+		}else {
+			return false;
+		}
+		
+	}
+	
 	public static Boolean electrodeModel(ElectrodeType electrodeModel) {
 		stmt = DB.getStatement();
 		Integer mri = 0;
@@ -256,11 +284,11 @@ public class SQL_UPDATE {
 		
 		if(electrode.getId() != null) {
 			try {
-				stmt.executeUpdate("UPDATE electrode_implant SET "
+				stmt.executeUpdate("UPDATE electrode SET "
 						+ "notice = '" + electrode.getNotice() + "', "
 						+ "serialNr = '" + electrode.getSerialNr() + "', "
 						+ "expire = '" + Date.valueOf(electrode.getExpireDate()) + "' "
-						+ "WHERE idelectrode_implant = " + electrode.getId() + "");
+						+ "WHERE idelectrode = " + electrode.getId() + "");
 				
 				return true;
 			} catch (Exception e) {

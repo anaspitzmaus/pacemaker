@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.time.LocalDate;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -23,7 +24,8 @@ public class Renderer {
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-			setText(value.toString());
+			LocalDate date = (LocalDate) value;			
+			setText(date.getDayOfMonth() + "." + date.getMonthValue() + "." + date.getYear());
 			if(isSelected) {
 				setBackground(Color.ORANGE);
 			}else {

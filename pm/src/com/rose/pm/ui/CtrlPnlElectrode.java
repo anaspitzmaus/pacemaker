@@ -2,10 +2,13 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -29,8 +32,6 @@ import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
-import com.rose.pm.material.PM;
-import com.rose.pm.ui.CtrlPnlPM.CreateListener;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblDateRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
@@ -52,6 +53,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	TblRowSelectionListener tblRowSelectionListener;
 	ShowAllListener showAllListener;
 	CreateListener createListener;
+	TblMouseAdaptor tblMouseAdaptor;
 	
 	public CtrlPnlElectrode() {
 		createPanel();
@@ -69,6 +71,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		setRenderer();
 		((PnlElectrode)panel).setElectrodeTypeSelectionIndex(-1);
 		((PnlElectrode)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tblMouseAdaptor = new TblMouseAdaptor();
+		((PnlElectrode)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
 	protected void setComponentLabeling() {
@@ -318,8 +322,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		Electrode electrode;
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if(serialNrListener.getNotation() != "" && electrodeTypeModel.getSelectedItem() instanceof AggregateType) {
-				initiateAggregate();
+			if(serialNrListener.getNotation() != "" && electrodeTypeModel.getSelectedItem() instanceof ElectrodeType) {
+				initiateElectrode();
 				electrode.setExpireDate(ctrlPnlSetDate.getDate());
 				electrode.setSerialNr(serialNrListener.getNotation());
 				electrode.setNotice(noticeListener.getNotation());
@@ -328,7 +332,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 			}
 		}
 		
-		protected void initiateAggregate() {
+		protected void initiateElectrode() {
 			electrode = new Electrode((ElectrodeType) electrodeTypeModel.getSelectedItem());
 		}
 		
@@ -338,6 +342,21 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 			electrodeTblModel.fireTableDataChanged();
 		}
 		
+	}
+	
+	class TblMouseAdaptor extends MouseAdapter{
+		 @Override
+	    public void mouseClicked(MouseEvent mouseEvent){
+	        if(mouseEvent.getClickCount()==2){
+	        	 JTable table =(JTable) mouseEvent.getSource();
+	             Point point = mouseEvent.getPoint();
+	             int row = table.rowAtPoint(point);
+	             if (table.getSelectedRow() != -1 && row >= 0) {
+	                CtrlDlgChangeElectrode ctrlDlgChangeElectrode = new CtrlDlgChangeElectrode((Electrode) electrodeTblModel.getValueAt(row, 0), electrodeTblModel);
+	                ctrlDlgChangeElectrode.getDialog().setVisible(true);
+	             }
+	        }
+	    }
 	}
 	
 }

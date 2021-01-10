@@ -1,20 +1,27 @@
 package com.rose.pm.ui;
 
 
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTable;
 
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
+import com.rose.pm.material.PM;
+
 
 
 
 
 public class CtrlPnlICD extends CtrlPnlPM {
+	
 	
 	public CtrlPnlICD() {
 		
@@ -61,6 +68,8 @@ public class CtrlPnlICD extends CtrlPnlPM {
 		((PnlICD)panel).addAggregateTypeListener(aggregateTypeListener);
 		showAllListener = new ShowAllListener();
 		((PnlICD)panel).addShowAllListener(showAllListener);
+		tblMouseAdaptor = new TblMouseAdaptor();
+		((PnlICD)panel).addTblMouseAdaptor(tblMouseAdaptor);
 		
 	}
 	
@@ -97,10 +106,16 @@ public class CtrlPnlICD extends CtrlPnlPM {
 			SQL_INSERT.icd((ICD)pm);				
 			aggregateTblModel.setAggregats(SQL_SELECT.icd((ICD_Type) aggregateTypeModel.getSelectedItem()));
 			aggregateTblModel.fireTableDataChanged();
-		}
+		}	
+	}
+	
+	class TblMouseAdaptor extends CtrlPnlPM.TblMouseAdaptor{
 		
-		
-		
+		@Override
+		 protected void initiateDialog() {
+			 CtrlDlgChangeICD ctrlDlgChangeICD = new CtrlDlgChangeICD((ICD) aggregateTblModel.getValueAt(row, 0), aggregateTblModel);
+             ctrlDlgChangeICD.getDialog().setVisible(true);
+		 }
 	}
 	
 }

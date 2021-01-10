@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseListener;
 import java.time.LocalDate;
 
 import javax.swing.ComboBoxModel;
@@ -21,6 +22,7 @@ import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.PM;
 
 import net.miginfocom.swing.MigLayout;
+
 
 public class PnlPM extends PnlBase{
 
@@ -176,6 +178,11 @@ public class PnlPM extends PnlBase{
 	
 	protected PM getTableValueAt(int row, int column) {
 		return (PM) table.getValueAt(row, column);
+	}
+
+	protected void addTblMouseAdaptor(MouseListener tblMouseAdaptor) {
+		table.addMouseListener(tblMouseAdaptor);
+		
 	}
 
 	

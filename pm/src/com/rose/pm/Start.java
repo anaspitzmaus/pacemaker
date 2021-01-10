@@ -1,9 +1,11 @@
 package com.rose.pm;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
@@ -19,23 +21,7 @@ public class Start {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				 try {
-			            // Set cross-platform Java L&F (also called "Metal")
-			        UIManager.setLookAndFeel(
-			            UIManager.getCrossPlatformLookAndFeelClassName());
-			    } 
-			    catch (UnsupportedLookAndFeelException e) {
-			       // handle exception
-			    }
-			    catch (ClassNotFoundException e) {
-			       // handle exception
-			    }
-			    catch (InstantiationException e) {
-			       // handle exception
-			    }
-			    catch (IllegalAccessException e) {
-			       // handle exception
-			    }
+				
 				try {
 					checkDBConnection();
 					CtrlFrmBase ctrlFrmBase = new CtrlFrmBase();
