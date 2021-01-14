@@ -1,8 +1,11 @@
 package com.rose.pm;
 
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeListener;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -47,8 +50,7 @@ public class Pnl_SetDate extends JPanel {
 
 	/**
 	 * Create the panel.
-	 * @wbp.parser.constructor
-	 */
+		 */
 	public Pnl_SetDate(String dateFormat, LocalDate ld, LocalDate minDate) {
 		lblDate = new JLabel("Start:");
 		lblDate.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -67,9 +69,10 @@ public class Pnl_SetDate extends JPanel {
 		add(ftxtCalendar);
 	
 	
-		ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/calendar_green_01.png"));
+		ImageIcon icon = new ImageIcon(getImage("images/calendar_green_01.png"));
 		icon.getImage();
 		lblCalendar = new JLabel(icon);
+		//lblCalendar = new JLabel("Kalebder");
 		lblCalendar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		add(lblCalendar);		
 		
@@ -87,9 +90,10 @@ public class Pnl_SetDate extends JPanel {
 		add(ftxtCalendar);
 	
 	
-		ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/calendar_green_01.png"));
+		ImageIcon icon = new ImageIcon(getImage("images/calendar_green_01.png"));
 		icon.getImage();
 		lblCalendar = new JLabel(icon);
+		//lblCalendar = new JLabel("Kalebder");
 		lblCalendar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		add(lblCalendar);
 	}
@@ -105,7 +109,8 @@ public class Pnl_SetDate extends JPanel {
 		
 		
 		
-		ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/calendar_green_01.png"));
+		//ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/calendar_green_01.png"));
+		ImageIcon icon = new ImageIcon(getImage("images/calendar_green_01.png"));
 		icon.getImage();
 		lblCalendar = new JLabel(icon);
 		lblCalendar.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -122,5 +127,9 @@ public class Pnl_SetDate extends JPanel {
 		ftxtCalendar.addPropertyChangeListener(l);
 	}
 	
+	public static Image getImage(final String pathAndFileName) {
+	    final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+	    return Toolkit.getDefaultToolkit().getImage(url);
+	}
 
 }
