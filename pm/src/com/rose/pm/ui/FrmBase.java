@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeListener;
 
 
 public class FrmBase extends JFrame {
@@ -53,6 +54,14 @@ public class FrmBase extends JFrame {
 		
 		pnlStatistics = new JPanel();
 		contentPane.add(pnlStatistics, BorderLayout.SOUTH);
+	}
+	
+	protected void addTabChangeListener(ChangeListener l) {
+		tabbedPane.addChangeListener(l);
+	}
+
+	protected Integer getSelectedTabIndex() {
+		return tabbedPane.getSelectedIndex();
 	}
 
 }

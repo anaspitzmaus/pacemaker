@@ -30,6 +30,7 @@ import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
+
 import com.rose.pm.ui.Listener.ManufacturerListener;
 import com.rose.pm.ui.Listener.NotationListener;
 
@@ -54,7 +55,33 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	
+	protected NotationListener getNotationListener() {
+		return this.notationListener;
+	}
 	
+	protected NotationListener getNoticeListener() {
+		return this.noticeListener;
+	}
+	
+	protected ComboBoxModel<Manufacturer> getManufacturerModel(){
+		return this.manufacturerModel;
+	}
+	
+	protected FixModeListener getFixModeListener() {
+		return this.fixModeListener;
+	}
+	
+	protected LengthListener getLengthListener() {
+		return this.lengthListener;
+	}
+	
+	protected MRIListener getMRIListener() {
+		return this.mriListener;
+	}
+	
+	protected TblElectrodesModel getTblElectrodeModel() {
+		return this.tblElectrodesModel;
+	}
 	
 	public CtrlPnlElectrodeType() {
 		panel = new PnlElectrodeType();
