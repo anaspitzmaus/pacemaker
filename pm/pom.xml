@@ -15,6 +15,28 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      <!-- Assembly jar -->
+      <plugin>
+      <artifactId>maven-assembly-plugin</artifactId>
+      <version>3.1.0</version>
+      <configuration>
+      <archive>
+      <manifest>
+      <mainClass>com.rose.pm.Start</mainClass>
+      </manifest>
+      </archive>
+      <descriptorRefs>jar-with-dependencies</descriptorRefs>
+      </configuration>
+      <executions>
+      <execution>
+      <id>make-assembly</id>
+      <phase>package</phase>
+      <goals>
+      <goal>single</goal>
+      </goals>
+      </execution>
+      </executions>
+      </plugin>
     </plugins>
   </build>
    <dependencies>
