@@ -51,7 +51,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	TblElectrodeModelIDRenderer tblElectrodeModelIDRenderer;
 	TblElectrodeModelStringRenderer tblElectrodeModelStringRenderer;
 	TblIntegerRenderer tblLengthRenderer;
-	CreateListener createListener;
+	//CreateListener createListener;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	
@@ -111,8 +111,8 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		lengthListener.length = ((PnlElectrodeType)panel).getLength();
 		mriListener = new MRIListener();
 		((PnlElectrodeType)panel).addMRIListener(mriListener);
-		createListener = new CreateListener();
-		((PnlElectrodeType)panel).addCreateListener(createListener);
+		//createListener = new CreateListener();
+		//((PnlElectrodeType)panel).addCreateListener(createListener);
 		tblRowSelectionListener = new TblRowSelectionListener();
 		((PnlElectrodeType)panel).addTblRowSelectionListener(tblRowSelectionListener);
 		deleteListener = new DeleteListener();
@@ -533,26 +533,26 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		
 	}
 	
-	class CreateListener implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			if(notationListener.getNotation() != "" && manufacturerModel.getSelectedItem() instanceof Manufacturer) {
-				ElectrodeType model = new ElectrodeType(notationListener.getNotation());
-				model.setManufacturer((Manufacturer) manufacturerModel.getSelectedItem());
-				model.setFixMode(fixModeListener.getFixMode());
-				model.setLength(lengthListener.getLength());
-				model.setMri(mriListener.getMRI());
-				model.setNotice(noticeListener.getNotation());
-				SQL_INSERT.electrodeModel(model);	
-					
-				tblElectrodesModel.setElectrodeModels(SQL_SELECT.electrodeModels());
-				tblElectrodesModel.fireTableDataChanged();
-				
-			}
-		}
-		
-	}
+//	class CreateListener implements ActionListener{
+//
+//		@Override
+//		public void actionPerformed(ActionEvent arg0) {
+//			if(notationListener.getNotation() != "" && manufacturerModel.getSelectedItem() instanceof Manufacturer) {
+//				ElectrodeType model = new ElectrodeType(notationListener.getNotation());
+//				model.setManufacturer((Manufacturer) manufacturerModel.getSelectedItem());
+//				model.setFixMode(fixModeListener.getFixMode());
+//				model.setLength(lengthListener.getLength());
+//				model.setMri(mriListener.getMRI());
+//				model.setNotice(noticeListener.getNotation());
+//				SQL_INSERT.electrodeModel(model);	
+//					
+//				tblElectrodesModel.setElectrodeModels(SQL_SELECT.electrodeModels());
+//				tblElectrodesModel.fireTableDataChanged();
+//				
+//			}
+//		}
+//		
+//	}
 	
 	class TblRowSelectionListener implements ListSelectionListener{
 		ElectrodeType elModel;
@@ -582,5 +582,9 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 			
 		}
 		
+	}
+	
+	protected void addCreateListener(ActionListener l) {
+		((PnlElectrodeType)panel).addCreateListener(l);
 	}
 }

@@ -13,7 +13,7 @@ import com.rose.pm.ui.Listener.NotationListener;
 public class CtrlElectrodes {
 	CtrlPnlElectrodeType ctrlPnlElectrodeType;
 	CtrlPnlElectrode ctrlPnlElectrode;
-	
+	CreateTypeListener createTypeListener;
 	
 	
 	protected CtrlPnlElectrodeType getCtrlPnlElectrodeType() {
@@ -27,9 +27,16 @@ public class CtrlElectrodes {
 	public CtrlElectrodes() {
 		ctrlPnlElectrodeType = new CtrlPnlElectrodeType();
 		ctrlPnlElectrode = new CtrlPnlElectrode();
+		setListener();
 	}
 	
-	class CreateListener implements ActionListener{
+	private void setListener() {
+		createTypeListener = new CreateTypeListener();
+		ctrlPnlElectrodeType.addCreateListener(createTypeListener);
+		
+	}
+	
+	class CreateTypeListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {

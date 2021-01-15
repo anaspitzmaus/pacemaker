@@ -243,7 +243,13 @@ public class SQL_UPDATE {
 				return true;
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
+				
+				if(e.getErrorCode() == 1451) {
+					JOptionPane.showMessageDialog(null, "Der Datensatz kann nicht gelöscht werden, da bereits eine Elektrode für dieses Modell existiert", "Löschung nicht möglich!", 2);
+				}else {
+					JOptionPane.showMessageDialog(null, "Der Datensatz kann nicht gelöscht werden", "Löschung nicht möglich!", 2);
+				}
 				return false;
 			}
 		}else {
