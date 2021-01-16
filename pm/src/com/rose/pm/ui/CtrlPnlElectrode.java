@@ -40,7 +40,7 @@ import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 public class CtrlPnlElectrode extends CtrlPnlBase{
 	Ctrl_PnlSetDate ctrlPnlSetDate;
-	ComboBoxModel<ElectrodeType> electrodeTypeModel;
+	TypeModel electrodeTypeModel;
 	ElectrodeTblModel electrodeTblModel;
 	ElectrodeTypeListener electrodeTypeListener;
 	ElectrodeTypeRenderer electrodeTypeRenderer;
@@ -86,12 +86,13 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	
 	 void setModel() {
 		ArrayList<ElectrodeType> electrodeTypes = SQL_SELECT.electrodeModels();
-		ElectrodeType[] arr = new ElectrodeType[electrodeTypes.size()]; 		  
+		ElectrodeType[] arr = new ElectrodeType[electrodeTypes.size()]; 	
+		 electrodeTypeModel = new TypeModel();
         // ArrayList to Array Conversion 
-        for (int i = 0; i < electrodeTypes.size(); i++) 
+        for (int i = 0; i < electrodeTypes.size(); i++) {
             arr[i] = electrodeTypes.get(i);		
-		
-        electrodeTypeModel = new DefaultComboBoxModel<ElectrodeType>(arr);
+            electrodeTypeModel.addElement(electrodeTypes.get(i));
+	 	}
 		//aggregateTypeModel = new AggregateTypeModel();
 		((PnlElectrode)panel).setElectrodeTypeModel(electrodeTypeModel);
 		electrodeTblModel = new ElectrodeTblModel(SQL_SELECT.electrodes(electrodeTypeListener.model));
@@ -357,6 +358,15 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	             }
 	        }
 	    }
+	}
+	
+	class TypeModel extends DefaultComboBoxModel<ElectrodeType>{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3192111071718891155L;
+		
 	}
 	
 }

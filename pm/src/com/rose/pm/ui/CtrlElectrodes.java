@@ -51,6 +51,7 @@ public class CtrlElectrodes {
 					
 				ctrlPnlElectrodeType.getTblElectrodeModel().setElectrodeModels(SQL_SELECT.electrodeModels());
 				ctrlPnlElectrodeType.getTblElectrodeModel().fireTableDataChanged();
+				ctrlPnlElectrode.electrodeTypeModel.addElement(model);
 				
 			}
 		}
