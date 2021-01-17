@@ -54,6 +54,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	ShowAllListener showAllListener;
 	CreateListener createListener;
 	TblMouseAdaptor tblMouseAdaptor;
+	DeleteListener deleteListener; 
 	
 	public CtrlPnlElectrode() {
 		createPanel();
@@ -113,6 +114,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 ((PnlElectrode)panel).addShowAllListener(showAllListener);
 		 createListener = new CreateListener();
 		 ((PnlElectrode)panel).addCreateListener(createListener);
+		 deleteListener = new DeleteListener();
+		 ((PnlElectrode)panel).addDeleteListener(deleteListener);
 	 }
 	 
 	 private void setRenderer() {

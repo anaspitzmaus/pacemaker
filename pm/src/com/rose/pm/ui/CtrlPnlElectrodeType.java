@@ -418,7 +418,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 			if(isSelected) {
 				setBackground(Color.ORANGE);
 			}else {
-				setBackground(Color.WHITE);
+				setBackground(row%2==0 ? Color.white : Color.lightGray);  
 			}
 			return this;
 		}
@@ -443,7 +443,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 				if(isSelected) {
 					setBackground(Color.ORANGE);
 				}else {
-					setBackground(Color.WHITE);
+					setBackground(row%2==0 ? Color.white : Color.lightGray);  
 				}
 				return this;
 			}
@@ -473,7 +473,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 				if(isSelected) {
 					setBackground(Color.ORANGE);
 				}else {
-					setBackground(Color.WHITE);
+					setBackground(row%2==0 ? Color.white : Color.lightGray);  
 				}
 				return this;
 			}
@@ -501,7 +501,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 			if(isSelected) {
 				setBackground(Color.ORANGE);
 			}else {
-				setBackground(Color.WHITE);
+				setBackground(row%2==0 ? Color.white : Color.lightGray);  
 			}
 			return this;
 		}
@@ -526,7 +526,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 			if(isSelected) {
 				setBackground(Color.ORANGE);
 			}else {
-				setBackground(Color.WHITE);
+				setBackground(row%2==0 ? Color.white : Color.lightGray);  
 			}
 			return this;
 		}
