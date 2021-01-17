@@ -11,8 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -29,7 +27,7 @@ import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.AggregateType;
+
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.ui.Listener.NotationListener;
@@ -40,7 +38,7 @@ import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 public class CtrlPnlElectrode extends CtrlPnlBase{
 	Ctrl_PnlSetDate ctrlPnlSetDate;
-	TypeModel electrodeTypeModel;
+	DefaultComboBoxModel<ElectrodeType> electrodeTypeModel;
 	ElectrodeTblModel electrodeTblModel;
 	ElectrodeTypeListener electrodeTypeListener;
 	ElectrodeTypeRenderer electrodeTypeRenderer;
@@ -88,7 +86,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	 void setModel() {
 		ArrayList<ElectrodeType> electrodeTypes = SQL_SELECT.electrodeModels();
 		ElectrodeType[] arr = new ElectrodeType[electrodeTypes.size()]; 	
-		 electrodeTypeModel = new TypeModel();
+		 electrodeTypeModel = new DefaultComboBoxModel<ElectrodeType>();
         // ArrayList to Array Conversion 
         for (int i = 0; i < electrodeTypes.size(); i++) {
             arr[i] = electrodeTypes.get(i);		
@@ -363,13 +361,6 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	    }
 	}
 	
-	class TypeModel extends DefaultComboBoxModel<ElectrodeType>{
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 3192111071718891155L;
-		
-	}
+	
 	
 }
