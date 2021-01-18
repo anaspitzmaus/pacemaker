@@ -547,6 +547,10 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	
 	class RAListener implements ActionListener{
 
+		protected Boolean getValue() {
+			return ra;
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			AbstractButton abstractButton = (AbstractButton) event.getSource();
@@ -559,6 +563,10 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	
 	class RVListener implements ActionListener{
 
+		protected Boolean getValue() {
+			return rv;
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			AbstractButton abstractButton = (AbstractButton) event.getSource();
@@ -571,6 +579,10 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	
 	class LVListener implements ActionListener{
 
+		protected Boolean getValue() {
+			return lv;
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			AbstractButton abstractButton = (AbstractButton) event.getSource();
@@ -813,6 +825,18 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	protected void addCreateListener(ActionListener createTypeListener) {
 		((PnlPMType)panel).addCreateListener(createTypeListener);
 		
+	}
+
+	protected  RAListener getRAListener() {
+		return this.raListener;
+	}
+
+	protected RVListener getRVListener() {
+		return this.rvListener;
+	}
+	
+	protected LVListener getLVListener() {
+		return this.lvListener;
 	}
 
 	

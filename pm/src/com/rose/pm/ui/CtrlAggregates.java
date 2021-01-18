@@ -47,10 +47,13 @@ public class CtrlAggregates {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if(ctrlPnlPMType.getNotationListener().getNotation() != "" && ctrlPnlPMType.getManufacturerModel().getSelectedItem() instanceof Manufacturer) {
+			if(ctrlPnlPMType.getNotationListener().getNotation() != "" && ctrlPnlPMType.getManufacturerModel().getSelectedItem() instanceof Manufacturer && checkElectrodes()) {
 				AggregateType model = new AggregateType(ctrlPnlPMType.getNotationListener().getNotation());
 				model.setManufacturer((Manufacturer)ctrlPnlPMType.getManufacturerModel().getSelectedItem());
 				model.setMri(ctrlPnlPMType.getMRIListener().getMRI());
+				model.setRa(ctrlPnlPMType.getRAListener().getValue());
+				model.setRv(ctrlPnlPMType.getRVListener().getValue());
+				model.setLv(ctrlPnlPMType.getLVListener().getValue());
 				model.setNotice(ctrlPnlPMType.getNoticeListener().getNotation());
 				SQL_INSERT.pacemakerModel(model);	
 					
@@ -59,7 +62,19 @@ public class CtrlAggregates {
 				ctrlPnlPM.aggregateTypeModel.addElement(model);
 				
 			}
+			
+			
 		}
 		
+		/**
+		 * check if at least one Electrode was selected
+		 * @return
+		 */
+		protected Boolean checkElectrodes() {
+			if(ctrlPnlPMType.getRAListener().getValue() || ctrlPnlPMType.getRVListener().getValue() || ctrlPnlPMType.getLVListener().getValue()) {
+				return true;
+			}
+			return false;
+		}
 	}
 }
