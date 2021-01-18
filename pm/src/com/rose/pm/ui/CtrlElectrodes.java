@@ -36,6 +36,12 @@ public class CtrlElectrodes {
 		
 	}
 	
+	/**
+	 * listener for adding a new created type of electrodes to the database
+	 * adds the new type of electrode to the ComboBox in the Electrode panel
+	 * @author user2
+	 *
+	 */
 	class CreateTypeListener implements ActionListener{
 
 		@Override

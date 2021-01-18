@@ -185,7 +185,9 @@ public class PnlPM extends PnlBase{
 		
 	}
 
-	
+	protected void clearComponents() {
+		txtSerialNr.setText("");
+	}
 
 	
 

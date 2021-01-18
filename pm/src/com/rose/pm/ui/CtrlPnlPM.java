@@ -41,7 +41,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	Listener listener;
 	Renderer renderer;
 	NotationListener serialNrListener, noticeListener;
-	ComboBoxModel<AggregateType> aggregateTypeModel;
+	DefaultComboBoxModel<AggregateType> aggregateTypeModel;
 	AggregateTypeRenderer aggregateTypeRenderer;
 	AggregateTypeListener aggregateTypeListener;
 	AggregateTblModel aggregateTblModel;
@@ -198,7 +198,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 				pm.setSerialNr(serialNrListener.getNotation());
 				pm.setNotice(noticeListener.getNotation());
 				updateDBAndTblModel();
-				
+				((PnlPM)panel).clearComponents();
+				serialNrListener.notation = "";
 			}
 		}
 		
@@ -402,4 +403,6 @@ public class CtrlPnlPM extends CtrlPnlBase{
              ctrlDlgChangePM.getDialog().setVisible(true);
 		 }
 	}
+	
+	
 }

@@ -111,8 +111,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		lengthListener.length = ((PnlElectrodeType)panel).getLength();
 		mriListener = new MRIListener();
 		((PnlElectrodeType)panel).addMRIListener(mriListener);
-		//createListener = new CreateListener();
-		//((PnlElectrodeType)panel).addCreateListener(createListener);
+
 		tblRowSelectionListener = new TblRowSelectionListener();
 		((PnlElectrodeType)panel).addTblRowSelectionListener(tblRowSelectionListener);
 		deleteListener = new DeleteListener();

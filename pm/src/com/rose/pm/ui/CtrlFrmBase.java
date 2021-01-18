@@ -8,6 +8,7 @@ public class CtrlFrmBase {
 	CtrlPnlElectrodeType ctrlPnlElectrodeType;
 	CtrlPnlElectrode ctrlPnlElectrode;
 	CtrlElectrodes ctrlElectrodes;
+	CtrlAggregates ctrlAggregates;
 	CtrlPnlPMType ctrlPnlPMType;
 	CtrlPnlPM ctrlPnlPM;
 	CtrlPnlICDType ctrlPnlICDType;
@@ -25,8 +26,8 @@ public class CtrlFrmBase {
 		createPanels();
 		frame.getTabbedPane().add(ctrlElectrodes.getCtrlPnlElectrodeType().getPanel().getName(), ctrlElectrodes.getCtrlPnlElectrodeType().getPanel());
 		frame.getTabbedPane().add(ctrlElectrodes.getCtrlPnlElectrode().getPanel().getName(), ctrlElectrodes.getCtrlPnlElectrode().getPanel());
-		frame.getTabbedPane().add(ctrlPnlPMType.getPanel().getName(), ctrlPnlPMType.getPanel());
-		frame.getTabbedPane().add(ctrlPnlPM.getPanel().getName(), ctrlPnlPM.getPanel());
+		frame.getTabbedPane().add(ctrlAggregates.getCtrlPnlAggregatesType().getPanel().getName(), ctrlAggregates.getCtrlPnlAggregatesType().getPanel());
+		frame.getTabbedPane().add(ctrlAggregates.getCtrlPnlAggregates().getPanel().getName(), ctrlAggregates.getCtrlPnlAggregates().getPanel());
 		frame.getTabbedPane().add(ctrlPnlICDType.getPanel().getName(), ctrlPnlICDType.getPanel());
 		frame.getTabbedPane().add(ctrlPnlICD.getPanel().getName(), ctrlPnlICD.getPanel());
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
@@ -42,8 +43,9 @@ public class CtrlFrmBase {
 	private void createPanels() {
 
 		ctrlElectrodes = new CtrlElectrodes();
-		ctrlPnlPMType = new CtrlPnlPMType();
-		ctrlPnlPM = new CtrlPnlPM();
+		ctrlAggregates = new CtrlAggregates();
+//		ctrlPnlPMType = new CtrlPnlPMType();
+//		ctrlPnlPM = new CtrlPnlPM();
 		ctrlPnlICDType = new CtrlPnlICDType();
 		ctrlPnlICD = new CtrlPnlICD();
 		ctrlMenuBar = new CtrlMenuBar();
@@ -59,7 +61,7 @@ public class CtrlFrmBase {
 
 		@Override
 		public void stateChanged(ChangeEvent arg0) {
-			System.out.println("Tab: " + frame.getSelectedTabIndex());
+			
 			switch (frame.getSelectedTabIndex()) {
 			//Elektroden
 			case 1:

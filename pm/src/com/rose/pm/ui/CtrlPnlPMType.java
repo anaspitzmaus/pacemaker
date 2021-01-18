@@ -29,7 +29,10 @@ import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.Material;
 import com.rose.pm.material.PM_Kind;
+import com.rose.pm.ui.CtrlAggregates.CreateTypeListener;
+import com.rose.pm.ui.CtrlPnlPM.AggregateTblModel;
 import com.rose.pm.ui.Listener.NotationListener;
 
 
@@ -71,7 +74,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		setModel();
 		setRenderer();
 		setStandardListener();
-		setListener();
+		//setListener();
 		((PnlPMType)panel).setManufacturerIndex(-1);
 		((PnlPMType)panel).setRVSelection(true);
 		rv = true;
@@ -119,10 +122,10 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		((PnlPMType)panel).setTableBooleanRenderer(Boolean.class, tblBooleanRenderer);
 	}
 	
-	protected void setListener() {
-		createListener = new CreateListener();
-		((PnlPMType)panel).addCreateListener(createListener);
-	}
+//	protected void setListener() {
+//		createListener = new CreateListener();
+//		((PnlPMType)panel).addCreateListener(createListener);
+//	}
 	
 	protected void setStandardListener() {
 		listener = new Listener();
@@ -784,6 +787,31 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 			}
 			
 		}
+		
+	}
+
+	protected NotationListener getNotationListener() {
+		return this.notationListener;
+	}
+
+	protected ComboBoxModel<Manufacturer> getManufacturerModel() {
+		return this.manufacturerModel;
+	}
+
+	protected MRIListener getMRIListener() {
+		return this.mriListener;
+	}
+
+	protected NotationListener getNoticeListener() {
+		return this.notationListener;
+	}
+	
+	protected PMTypeTblModel getAggregateTypeTableModel() {
+		return this.tblModel;
+	}
+
+	protected void addCreateListener(ActionListener createTypeListener) {
+		((PnlPMType)panel).addCreateListener(createTypeListener);
 		
 	}
 

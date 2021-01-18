@@ -27,11 +27,11 @@ public class CtrlPnlICDType extends CtrlPnlPMType{
 		((PnlICDType)panel).setTblModel(tblModel);
 	}
 	
-	@Override
-	protected void setListener() {
-		createListener = new ICDTypeCreateListener();
-		((PnlPMType)panel).addCreateListener(createListener);
-	}
+//	@Override
+//	protected void setListener() {
+//		createListener = new ICDTypeCreateListener();
+//		((PnlPMType)panel).addCreateListener(createListener);
+//	}
 	
 	class ICDTypeTblModel extends PMTypeTblModel{
 
