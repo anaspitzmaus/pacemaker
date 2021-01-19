@@ -398,9 +398,13 @@ public class SQL_INSERT {
 					id = rs.getInt("ID");
 				}
 			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(new JFrame(),
+				if(e.getErrorCode() == 1062) {
+					JOptionPane.showMessageDialog(null, "Dieses Schrittmachmodell existiert bereits!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+				}else {
+					JOptionPane.showMessageDialog(new JFrame(),
 					    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT PacemakerModel(PM_Model pmModel)", "SQL Exception warning",
 					    JOptionPane.WARNING_MESSAGE);
+				}
 			}			
 		
 		return id;

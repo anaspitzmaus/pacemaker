@@ -331,8 +331,14 @@ public class SQL_UPDATE {
 					stmt.executeUpdate("DELETE FROM pm_type WHERE idpm_type = " + model.getId() + " LIMIT 1");
 					return true;
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					
+					if(e.getErrorCode() == 1451) {
+						JOptionPane.showMessageDialog(null, "Dieses Schrittmachmodell kann nicht gelöscht werden, da für dieses Modell bereits mindestens ein Schrittmacher eingegeben wurde!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+					}else {
+						JOptionPane.showMessageDialog(new JFrame(),
+						"Message:\n" +  e.getMessage() + "\n\nClass:\n" + SQL_UPDATE.class.getSimpleName() + "\n\nBoolean deleteAggregateModel(AggregateType model)", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+					}
 					return false;
 				}		
 			}
