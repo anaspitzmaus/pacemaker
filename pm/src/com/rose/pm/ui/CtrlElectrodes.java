@@ -82,7 +82,11 @@ public class CtrlElectrodes {
 				if(SQL_UPDATE.deleteElectrodeModel(elType)){
 					ctrlPnlElectrodeType.getTblElectrodeModel().electrodeModels.remove(elType);
 					ctrlPnlElectrodeType.getTblElectrodeModel().fireTableDataChanged();
-					ctrlPnlElectrode.electrodeTypeModel.removeElement(elType);
+					for(int i = 0; i< ctrlPnlElectrode.electrodeTypeModel.getSize(); i++) {
+						if(ctrlPnlElectrode.electrodeTypeModel.getElementAt(i).getNotation().equals(elType.getNotation())) {
+							ctrlPnlElectrode.electrodeTypeModel.removeElementAt(i);
+						}
+					}
 				}
 			}
 			
