@@ -317,16 +317,23 @@ public class SQL_UPDATE {
 	public static Boolean deleteAggregatModel(AggregateType model) {
 		stmt = DB.getStatement();
 		if(model instanceof AggregateType && model.getId() != null) {
+			//if icd
 			if(model instanceof ICD_Type) {
 				try {
 					stmt.executeUpdate("DELETE FROM icd_type WHERE idicd_type = " + model.getId() + " LIMIT 1");
 					return true;
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					if(e.getErrorCode() == 1451) {
+						JOptionPane.showMessageDialog(null, "Dieses ICD-Modell kann nicht gelöscht werden, da für dieses Modell bereits mindestens ein ICD eingegeben wurde!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+					}else {
+						JOptionPane.showMessageDialog(new JFrame(),
+						"Message:\n" +  e.getMessage() + "\n\nClass:\n" + SQL_UPDATE.class.getSimpleName() + "\n\nBoolean deleteAggregateModel(AggregateType model)", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+					}
 					return false;
 				}
 			}else {
+				//if pacemaker
 				try {
 					stmt.executeUpdate("DELETE FROM pm_type WHERE idpm_type = " + model.getId() + " LIMIT 1");
 					return true;

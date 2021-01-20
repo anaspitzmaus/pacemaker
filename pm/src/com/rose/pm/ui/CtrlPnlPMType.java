@@ -32,6 +32,7 @@ import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Material;
 import com.rose.pm.material.PM_Kind;
 import com.rose.pm.ui.CtrlAggregates.CreateTypeListener;
+import com.rose.pm.ui.CtrlAggregates.DeleteTypeListener;
 import com.rose.pm.ui.CtrlPnlPM.AggregateTblModel;
 import com.rose.pm.ui.Listener.NotationListener;
 
@@ -64,7 +65,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	TblPMIDRenderer tblPMIDRenderer;
 	TblBooleanRenderer tblBooleanRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
-	DeleteListener deleteListener;
+	
 	
 	
 	public CtrlPnlPMType() {
@@ -148,8 +149,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		
 		tblRowSelectionListener = new TblRowSelectionListener();
 		((PnlPMType)panel).addTblRowSelectionListener(tblRowSelectionListener);
-		deleteListener = new DeleteListener();
-		((PnlPMType)panel).addDeleteListener(deleteListener);
+		
 	}
 	
 	protected void setComponentText() {
@@ -429,7 +429,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	
 	
 	class MRIListener implements ActionListener{
-		Boolean mri;
+		Boolean mri = false;
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			AbstractButton abstractButton = (AbstractButton) event.getSource();
@@ -815,7 +815,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	}
 
 	protected NotationListener getNoticeListener() {
-		return this.notationListener;
+		return this.noticeListener;
 	}
 	
 	protected PMTypeTblModel getAggregateTypeTableModel() {
@@ -837,6 +837,15 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	
 	protected LVListener getLVListener() {
 		return this.lvListener;
+	}
+
+	protected TblRowSelectionListener getTblRowSelectionListener() {		
+		return this.tblRowSelectionListener;
+	}
+
+	protected void addDeleteListener(ActionListener deleteTypeListener) {
+		((PnlPMType)panel).addDeleteListener(deleteTypeListener);
+		
 	}
 
 	
