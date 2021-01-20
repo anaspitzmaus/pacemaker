@@ -30,7 +30,7 @@ import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
-
+import com.rose.pm.ui.CtrlElectrodes.DeleteTypeListener;
 import com.rose.pm.ui.Listener.ManufacturerListener;
 import com.rose.pm.ui.Listener.NotationListener;
 
@@ -53,7 +53,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	TblIntegerRenderer tblLengthRenderer;
 	//CreateListener createListener;
 	TblRowSelectionListener tblRowSelectionListener;
-	DeleteListener deleteListener;
+	
 	
 	protected NotationListener getNotationListener() {
 		return this.notationListener;
@@ -114,8 +114,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 
 		tblRowSelectionListener = new TblRowSelectionListener();
 		((PnlElectrodeType)panel).addTblRowSelectionListener(tblRowSelectionListener);
-		deleteListener = new DeleteListener();
-		((PnlElectrodeType)panel).addDeleteListener(deleteListener);
+		
 	}
 	
 	private void setModel() {
@@ -532,26 +531,6 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		
 	}
 	
-//	class CreateListener implements ActionListener{
-//
-//		@Override
-//		public void actionPerformed(ActionEvent arg0) {
-//			if(notationListener.getNotation() != "" && manufacturerModel.getSelectedItem() instanceof Manufacturer) {
-//				ElectrodeType model = new ElectrodeType(notationListener.getNotation());
-//				model.setManufacturer((Manufacturer) manufacturerModel.getSelectedItem());
-//				model.setFixMode(fixModeListener.getFixMode());
-//				model.setLength(lengthListener.getLength());
-//				model.setMri(mriListener.getMRI());
-//				model.setNotice(noticeListener.getNotation());
-//				SQL_INSERT.electrodeModel(model);	
-//					
-//				tblElectrodesModel.setElectrodeModels(SQL_SELECT.electrodeModels());
-//				tblElectrodesModel.fireTableDataChanged();
-//				
-//			}
-//		}
-//		
-//	}
 	
 	class TblRowSelectionListener implements ListSelectionListener{
 		ElectrodeType elModel;
@@ -568,22 +547,18 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		}		
 	}
 	
-	class DeleteListener implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if(tblRowSelectionListener.getElectrodeModelSelected() instanceof ElectrodeType) {
-				if(SQL_UPDATE.deleteElectrodeModel(tblRowSelectionListener.getElectrodeModelSelected())){
-					tblElectrodesModel.electrodeModels.remove(tblRowSelectionListener.getElectrodeModelSelected());
-					tblElectrodesModel.fireTableDataChanged();
-				}
-			}
-			
-		}
-		
-	}
+	
 	
 	protected void addCreateListener(ActionListener l) {
 		((PnlElectrodeType)panel).addCreateListener(l);
+	}
+
+	protected TblRowSelectionListener getTblRowSelectionListener() {
+		return this.tblRowSelectionListener;		
+	}
+
+	public void addDeleteListener(ActionListener deleteTypeListener) {
+		((PnlElectrodeType)panel).addDeleteListener(deleteTypeListener);
+		
 	}
 }
