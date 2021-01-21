@@ -49,6 +49,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	ShowAllListener showAllListener;
 	TblPMIDRenderer tblPMIDRenderer;
 	TblStringRenderer tblStringRenderer;
+	TblAggregateTypeRenderer tblAggregateTypeRenderer;
 	com.rose.pm.ui.Renderer.TblDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
@@ -135,6 +136,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		((PnlPM)panel).setStringRenderer(String.class, tblStringRenderer);
 		tblDateRenderer = renderer.new TblDateRenderer();
 		((PnlPM)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
+		tblAggregateTypeRenderer = new TblAggregateTypeRenderer();
+		((PnlPM)panel).setTblAggregateTypeRenderer(AggregateType.class, tblAggregateTypeRenderer);
 	}
 	
 	class AggregateTypeListener implements ItemListener{
@@ -230,6 +233,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			this.aggregates = paceMakers;
 			columnNames = new ArrayList<String>();
 			columnNames.add("Id");
+			columnNames.add("Modell");
 			columnNames.add("Seriennummer");
 			columnNames.add("Ablaufdatum");
 			columnNames.add("Bemerkung");
@@ -263,11 +267,13 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			switch(columnIndex) {
 			case 0: return aggregates.get(rowIndex);
 			
-			case 1: return aggregates.get(rowIndex).getSerialNr();
+			case 1: return aggregates.get(rowIndex).getAggregatModel();
 			
-			case 2: return aggregates.get(rowIndex).getExpireDate();
+			case 2: return aggregates.get(rowIndex).getSerialNr();
 			
-			case 3: return aggregates.get(rowIndex).getNotice();
+			case 3: return aggregates.get(rowIndex).getExpireDate();
+			
+			case 4: return aggregates.get(rowIndex).getNotice();
 			
 			default: return null;
 			
@@ -350,6 +356,32 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		
 	}
 	
+	class TblAggregateTypeRenderer extends JLabel implements TableCellRenderer{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2455144833293671793L;
+
+		public TblAggregateTypeRenderer() {
+			super.setOpaque(true);
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			AggregateType type = (AggregateType) value;
+			setText(type.getNotation());
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+		}
+		
+	}
+	
 	
 	
 	class TblRowSelectionListener implements ListSelectionListener{
@@ -401,6 +433,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		 protected void initiateDialog() {
 			 CtrlDlgChangePM ctrlDlgChangePM = new CtrlDlgChangePM((PM) aggregateTblModel.getValueAt(row, 0), aggregateTblModel);
              ctrlDlgChangePM.getDialog().setVisible(true);
+
 		 }
 	}
 	

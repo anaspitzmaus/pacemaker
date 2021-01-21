@@ -563,32 +563,57 @@ public class SQL_SELECT {
 					+ "INNER JOIN pm_type "
 					+ "ON pm_implant.pm_type = pm_type.idpm_type "
 					+ "WHERE pm_implant.pm_type = " + pmModel.getId() + "");
+				
+				if(rs.isBeforeFirst()){
+					while(rs.next()) {
+						PM pm = new PM(pmModel);
+						pm.setId(rs.getInt("id_pm_implant"));
+						pm.setSerialNr(rs.getString("serialNr"));					
+						pm.setExpireDate(rs.getDate("expiry").toLocalDate());
+						pm.setNotice(rs.getString("notice"));
+						
+						//create and add an examination
+//						if(rs.getObject("id_exam") != null) {
+//							PM_Implant exam = new PM_Implant();
+//							System.out.println(rs.getObject("id_exam"));
+//							exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
+//							pm.setExam(exam);
+//						}					
+						pms.add(pm);
+					}
+				}
 			}else {//select all pacemakers
 				rs = stmt.executeQuery(
-						 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, notice "
-						+ "FROM pm_implant ");
+						 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation, expiry, serialNr, pm_implant.notice "
+						+ "FROM pm_implant "
+						+ "INNER JOIN pm_type "
+						+ "ON pm_implant.pm_type = pm_type.idpm_type");
+				
+				if(rs.isBeforeFirst()){
+					while(rs.next()) {
+						AggregateType type = new AggregateType(rs.getString("notation"));
+						PM pm = new PM(type);
+						pm.setId(rs.getInt("id_pm_implant"));
+						pm.setSerialNr(rs.getString("serialNr"));					
+						pm.setExpireDate(rs.getDate("expiry").toLocalDate());
+						pm.setNotice(rs.getString("notice"));
+						
+						//create and add an examination
+//						if(rs.getObject("id_exam") != null) {
+//							PM_Implant exam = new PM_Implant();
+//							System.out.println(rs.getObject("id_exam"));
+//							exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
+//							pm.setExam(exam);
+//						}					
+						pms.add(pm);
+					}
+				}
+				
 			}
 			
-			if(rs.isBeforeFirst()){
-				while(rs.next()) {
-					PM pm = new PM(pmModel);
-					pm.setId(rs.getInt("id_pm_implant"));
-					pm.setSerialNr(rs.getString("serialNr"));					
-					pm.setExpireDate(rs.getDate("expiry").toLocalDate());
-					pm.setNotice(rs.getString("notice"));
-					
-					//create and add an examination
-//					if(rs.getObject("id_exam") != null) {
-//						PM_Implant exam = new PM_Implant();
-//						System.out.println(rs.getObject("id_exam"));
-//						exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
-//						pm.setExam(exam);
-//					}					
-					pms.add(pm);
-				}
-			}
+			
 		} catch (SQLException e) {
-			System.out.println(e);
+			JOptionPane.showMessageDialog(null, "Schrittmacheraggregate konnten nicht abgefragt werden", "Hinweis", JOptionPane.WARNING_MESSAGE);			
 		}
 		return pms;
 	}
@@ -610,32 +635,58 @@ public class SQL_SELECT {
 					+ "INNER JOIN icd_type "
 					+ "ON icd.icd_type = icd_type.idicd_type "
 					+ "WHERE icd.icd_type = " + type.getId() + "");
+				
+				if(rs.isBeforeFirst()){
+					while(rs.next()) {
+						ICD icd = new ICD(type);
+						icd.setId(rs.getInt("id_icd"));
+						icd.setSerialNr(rs.getString("serialNr"));					
+						icd.setExpireDate(rs.getDate("expiry").toLocalDate());
+						icd.setNotice(rs.getString("notice"));
+						
+						//create and add an examination
+//						if(rs.getObject("id_exam") != null) {
+//							PM_Implant exam = new PM_Implant();
+//							System.out.println(rs.getObject("id_exam"));
+//							exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
+//							pm.setExam(exam);
+//						}					
+						icds.add(icd);
+					}
+					
+				}
+				
 			}else {//select all icds
 				rs = stmt.executeQuery(
-						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, notice "
-						+ "FROM icd ");
-			}
-			
-			if(rs.isBeforeFirst()){
-				while(rs.next()) {
-					ICD icd = new ICD(type);
-					icd.setId(rs.getInt("id_icd"));
-					icd.setSerialNr(rs.getString("serialNr"));					
-					icd.setExpireDate(rs.getDate("expiry").toLocalDate());
-					icd.setNotice(rs.getString("notice"));
-					
-					//create and add an examination
-//					if(rs.getObject("id_exam") != null) {
-//						PM_Implant exam = new PM_Implant();
-//						System.out.println(rs.getObject("id_exam"));
-//						exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
-//						pm.setExam(exam);
-//					}					
-					icds.add(icd);
+						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation, expiry, serialNr, icd.notice "
+						+ "FROM icd "
+						+ "INNER JOIN icd_type "
+						+ "ON icd.icd_type = icd_type.idicd_type");
+				
+				if(rs.isBeforeFirst()){
+					while(rs.next()) {
+						ICD_Type model = new ICD_Type(rs.getString("notation"));
+						ICD icd = new ICD(model);
+						icd.setId(rs.getInt("id_icd"));
+						icd.setSerialNr(rs.getString("serialNr"));					
+						icd.setExpireDate(rs.getDate("expiry").toLocalDate());
+						icd.setNotice(rs.getString("notice"));
+						
+						//create and add an examination
+//						if(rs.getObject("id_exam") != null) {
+//							PM_Implant exam = new PM_Implant();
+//							System.out.println(rs.getObject("id_exam"));
+//							exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
+//							pm.setExam(exam);
+//						}					
+						icds.add(icd);
+					}
 				}
 			}
+			
+		
 		} catch (SQLException e) {
-			System.out.println(e);
+			JOptionPane.showMessageDialog(null, "ICD-Aggregate konnten nicht abgefragt werden", "Hinweis", JOptionPane.WARNING_MESSAGE);	
 		}
 		return icds;
 	}

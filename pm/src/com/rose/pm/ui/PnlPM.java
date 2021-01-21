@@ -20,6 +20,7 @@ import javax.swing.table.TableCellRenderer;
 import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.PM;
+import com.rose.pm.ui.CtrlPnlPM.TblAggregateTypeRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -187,6 +188,11 @@ public class PnlPM extends PnlBase{
 
 	protected void clearComponents() {
 		txtSerialNr.setText("");
+	}
+
+	protected void setTblAggregateTypeRenderer(Class<AggregateType> typeClass,	TableCellRenderer tblAggregateTypeRenderer) {
+		table.setDefaultRenderer(typeClass, tblAggregateTypeRenderer);
+		
 	}
 
 	
