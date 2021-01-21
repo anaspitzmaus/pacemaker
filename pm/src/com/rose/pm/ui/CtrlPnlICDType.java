@@ -97,22 +97,22 @@ public class CtrlPnlICDType extends CtrlPnlPMType{
 	}
 	
 
-	class ICDTypeCreateListener extends CreateListener{	
-		
-		@Override
-		protected void initiate() {
-			aggModel = new ICD_Type(notationListener.getNotation());
-		}
-	
-		@Override
-		protected void updateDBAndModel(AggregateType aggModel) {
-			
-			SQL_INSERT.icd_Model((ICD_Type) aggModel);
-			tblModel.setAggregats(SQL_SELECT.ICD_Kinds());
-		}
-		
-		
-	}
+//	class ICDTypeCreateListener extends CreateListener{	
+//		
+//		@Override
+//		protected void initiate() {
+//			aggModel = new ICD_Type(notationListener.getNotation());
+//		}
+//	
+//		@Override
+//		protected void updateDBAndModel(AggregateType aggModel) {
+//			
+//			SQL_INSERT.icd_Model((ICD_Type) aggModel);
+//			tblModel.setAggregats(SQL_SELECT.ICD_Kinds());
+//		}
+//		
+//		
+//	}
 	
 	
 }

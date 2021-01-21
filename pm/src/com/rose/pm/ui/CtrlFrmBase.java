@@ -9,6 +9,7 @@ public class CtrlFrmBase {
 	CtrlPnlElectrode ctrlPnlElectrode;
 	CtrlElectrodes ctrlElectrodes;
 	CtrlAggregates ctrlAggregates;
+	CtrlICD ctrlICD;
 	CtrlPnlPMType ctrlPnlPMType;
 	CtrlPnlPM ctrlPnlPM;
 	CtrlPnlICDType ctrlPnlICDType;
@@ -28,8 +29,8 @@ public class CtrlFrmBase {
 		frame.getTabbedPane().add(ctrlElectrodes.getCtrlPnlElectrode().getPanel().getName(), ctrlElectrodes.getCtrlPnlElectrode().getPanel());
 		frame.getTabbedPane().add(ctrlAggregates.getCtrlPnlAggregatesType().getPanel().getName(), ctrlAggregates.getCtrlPnlAggregatesType().getPanel());
 		frame.getTabbedPane().add(ctrlAggregates.getCtrlPnlAggregates().getPanel().getName(), ctrlAggregates.getCtrlPnlAggregates().getPanel());
-		frame.getTabbedPane().add(ctrlPnlICDType.getPanel().getName(), ctrlPnlICDType.getPanel());
-		frame.getTabbedPane().add(ctrlPnlICD.getPanel().getName(), ctrlPnlICD.getPanel());
+		frame.getTabbedPane().add(ctrlICD.getCtrlPnlAggregatesType().getPanel().getName(), ctrlICD.getCtrlPnlAggregatesType().getPanel());
+		frame.getTabbedPane().add(ctrlICD.getCtrlPnlAggregates().getPanel().getName(), ctrlICD.getCtrlPnlAggregates().getPanel());
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
 		setListener();
 		
@@ -44,10 +45,11 @@ public class CtrlFrmBase {
 
 		ctrlElectrodes = new CtrlElectrodes();
 		ctrlAggregates = new CtrlAggregates();
+		ctrlICD = new CtrlICD();
 //		ctrlPnlPMType = new CtrlPnlPMType();
 //		ctrlPnlPM = new CtrlPnlPM();
-		ctrlPnlICDType = new CtrlPnlICDType();
-		ctrlPnlICD = new CtrlPnlICD();
+//		ctrlPnlICDType = new CtrlPnlICDType();
+//		ctrlPnlICD = new CtrlPnlICD();
 		ctrlMenuBar = new CtrlMenuBar();
 	}
 	

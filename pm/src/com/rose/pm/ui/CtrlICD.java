@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ICD_Type;
 
 public class CtrlICD extends CtrlAggregates{
@@ -22,6 +23,11 @@ public class CtrlICD extends CtrlAggregates{
 	}
 	
 	class CreateICDTypeListener extends CreateTypeListener{
+		
+		@Override
+		protected void initializeAggregate() {
+			model = new ICD_Type(ctrlPnlPMType.getNotationListener().getNotation());
+		}
 
 		@Override
 		protected void actualizeDBAndModels() {

@@ -128,9 +128,21 @@ public class PnlElectrode extends PnlBase {
 		
 	}
 
+	/**
+	 * set the renderer for the ComboBox that displays the types of electrodes
+	 * @param renderer
+	 */
 	protected void setElectrodeTypeRenderer(ListCellRenderer<ElectrodeType> renderer) {
-		cbxElectrodeType.setRenderer(renderer);
-		
+		cbxElectrodeType.setRenderer(renderer);		
+	}
+	
+	/**
+	 * set the electrode type renderer for the table 
+	 * @param elclass
+	 * @param r
+	 */
+	protected void setTblElectrodeTypeRenderer(Class<ElectrodeType> elclass, TableCellRenderer r) {
+		table.setDefaultRenderer(elclass, r);
 	}
 	
 	protected void addCreateListener(ActionListener l) {

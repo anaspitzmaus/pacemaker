@@ -54,7 +54,7 @@ public class CtrlAggregates {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if(ctrlPnlPMType.getNotationListener().getNotation() != "" && ctrlPnlPMType.getManufacturerModel().getSelectedItem() instanceof Manufacturer && checkElectrodes()) {
-				model = new AggregateType(ctrlPnlPMType.getNotationListener().getNotation());
+				initializeAggregate();
 				model.setManufacturer((Manufacturer)ctrlPnlPMType.getManufacturerModel().getSelectedItem());
 				model.setMri(ctrlPnlPMType.getMRIListener().getMRI());
 				model.setRa(ctrlPnlPMType.getRAListener().getValue());
@@ -72,6 +72,10 @@ public class CtrlAggregates {
 				ctrlPnlPMType.getAggregateTypeTableModel().fireTableDataChanged();
 				ctrlPnlPM.aggregateTypeModel.addElement(model);
 			}
+		}
+		
+		protected void initializeAggregate() {
+			model = new AggregateType(ctrlPnlPMType.getNotationListener().getNotation());
 		}
 		
 		/**

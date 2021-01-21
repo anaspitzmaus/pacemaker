@@ -42,6 +42,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	ElectrodeTblModel electrodeTblModel;
 	ElectrodeTypeListener electrodeTypeListener;
 	ElectrodeTypeRenderer electrodeTypeRenderer;
+	TblElectrodeTypeRenderer tblElectrodeTypeRenderer;
 	Listener listener;
 	Renderer renderer;
 	NotationListener serialNrListener, noticeListener;
@@ -126,6 +127,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 ((PnlElectrode)panel).setStringRenderer(String.class, tblStringRenderer);
 		 electrodeRenderer = new TblElectrodeIDRenderer();
 		 ((PnlElectrode)panel).setElectrodeRenderer(Electrode.class, electrodeRenderer);
+		 tblElectrodeTypeRenderer = new TblElectrodeTypeRenderer();
+		 ((PnlElectrode)panel).setTblElectrodeTypeRenderer(ElectrodeType.class, tblElectrodeTypeRenderer);
 	 }
 
 	 class ElectrodeTblModel extends AbstractTableModel{
@@ -143,6 +146,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 			this.electrodes = electrodes;
 			columnNames = new ArrayList<String>();
 			columnNames.add("Id");
+			columnNames.add("Modell");
 			columnNames.add("Seriennummer");
 			columnNames.add("Ablaufdatum");
 			columnNames.add("Bemerkung");
@@ -175,19 +179,18 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 						
 			switch(columnIndex) {
 			case 0: return electrodes.get(rowIndex);
+			case 1: return electrodes.get(rowIndex).getElectrodeType();
+			case 2: return electrodes.get(rowIndex).getSerialNr();
 			
-			case 1: return electrodes.get(rowIndex).getSerialNr();
+			case 3: return electrodes.get(rowIndex).getExpireDate();
 			
-			case 2: return electrodes.get(rowIndex).getExpireDate();
-			
-			case 3: return electrodes.get(rowIndex).getNotice();
+			case 4: return electrodes.get(rowIndex).getNotice();
 			
 			default: return null;
 			
 			}	
 			
-		}
-		
+		}	
 		
 		
 		protected void setElectrodes(ArrayList<? extends Electrode> el) {
@@ -244,9 +247,33 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		}
 		
 	}
+	 class TblElectrodeTypeRenderer extends JLabel implements TableCellRenderer{
+		 
+		 public TblElectrodeTypeRenderer() {
+			 super.setOpaque(true);
+		 }
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7162535661899399897L;
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			String notation = ((ElectrodeType)value).getNotation();
+			setText(notation);
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+		}
+		 
+	 }
 	 
 	 class TblElectrodeIDRenderer extends JLabel implements TableCellRenderer{
-
+		 
 			
 		/**
 		 * 
