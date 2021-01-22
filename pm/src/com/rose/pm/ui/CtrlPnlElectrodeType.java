@@ -148,15 +148,15 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	}
 
 	protected void setComponentText() {
-		((PnlElectrodeType)panel).setLblNotationText("Bezeichnung");
-		((PnlElectrodeType)panel).setLblManufacturerText("Hersteller");
-		((PnlElectrodeType)panel).setLblMRIText("MRT");
-		((PnlElectrodeType)panel).setLblNoticeText("Bemerkung");
+		((PnlElectrodeType)panel).setLblNotationText("Bezeichnung:");
+		((PnlElectrodeType)panel).setLblManufacturerText("Hersteller:");
+		((PnlElectrodeType)panel).setLblMRIText("MRT:");
+		((PnlElectrodeType)panel).setLblNoticeText("Bemerkung:");
 		((PnlElectrodeType)panel).setBtnCreateText("Eintragen");
-		((PnlElectrodeType)panel).setBtnDeleteTest("Löschen");
-		((PnlElectrodeType)panel).setLblFixText("Fixierung");
-		((PnlElectrodeType)panel).setLblLengthText("Länge");
-		
+		((PnlElectrodeType)panel).setBtnDeleteText("Löschen");
+		((PnlElectrodeType)panel).setLblFixText("Fixierung:");
+		((PnlElectrodeType)panel).setLblLengthText("Länge:");
+		((PnlElectrodeType)panel).setLblPriceText("Preis:");
 	}
 	
 	/**

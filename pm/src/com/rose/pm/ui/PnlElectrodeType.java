@@ -4,11 +4,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.text.NumberFormat;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
@@ -32,12 +34,16 @@ public class PnlElectrodeType extends PnlBase {
 
 	JTextField txtNotation;
 	JTextField txtNotice;
+	JFormattedTextField ftxtPrice;
 	JSpinner spinLength;
 	JComboBox<Manufacturer> cbxManufacturer;
-	JLabel lblNotation, lblManufacturer, lblMRI, lblLength, lblFix, lblNotice;
+	JLabel lblNotation, lblManufacturer, lblMRI, lblLength, lblFix, lblNotice, lblPrice;
 	JCheckBox checkMRI;
 	JToggleButton tglFix;
 	JButton btnCreate, btnDelete;
+	Font baseFont;
+	 private NumberFormat paymentFormat;
+	
 	/**
 	 * 
 	 */
@@ -47,70 +53,83 @@ public class PnlElectrodeType extends PnlBase {
 	 * Create the panel.
 	 */
 	public PnlElectrodeType() {
-		pnlInput.setLayout(new MigLayout("", "[][][][][][][][][][][][][grow][]", "[]"));
+		baseFont = new Font("Tahoma", Font.PLAIN, 14);
+		paymentFormat = NumberFormat.getCurrencyInstance();
+		pnlInput.setLayout(new MigLayout("", "[][][][][][][][][][][][][grow][][][]", "[]"));
 		
 		lblNotation = new JLabel("lblNotation");
-		lblNotation.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNotation.setFont(baseFont);
 		pnlInput.add(lblNotation, "cell 0 0,alignx trailing");
 		
 		txtNotation = new JTextField();
-		txtNotation.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtNotation.setFont(baseFont);
 		pnlInput.add(txtNotation, "cell 1 0");
 		txtNotation.setColumns(10);
 		
 		JSeparator jSep = new JSeparator(SwingConstants.VERTICAL);
-		jSep.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		jSep.setFont(baseFont);
 		jSep.setForeground(Color.BLACK);
 		pnlInput.add(jSep, "cell 2 0");
 		
 		lblManufacturer = new JLabel("lblManufacturer");
-		lblManufacturer.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblManufacturer.setFont(baseFont);
 		pnlInput.add(lblManufacturer, "cell 3 0,alignx trailing");
 		
 		cbxManufacturer = new JComboBox<Manufacturer>();
-		cbxManufacturer.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		cbxManufacturer.setFont(baseFont);
 		pnlInput.add(cbxManufacturer, "cell 4 0");
 		
 		lblMRI = new JLabel("lblMRI");
-		lblMRI.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblMRI.setFont(baseFont);
 		pnlInput.add(lblMRI,  "cell 5 0");
 		
 		checkMRI = new JCheckBox();
-		checkMRI.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		checkMRI.setFont(baseFont);
 		pnlInput.add(checkMRI, "cell 6 0");
 		
 		lblLength = new JLabel("lblLength");
-		lblLength.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblLength.setFont(baseFont);
 		pnlInput.add(lblLength,  "cell 7 0");
 		
 		spinLength = new JSpinner();
-		spinLength.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		spinLength.setFont(baseFont);
 		spinLength.setModel(new SpinnerNumberModel(50, 40, 60, 1));
 		pnlInput.add(spinLength, "cell 8 0");
 		
 		lblFix = new JLabel("lblFix");
-		lblFix.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblFix.setFont(baseFont);
 		pnlInput.add(lblFix, "cell 9 0");
 		
 		tglFix = new JToggleButton("tglFix");
-		tglFix.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		tglFix.setFont(baseFont);
 		pnlInput.add(tglFix, "cell 10 0");		
 		
 		lblNotice = new JLabel("lblNotice");
-		lblNotice.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNotice.setFont(baseFont);
 		pnlInput.add(lblNotice, "cell 11 0");
 		
 		txtNotice = new JTextField();
-		txtNotice.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtNotice.setFont(baseFont);
 		pnlInput.add(txtNotice, "cell 12 0, growx");
 		txtNotice.setColumns(10);
 		
+		lblPrice = new JLabel("lblPrice");
+		lblPrice.setFont(baseFont);
+		pnlInput.add(lblPrice, "cell 13 0");
+		
+		ftxtPrice = new JFormattedTextField(paymentFormat);
+		ftxtPrice.setFont(baseFont);
+		pnlInput.add(ftxtPrice, "cell 14 0");
+		ftxtPrice.setColumns(10);
+		
+		lblPrice.setLabelFor(ftxtPrice);
+		
 		btnCreate = new JButton("btnCreate");
-		btnCreate.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlInput.add(btnCreate, "cell 13 0");
+		btnCreate.setFont(baseFont);
+		pnlInput.add(btnCreate, "cell 15 0");
 		
 		btnDelete = new JButton("BtnDelete");
-		btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnDelete.setFont(baseFont);
 		btnDelete.setHorizontalAlignment(SwingConstants.RIGHT);
 		pnlSouth.add(btnDelete);
 		
@@ -136,7 +155,7 @@ public class PnlElectrodeType extends PnlBase {
 		btnCreate.setText(txt);
 	}
 	
-	protected void setBtnDeleteTest(String txt) {
+	protected void setBtnDeleteText(String txt) {
 		btnDelete.setText(txt);
 	}
 	
@@ -150,6 +169,10 @@ public class PnlElectrodeType extends PnlBase {
 	
 	protected void setTglFixText(String txt) {
 		tglFix.setText(txt);
+	}
+	
+	protected void setLblPriceText(String txt) {
+		lblPrice.setText(txt);
 	}
 	
 	protected void setManufacturerModel(ComboBoxModel<Manufacturer> l) {
