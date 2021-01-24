@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 
 import javax.swing.JLabel;
@@ -54,6 +55,33 @@ public class Renderer {
 				setBackground(Color.ORANGE);
 			}else {
 				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+		}
+		
+	}
+	
+	class TblDoubleRenderer extends JLabel implements TableCellRenderer{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -9100269051584681144L;
+
+		public TblDoubleRenderer() {
+			setOpaque(true);
+		}
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			DecimalFormat df2 = new DecimalFormat("#.##");
+			
+			setText(df2.format(value) + " €");
+			setHorizontalAlignment(JLabel.RIGHT);
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);  
 			}
 			return this;
 		}

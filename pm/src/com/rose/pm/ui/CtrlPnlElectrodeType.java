@@ -6,9 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-
 import javax.swing.AbstractButton;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -27,13 +25,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
 import com.rose.pm.ui.Listener.ManufacturerListener;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Listener.PriceListener;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 
 public class CtrlPnlElectrodeType extends CtrlPnlBase{
@@ -41,6 +40,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	ComboBoxModel<Manufacturer> manufacturerModel;
 	ManufacturerRenderer manufacturerRenderer;
 	Listener listener;
+	Renderer renderer;
 	ManufacturerListener manufacturerListener;
 	FixModeListener fixModeListener;
 	MRIListener mriListener;	
@@ -116,7 +116,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 
 		tblRowSelectionListener = new TblRowSelectionListener();
 		((PnlElectrodeType)panel).addTblRowSelectionListener(tblRowSelectionListener);
-		priceListener = new PriceListener();
+		priceListener = listener.new PriceListener();
 		((PnlElectrodeType)panel).addPriceChangeListener(priceListener);
 		
 	}
@@ -143,13 +143,12 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		((PnlElectrodeType)panel).setTableBooleanRenderer(Boolean.class, tblElectrodeModelBooleanRenderer);
 		tblElectrodeModelEMRenderer = new TblElectrodeModelEMRenderer();
 		((PnlElectrodeType)panel).setTableEMTypeRenderer(ElectrodeType.class, tblElectrodeModelEMRenderer);
-//		tblElectrodeModelIDRenderer = new TblElectrodeModelIDRenderer();
-//		((PnlElectrodeType)panel).setTableIDRenderer(ElectrodeModel.class, tblElectrodeModelIDRenderer);
 		tblLengthRenderer = new TblIntegerRenderer();
 		((PnlElectrodeType)panel).setTblLengthRenderer(Integer.class, tblLengthRenderer);
 		tblElectrodeModelStringRenderer = new TblElectrodeModelStringRenderer();
 		((PnlElectrodeType)panel).setTableStringRenderer(String.class, tblElectrodeModelStringRenderer);
-		tblDoubleRenderer = new TblDoubleRenderer();
+		renderer = new Renderer();
+		tblDoubleRenderer = renderer.new TblDoubleRenderer();
 		((PnlElectrodeType)panel).settblDoubleRenderer(Double.class, tblDoubleRenderer);
 	}
 
@@ -373,6 +372,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 				return this.electrodeModels.size();
 			}
 			
+			@SuppressWarnings("unchecked")
 			@Override
 			public Class getColumnClass(int col) {
 				return getValueAt(0, col).getClass();
@@ -540,32 +540,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		
 	}
 	
-	class TblDoubleRenderer extends JLabel implements TableCellRenderer{
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -9100269051584681144L;
-
-		public TblDoubleRenderer() {
-			setOpaque(true);
-		}
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			DecimalFormat df2 = new DecimalFormat("#.##");
-			
-			setText(df2.format(value) + " €");
-			setHorizontalAlignment(JLabel.RIGHT);
-			if(isSelected) {
-				setBackground(Color.ORANGE);
-			}else {
-				setBackground(row%2==0 ? Color.white : Color.lightGray);  
-			}
-			return this;
-		}
-		
-	}
+	
 	
 	
 	class TblRowSelectionListener implements ListSelectionListener{
@@ -583,24 +558,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		}		
 	}
 	
-	class PriceListener implements PropertyChangeListener{
-		private Double price;
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			JFormattedTextField field = (JFormattedTextField)evt.getSource();
-			
-			if(field.getValue() != null && field.getValue().getClass() == Long.class) {
-				Long l = (Long) field.getValue();
-				price = l.doubleValue();
-			}else if (field.getValue() != null){
-				price = (Double) field.getValue();
-			}
-		}	
-		
-		protected Double getPrice() {
-			return this.price;
-		}
-	}
+	
 	
 	
 	

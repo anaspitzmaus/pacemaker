@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
@@ -74,6 +77,25 @@ public class Listener {
 				
 		       }
 			
+		}
+	}
+	
+	class PriceListener implements PropertyChangeListener{
+		private Double price;
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			JFormattedTextField field = (JFormattedTextField)evt.getSource();
+			
+			if(field.getValue() != null && field.getValue().getClass() == Long.class) {
+				Long l = (Long) field.getValue();
+				price = l.doubleValue();
+			}else if (field.getValue() != null){
+				price = (Double) field.getValue();
+			}
+		}	
+		
+		protected Double getPrice() {
+			return this.price;
 		}
 	}
 	
