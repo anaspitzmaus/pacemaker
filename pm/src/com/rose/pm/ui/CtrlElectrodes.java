@@ -56,6 +56,8 @@ public class CtrlElectrodes {
 				elType.setLength(ctrlPnlElectrodeType.getLengthListener().getLength());
 				elType.setMri(ctrlPnlElectrodeType.getMRIListener().getMRI());
 				elType.setNotice(ctrlPnlElectrodeType.getNoticeListener().getNotation());
+				System.out.println(ctrlPnlElectrodeType.getPriceListener().getPrice());
+				elType.setPrice(ctrlPnlElectrodeType.getPriceListener().getPrice());
 				SQL_INSERT.electrodeModel(elType);	
 					
 				ctrlPnlElectrodeType.getTblElectrodeModel().setElectrodeModels(SQL_SELECT.electrodeModels());

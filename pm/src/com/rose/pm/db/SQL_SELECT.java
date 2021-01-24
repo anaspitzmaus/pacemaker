@@ -696,7 +696,7 @@ public class SQL_SELECT {
 		ArrayList<ElectrodeType> models = new ArrayList<ElectrodeType>();
 		try {
 			rs = stmt.executeQuery(
-					"SELECT idelectrode_type, electrode_type.id_manufacturer, length, electrode_type.notation AS electrodeNotation, notice, mri, fixmode, manufacturer.notation AS manufacturerNotation "
+					"SELECT idelectrode_type, electrode_type.id_manufacturer, length, electrode_type.notation AS electrodeNotation, notice, mri, fixmode, manufacturer.notation AS manufacturerNotation, price "
 					+ "FROM electrode_type "
 					+ "INNER JOIN manufacturer "
 					+ "ON electrode_type.id_manufacturer = manufacturer.idmanufacturer");
@@ -709,6 +709,7 @@ public class SQL_SELECT {
 					model.setFixMode(rs.getString("fixmode"));
 					model.setNotice(rs.getString("notice"));
 					model.setMri(rs.getBoolean("mri"));
+					model.setPrice(rs.getDouble("price"));
 					
 					Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
 					manufacturer.setId(rs.getInt("id_manufacturer"));

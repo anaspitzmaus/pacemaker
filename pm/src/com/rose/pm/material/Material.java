@@ -4,6 +4,7 @@ public abstract class Material {
 	String notation;
 	Manufacturer manufacturer;
 	String notice;
+	Double price;
 
 	
 	public Manufacturer getManufacturer() {
@@ -39,6 +40,18 @@ public abstract class Material {
 	public void setNotice(String notice) {
 		this.notice = notice;
 	}
+
+
+	public Double getPrice() {
+		return price;
+	}
+
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+	
+	
 	
 	
 }

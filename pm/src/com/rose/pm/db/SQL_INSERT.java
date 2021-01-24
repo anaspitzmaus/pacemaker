@@ -529,13 +529,14 @@ public class SQL_INSERT {
 		
 		try {
 			DB.getConnection().setAutoCommit(true);
-			stmt.executeUpdate("INSERT INTO electrode_type (notation, id_manufacturer, length, notice, mri, fixmode) "
+			stmt.executeUpdate("INSERT INTO electrode_type (notation, id_manufacturer, length, notice, mri, fixmode, price) "
 					+ "VALUES ('" + electrodeModel.getNotation() + "', '" 
 					+ electrodeModel.getManufacturer().getId() + "', '"
 					+ electrodeModel.getLength() + "', '"
 					+ electrodeModel.getNotice() + "', '"
 					+ mri + "', '"
-					+ electrodeModel.getFixMode() + "')");
+					+ electrodeModel.getFixMode() + "', '"
+					+ electrodeModel.getPrice() + "')");
 					
 			ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
 			if(rs.isBeforeFirst()){

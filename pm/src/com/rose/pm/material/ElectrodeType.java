@@ -75,4 +75,8 @@ public class ElectrodeType extends Material{
 		// TODO Auto-generated constructor stub
 	}
 
+
+
+	
+
 }

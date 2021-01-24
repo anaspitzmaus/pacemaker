@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import javax.swing.ComboBoxModel;
@@ -42,7 +44,7 @@ public class PnlElectrodeType extends PnlBase {
 	JToggleButton tglFix;
 	JButton btnCreate, btnDelete;
 	Font baseFont;
-	 private NumberFormat paymentFormat;
+	NumberFormat paymentFormat;
 	
 	/**
 	 * 
@@ -54,7 +56,9 @@ public class PnlElectrodeType extends PnlBase {
 	 */
 	public PnlElectrodeType() {
 		baseFont = new Font("Tahoma", Font.PLAIN, 14);
-		paymentFormat = NumberFormat.getCurrencyInstance();
+		paymentFormat = DecimalFormat.getInstance();
+		paymentFormat.setMinimumFractionDigits(2);
+		paymentFormat.setMaximumFractionDigits(2);
 		pnlInput.setLayout(new MigLayout("", "[][][][][][][][][][][][][grow][][][]", "[]"));
 		
 		lblNotation = new JLabel("lblNotation");
@@ -254,6 +258,10 @@ public class PnlElectrodeType extends PnlBase {
 		
 	}
 	
+	protected void settblDoubleRenderer(Class<Double> dblClass, TableCellRenderer r) {
+		table.setDefaultRenderer(dblClass, r);
+	}
+	
 	protected void setTblSelectionMode(int selection) {
 		table.setSelectionMode(selection);
 	}
@@ -273,6 +281,11 @@ public class PnlElectrodeType extends PnlBase {
 
 	protected void addDeleteListener(ActionListener listener) {
 		btnDelete.addActionListener(listener);
+		
+	}
+
+	protected void addPriceChangeListener(PropertyChangeListener priceListener) {
+		ftxtPrice.addPropertyChangeListener(priceListener);
 		
 	}
 
