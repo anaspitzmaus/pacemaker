@@ -242,9 +242,6 @@ public class SQL_UPDATE {
 				stmt.executeUpdate("DELETE FROM electrode_type WHERE idelectrode_type = " + electrodeModel.getId() + " LIMIT 1");
 				return true;
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				
-				
 				if(e.getErrorCode() == 1451) {
 					JOptionPane.showMessageDialog(null, "Der Datensatz kann nicht gelöscht werden, da bereits eine Elektrode für dieses Modell existiert", "Löschung nicht möglich!", 2);
 				}else {
@@ -270,8 +267,13 @@ public class SQL_UPDATE {
 				stmt.executeUpdate("DELETE FROM electrode WHERE idelectrode = " + electrode.getId() + " LIMIT 1");
 				return true;
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				if(e.getErrorCode() == 1451) {
+					JOptionPane.showMessageDialog(null, "Diese Elektrode kann nicht gelöscht werden, da für sie bereits eine Untersuchung angelegt wurde!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+				}else {
+					JOptionPane.showMessageDialog(new JFrame(),
+					"Message:\n" +  e.getMessage() + "\n\nClass:\n" + SQL_UPDATE.class.getSimpleName() + "\n\nBoolean deleteElectrode(Electrode electrode)", "SQL Exception warning",
+				    JOptionPane.WARNING_MESSAGE);
+				}
 				return false;
 			}
 		}else {
@@ -369,8 +371,13 @@ public class SQL_UPDATE {
 					stmt.executeUpdate("DELETE FROM icd WHERE id_icd = " + aggregate.getId() + " LIMIT 1");
 					return true;
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					if(e.getErrorCode() == 1451) {
+						JOptionPane.showMessageDialog(null, "Dieses Aggregat kann nicht gelöscht werden, da es bereits für eine Untersuchung verwendet wurde!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+					}else {
+						JOptionPane.showMessageDialog(new JFrame(),
+						"Message:\n" +  e.getMessage() + "\n\nClass:\n" + SQL_UPDATE.class.getSimpleName() + "\n\nBoolean deleteAggregate(PM aggregate)", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+					}
 					return false;
 				}
 			}else {
@@ -378,8 +385,13 @@ public class SQL_UPDATE {
 					stmt.executeUpdate("DELETE FROM pm_implant WHERE id_pm_implant = " + aggregate.getId() + " LIMIT 1");
 					return true;
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					if(e.getErrorCode() == 1451) {
+						JOptionPane.showMessageDialog(null, "Dieses Aggregat kann nicht gelöscht werden, da es bereits für eine Untersuchung verwendet wurde!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+					}else {
+						JOptionPane.showMessageDialog(new JFrame(),
+						"Message:\n" +  e.getMessage() + "\n\nClass:\n" + SQL_UPDATE.class.getSimpleName() + "\n\nBoolean deleteAggregate(PM aggregate)", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+					}
 					return false;
 				}		
 			}

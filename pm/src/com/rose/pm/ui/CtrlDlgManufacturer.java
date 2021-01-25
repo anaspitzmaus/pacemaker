@@ -72,6 +72,7 @@ public class CtrlDlgManufacturer {
 			tblRowSelectionListener = new TblRowSelectionListener();
 			dlgManufacturer.addTblRowSelectionListener(tblRowSelectionListener);
 			modusChange = false;
+			dlgManufacturer.pack();
 			showDialog();
 		//}
 		
