@@ -1,9 +1,12 @@
 package com.rose.pm.db;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -518,38 +521,57 @@ public class SQL_INSERT {
 		
 	}
 
-	public static Integer electrodeModel(ElectrodeType electrodeModel) {
-		Integer id = null;
+	public static Integer electrodeModel(ElectrodeType electrodeModel) throws SQLException {
+		
 		Integer mri = 0;
 		
 		if(electrodeModel.getMri()) {
 			mri = 1;
 		}
-		stmt = DB.getStatement();
+		//stmt = DB.getStatement();
+		String insert = "INSERT INTO electrode_type (notation, id_manufacturer, length, notice, mri, fixmode, price) VALUES (?,?,?,?,?,?,?)";
+		Connection con = DB.getConnection();
 		
-		try {
 			DB.getConnection().setAutoCommit(true);
-			stmt.executeUpdate("INSERT INTO electrode_type (notation, id_manufacturer, length, notice, mri, fixmode, price) "
-					+ "VALUES ('" + electrodeModel.getNotation() + "', '" 
-					+ electrodeModel.getManufacturer().getId() + "', '"
-					+ electrodeModel.getLength() + "', '"
-					+ electrodeModel.getNotice() + "', '"
-					+ mri + "', '"
-					+ electrodeModel.getFixMode() + "', '"
-					+ electrodeModel.getPrice() + "')");
-					
-			ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
-			if(rs.isBeforeFirst()){
-				rs.next();
-				id = rs.getInt("ID");
+			PreparedStatement ps = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, electrodeModel.getNotation());
+			ps.setInt(2, electrodeModel.getManufacturer().getId());
+			ps.setInt(3, electrodeModel.getLength());
+			ps.setString(4, electrodeModel.getNotice());
+			ps.setInt(5, mri);
+			ps.setString(6, electrodeModel.getFixMode());
+			if (electrodeModel.getPrice() != null) {
+				ps.setDouble(7, electrodeModel.getPrice());
+			} else {
+				ps.setNull(7, Types.DOUBLE);
 			}
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(new JFrame(),
-				    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT electrodeModel(ElectrodeModel electrodeModel)", "SQL Exception warning",
-				    JOptionPane.WARNING_MESSAGE);
-		}			
-	
-	return id;
+			
+			
+			int row = ps.executeUpdate();
+			if (row == 0) {
+				JOptionPane.showMessageDialog(new JFrame(),
+					    "Class: SQL_INSERT electrodeModel(ElectrodeModel electrodeModel) - kein Eintrag erfolgt!", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+	        }
+
+	        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	            	return (int) generatedKeys.getLong(1);
+	                //user.setId(generatedKeys.getLong(1));
+	            }
+	            else {
+	            	JOptionPane.showMessageDialog(new JFrame(),
+						    "Class: SQL_INSERT electrodeModel(ElectrodeModel electrodeModel) - kein Eintrag erfolgt!", "SQL Exception warning",
+						    JOptionPane.WARNING_MESSAGE);
+	            	return null;
+	            }
+	        }
+//		} catch (SQLException e) {
+//			JOptionPane.showMessageDialog(new JFrame(),
+//				    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT electrodeModel(ElectrodeModel electrodeModel)", "SQL Exception warning",
+//				    JOptionPane.WARNING_MESSAGE);
+//			return null;
+//		}		
 		
 	}
 

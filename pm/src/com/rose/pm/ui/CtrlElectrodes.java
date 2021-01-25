@@ -2,7 +2,9 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.rose.pm.db.SQL_INSERT;
@@ -60,12 +62,16 @@ public class CtrlElectrodes {
 				elType.setNotice(ctrlPnlElectrodeType.getNoticeListener().getNotation());
 				System.out.println(ctrlPnlElectrodeType.getPriceListener().getPrice());
 				elType.setPrice(ctrlPnlElectrodeType.getPriceListener().getPrice());
-				SQL_INSERT.electrodeModel(elType);	
-					
-				ctrlPnlElectrodeType.getTblElectrodeModel().setElectrodeModels(SQL_SELECT.electrodeModels());
-				ctrlPnlElectrodeType.getTblElectrodeModel().fireTableDataChanged();
-				ctrlPnlElectrode.electrodeTypeModel.addElement(elType);
-				
+				try {
+					SQL_INSERT.electrodeModel(elType);
+					ctrlPnlElectrodeType.getTblElectrodeModel().setElectrodeModels(SQL_SELECT.electrodeModels());
+					ctrlPnlElectrodeType.getTblElectrodeModel().fireTableDataChanged();
+					ctrlPnlElectrode.electrodeTypeModel.addElement(elType);
+				} catch (SQLException e) {
+					JOptionPane.showMessageDialog(new JFrame(),
+						e.getMessage() + ", " + e.getErrorCode() + "Class: SQL_INSERT electrodeModel(ElectrodeModel electrodeModel) - das Elektrodenmodell konnte nicht erstellt werden!", "SQL Exception warning",
+						JOptionPane.WARNING_MESSAGE);
+				}				
 			}
 		}
 		

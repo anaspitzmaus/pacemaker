@@ -81,7 +81,7 @@ public class Listener {
 	}
 	
 	class PriceListener implements PropertyChangeListener{
-		private Double price = 0.00;
+		private Double price = null;
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			JFormattedTextField field = (JFormattedTextField)evt.getSource();
