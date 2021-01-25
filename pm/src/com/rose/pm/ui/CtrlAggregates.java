@@ -3,6 +3,8 @@ package com.rose.pm.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JOptionPane;
+
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
@@ -96,15 +98,17 @@ public class CtrlAggregates {
 		public void actionPerformed(ActionEvent e) {
 			if(ctrlPnlPMType.getTblRowSelectionListener().getAggregatSelected() instanceof AggregateType) {
 				AggregateType type = ctrlPnlPMType.getTblRowSelectionListener().getAggregatSelected();
-				if(SQL_UPDATE.deleteAggregatModel(type)){
-					ctrlPnlPMType.getAggregateTypeTableModel().aggregates.remove(type);
-					ctrlPnlPMType.getAggregateTypeTableModel().fireTableDataChanged();
-					//for all types of aggregates
-					for(int i = 0; i< ctrlPnlPM.aggregateTypeModel.getSize(); i++) {
-						//if notation of deleted aggregate type is same as notation of aggregate type in the ComboBoxModel
-						if(ctrlPnlPM.aggregateTypeModel.getElementAt(i).getNotation().equals(type.getNotation())) {
-							//remove type of aggregate from the comboBoxModel
-							ctrlPnlPM.aggregateTypeModel.removeElementAt(i);
+				if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
+					if(SQL_UPDATE.deleteAggregatModel(type)){
+						ctrlPnlPMType.getAggregateTypeTableModel().aggregates.remove(type);
+						ctrlPnlPMType.getAggregateTypeTableModel().fireTableDataChanged();
+						//for all types of aggregates
+						for(int i = 0; i< ctrlPnlPM.aggregateTypeModel.getSize(); i++) {
+							//if notation of deleted aggregate type is same as notation of aggregate type in the ComboBoxModel
+							if(ctrlPnlPM.aggregateTypeModel.getElementAt(i).getNotation().equals(type.getNotation())) {
+								//remove type of aggregate from the comboBoxModel
+								ctrlPnlPM.aggregateTypeModel.removeElementAt(i);
+							}
 						}
 					}
 				}

@@ -3,6 +3,8 @@ package com.rose.pm.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JOptionPane;
+
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
@@ -81,15 +83,17 @@ public class CtrlElectrodes {
 		public void actionPerformed(ActionEvent e) {
 			if(ctrlPnlElectrodeType.getTblRowSelectionListener().getElectrodeModelSelected() instanceof ElectrodeType) {
 				ElectrodeType elType = ctrlPnlElectrodeType.getTblRowSelectionListener().getElectrodeModelSelected();
-				if(SQL_UPDATE.deleteElectrodeModel(elType)){
-					ctrlPnlElectrodeType.getTblElectrodeModel().electrodeModels.remove(elType);
-					ctrlPnlElectrodeType.getTblElectrodeModel().fireTableDataChanged();
-					//for all types of electrodes
-					for(int i = 0; i< ctrlPnlElectrode.electrodeTypeModel.getSize(); i++) {
-						//if notation of deleted electrode type is same as notation of electrode type in the ComboBoxModel
-						if(ctrlPnlElectrode.electrodeTypeModel.getElementAt(i).getNotation().equals(elType.getNotation())) {
-							//remove type of electrode from the comboBoxModel
-							ctrlPnlElectrode.electrodeTypeModel.removeElementAt(i);
+				if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
+					if(SQL_UPDATE.deleteElectrodeModel(elType)){
+						ctrlPnlElectrodeType.getTblElectrodeModel().electrodeModels.remove(elType);
+						ctrlPnlElectrodeType.getTblElectrodeModel().fireTableDataChanged();
+						//for all types of electrodes
+						for(int i = 0; i< ctrlPnlElectrode.electrodeTypeModel.getSize(); i++) {
+							//if notation of deleted electrode type is same as notation of electrode type in the ComboBoxModel
+							if(ctrlPnlElectrode.electrodeTypeModel.getElementAt(i).getNotation().equals(elType.getNotation())) {
+								//remove type of electrode from the comboBoxModel
+								ctrlPnlElectrode.electrodeTypeModel.removeElementAt(i);
+							}
 						}
 					}
 				}
