@@ -32,10 +32,13 @@ public class CtrlICD extends CtrlAggregates{
 		@Override
 		protected void actualizeDBAndModels() {
 			if(model instanceof ICD_Type) {
-				SQL_INSERT.icd_Model((ICD_Type) model);			
-				ctrlPnlPMType.getAggregateTypeTableModel().setAggregats(SQL_SELECT.ICD_Kinds());
-				ctrlPnlPMType.getAggregateTypeTableModel().fireTableDataChanged();
-				ctrlPnlPM.aggregateTypeModel.addElement(model);
+				Integer id = SQL_INSERT.icd_Model((ICD_Type) model);	
+				if(id != null) {
+					model.setId(id);
+					ctrlPnlPMType.getAggregateTypeTableModel().setAggregats(SQL_SELECT.ICD_Kinds());
+					ctrlPnlPMType.getAggregateTypeTableModel().fireTableDataChanged();
+					ctrlPnlPM.aggregateTypeModel.addElement(model);
+				}
 			}
 		}
 		
