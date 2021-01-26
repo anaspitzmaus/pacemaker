@@ -68,11 +68,14 @@ public class CtrlAggregates {
 		}
 		
 		protected void actualizeDBAndModels() {
-			if(model instanceof AggregateType) {
-				SQL_INSERT.pacemakerModel(model);			
-				ctrlPnlPMType.getAggregateTypeTableModel().setAggregats(SQL_SELECT.pacemakerKinds());
-				ctrlPnlPMType.getAggregateTypeTableModel().fireTableDataChanged();
-				ctrlPnlPM.aggregateTypeModel.addElement(model);
+			if(model instanceof AggregateType) {				
+				Integer id = SQL_INSERT.pacemakerModel(model);	
+				if(id != null) {
+					model.setId(id);
+					ctrlPnlPMType.getAggregateTypeTableModel().setAggregats(SQL_SELECT.pacemakerKinds());
+					ctrlPnlPMType.getAggregateTypeTableModel().fireTableDataChanged();
+					ctrlPnlPM.aggregateTypeModel.addElement(model);
+				}
 			}
 		}
 		

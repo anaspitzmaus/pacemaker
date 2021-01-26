@@ -60,13 +60,15 @@ public class CtrlElectrodes {
 				elType.setLength(ctrlPnlElectrodeType.getLengthListener().getLength());
 				elType.setMri(ctrlPnlElectrodeType.getMRIListener().getMRI());
 				elType.setNotice(ctrlPnlElectrodeType.getNoticeListener().getNotation());
-				System.out.println(ctrlPnlElectrodeType.getPriceListener().getPrice());
 				elType.setPrice(ctrlPnlElectrodeType.getPriceListener().getPrice());
 				try {
-					SQL_INSERT.electrodeModel(elType);
-					ctrlPnlElectrodeType.getTblElectrodeModel().setElectrodeModels(SQL_SELECT.electrodeModels());
-					ctrlPnlElectrodeType.getTblElectrodeModel().fireTableDataChanged();
-					ctrlPnlElectrode.electrodeTypeModel.addElement(elType);
+					Integer id = SQL_INSERT.electrodeModel(elType);
+					if(id != null) {
+						elType.setId(id);
+						ctrlPnlElectrodeType.getTblElectrodeModel().setElectrodeModels(SQL_SELECT.electrodeModels());
+						ctrlPnlElectrodeType.getTblElectrodeModel().fireTableDataChanged();
+						ctrlPnlElectrode.electrodeTypeModel.addElement(elType);
+					}
 				} catch (SQLException e) {
 					JOptionPane.showMessageDialog(new JFrame(),
 						e.getMessage() + ", " + e.getErrorCode() + "Class: SQL_INSERT electrodeModel(ElectrodeModel electrodeModel) - das Elektrodenmodell konnte nicht erstellt werden!", "SQL Exception warning",

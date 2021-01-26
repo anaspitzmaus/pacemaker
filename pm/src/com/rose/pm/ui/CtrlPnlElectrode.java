@@ -363,6 +363,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		
 		protected void initiateElectrode() {
 			electrode = new Electrode((ElectrodeType) electrodeTypeModel.getSelectedItem());
+			System.out.println(electrode.getElectrodeType());
 		}
 		
 		protected void updateDBAndTblModel() {
