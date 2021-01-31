@@ -16,6 +16,7 @@ import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM;
+import com.rose.pm.material.Status;
 
 
 
@@ -556,9 +557,9 @@ public class SQL_SELECT {
 		ArrayList<PM> pms;
 		pms = new ArrayList<PM>();
 		try {
-			if(pmModel instanceof AggregateType) {//select pacemakers of a selected model
+			if(pmModel instanceof AggregateType && pmModel.getId() != null) {//select pacemakers of a selected model
 				rs = stmt.executeQuery(
-					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, pm_implant.notice "
+					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, pm_implant.notice, pm_implant.status "
 					+ "FROM pm_implant "
 					+ "INNER JOIN pm_type "
 					+ "ON pm_implant.pm_type = pm_type.idpm_type "
@@ -571,6 +572,7 @@ public class SQL_SELECT {
 						pm.setSerialNr(rs.getString("serialNr"));					
 						pm.setExpireDate(rs.getDate("expiry").toLocalDate());
 						pm.setNotice(rs.getString("notice"));
+						pm.setStatus(Status.valueOf(rs.getString("status")));
 						
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
@@ -584,7 +586,7 @@ public class SQL_SELECT {
 				}
 			}else {//select all pacemakers
 				rs = stmt.executeQuery(
-						 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation, expiry, serialNr, pm_implant.notice "
+						 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation, expiry, serialNr, pm_implant.notice, pm_implant.status "
 						+ "FROM pm_implant "
 						+ "INNER JOIN pm_type "
 						+ "ON pm_implant.pm_type = pm_type.idpm_type");
@@ -592,11 +594,13 @@ public class SQL_SELECT {
 				if(rs.isBeforeFirst()){
 					while(rs.next()) {
 						AggregateType type = new AggregateType(rs.getString("notation"));
+						type.setId(rs.getInt("pm_type"));
 						PM pm = new PM(type);
 						pm.setId(rs.getInt("id_pm_implant"));
 						pm.setSerialNr(rs.getString("serialNr"));					
 						pm.setExpireDate(rs.getDate("expiry").toLocalDate());
 						pm.setNotice(rs.getString("notice"));
+						pm.setStatus(Status.valueOf(rs.getString("status")));
 						
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
@@ -628,9 +632,9 @@ public class SQL_SELECT {
 		ArrayList<ICD> icds;
 		icds = new ArrayList<ICD>();
 		try {
-			if(type instanceof ICD_Type) {//select icds of a selected model
+			if(type instanceof ICD_Type && type.getId() != null) {//select icds of a selected model
 				rs = stmt.executeQuery(
-					 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, icd.notice "
+					 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, icd.notice, icd.status "
 					+ "FROM icd "
 					+ "INNER JOIN icd_type "
 					+ "ON icd.icd_type = icd_type.idicd_type "
@@ -643,6 +647,7 @@ public class SQL_SELECT {
 						icd.setSerialNr(rs.getString("serialNr"));					
 						icd.setExpireDate(rs.getDate("expiry").toLocalDate());
 						icd.setNotice(rs.getString("notice"));
+						icd.setStatus(Status.valueOf(rs.getString("status")));
 						
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
@@ -658,7 +663,7 @@ public class SQL_SELECT {
 				
 			}else {//select all icds
 				rs = stmt.executeQuery(
-						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation, expiry, serialNr, icd.notice "
+						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation, expiry, serialNr, icd.notice, icd.status "
 						+ "FROM icd "
 						+ "INNER JOIN icd_type "
 						+ "ON icd.icd_type = icd_type.idicd_type");
@@ -666,11 +671,13 @@ public class SQL_SELECT {
 				if(rs.isBeforeFirst()){
 					while(rs.next()) {
 						ICD_Type model = new ICD_Type(rs.getString("notation"));
+						model.setId(rs.getInt("icd_type"));
 						ICD icd = new ICD(model);
 						icd.setId(rs.getInt("id_icd"));
 						icd.setSerialNr(rs.getString("serialNr"));					
 						icd.setExpireDate(rs.getDate("expiry").toLocalDate());
 						icd.setNotice(rs.getString("notice"));
+						icd.setStatus(Status.valueOf(rs.getString("status")));
 						
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {

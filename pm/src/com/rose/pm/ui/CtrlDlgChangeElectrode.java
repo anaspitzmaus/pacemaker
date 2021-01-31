@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.table.AbstractTableModel;
 
+
+
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.Electrode;
@@ -19,6 +21,7 @@ public class CtrlDlgChangeElectrode extends CtrlDlgChange {
 	public CtrlDlgChangeElectrode(Electrode electrode, AbstractTableModel model) {
 		this.electrode = electrode;
 		this.model = model;
+	
 		dlgChange.setSerialNrText(this.electrode.getSerialNr());
 		dlgChange.setNoticeText(this.electrode.getNotice());
 		ctrlPnlSetDate.setDate(electrode.getExpireDate());
@@ -43,6 +46,9 @@ public class CtrlDlgChangeElectrode extends CtrlDlgChange {
 				electrode.setExpireDate(ctrlPnlSetDate.getDate());
 				electrode.setSerialNr(serialNrListener.getNotation());
 				electrode.setNotice(noticeListener.getNotation());
+				if(provideListener.isPatientProvided()) {
+					electrode.setPatient(provideListener.getActualPatient());
+				}
 				updateDBAndTblModel();				
 			}
 		}

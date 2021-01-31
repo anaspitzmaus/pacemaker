@@ -2,6 +2,8 @@ package com.rose.pm.material;
 
 import java.time.LocalDate;
 
+import com.rose.person.Patient;
+
 
 public class Electrode{
 	
@@ -12,8 +14,19 @@ public class Electrode{
 	String notice;
 //	Examination exam;
 	Integer id;
+	Patient patient;
 	
 	
+	public Patient getPatient() {
+		return patient;
+	}
+
+
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+
+
 	public Integer getId() {
 		return id;
 	}

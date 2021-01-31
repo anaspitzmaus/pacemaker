@@ -1,9 +1,13 @@
 package com.rose.pm.ui;
 
 import java.time.LocalDate;
+
 import javax.swing.JDialog;
+
+import com.rose.person.Patient;
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Listener.ProvideListener;
 
 
 public class CtrlDlgChange {
@@ -11,6 +15,8 @@ public class CtrlDlgChange {
 	Ctrl_PnlSetDate ctrlPnlSetDate;
 	Listener listener;
 	NotationListener serialNrListener, noticeListener;
+	ProvideListener provideListener;
+	Patient patient;
 	
 	
 	
@@ -27,6 +33,7 @@ public class CtrlDlgChange {
 		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
 		dlgChange.placePnlDate(ctrlPnlSetDate.getPanel());
 		setListener();
+		dlgChange.setProvidedPatientToCheckBox(provideListener.getActualPatient());
 	}
 	
 	protected void initiateDialog() {
@@ -39,6 +46,8 @@ public class CtrlDlgChange {
 		dlgChange.addSerialNrListener(serialNrListener);
 		noticeListener = listener.new NotationListener();
 		dlgChange.addNoticeListener(noticeListener);
+		provideListener = listener.new ProvideListener();
+		dlgChange.addProvideListener(provideListener);
 	}
 	
 	

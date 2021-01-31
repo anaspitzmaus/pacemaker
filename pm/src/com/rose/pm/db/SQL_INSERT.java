@@ -473,11 +473,12 @@ public class SQL_INSERT {
 		
 		try {
 			DB.getConnection().setAutoCommit(true);
-			stmt.executeUpdate("INSERT INTO pm_implant (pm_type, expiry, serialNr, notice) "
+			stmt.executeUpdate("INSERT INTO pm_implant (pm_type, expiry, serialNr, notice, status) "
 					+ "VALUES ('" + pm.getAggregatModel().getId() + "', '" 
 					+ Date.valueOf(pm.getExpireDate()) + "', '"
 					+ pm.getSerialNr() + "', '"
-					+ pm.getNotice() + "')");
+					+ pm.getNotice() + "', '"
+					+ pm.getStatus() + "')");
 					
 			ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
 			if(rs.isBeforeFirst()){
@@ -500,11 +501,12 @@ public class SQL_INSERT {
 		
 		try {
 			DB.getConnection().setAutoCommit(true);
-			stmt.executeUpdate("INSERT INTO icd (icd_type, expiry, serialNr, notice) "
+			stmt.executeUpdate("INSERT INTO icd (icd_type, expiry, serialNr, notice, status) "
 					+ "VALUES ('" + icd.getAggregatModel().getId() + "', '" 
 					+ Date.valueOf(icd.getExpireDate()) + "', '"
 					+ icd.getSerialNr() + "', '"
-					+ icd.getNotice() + "')");
+					+ icd.getNotice() + "', '"
+					+ icd.getStatus() + "')");
 					
 			ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
 			if(rs.isBeforeFirst()){

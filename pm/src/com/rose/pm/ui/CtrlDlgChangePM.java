@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.table.AbstractTableModel;
 
+
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.PM;
@@ -17,6 +18,7 @@ public class CtrlDlgChangePM extends CtrlDlgChange{
 	CreateListener createListener;
 	
 	public CtrlDlgChangePM(PM pm, AbstractTableModel model) {
+		
 		this.pm = pm;
 		this.model = model;
 		dlgChange.setSerialNrText(this.pm.getSerialNr());
@@ -43,6 +45,10 @@ public class CtrlDlgChangePM extends CtrlDlgChange{
 				pm.setExpireDate(ctrlPnlSetDate.getDate());
 				pm.setSerialNr(serialNrListener.getNotation());
 				pm.setNotice(noticeListener.getNotation());
+				if(provideListener.isPatientProvided()) {
+					pm.setPatient(provideListener.getActualPatient());
+				}
+				
 				updateDBAndTblModel();
 				model.fireTableDataChanged();
 				dlgChange.dispose();
