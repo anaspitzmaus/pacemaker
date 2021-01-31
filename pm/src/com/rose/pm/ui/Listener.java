@@ -1,20 +1,17 @@
 package com.rose.pm.ui;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.text.BadLocationException;
 
+import com.rose.Isynet;
+import com.rose.person.Patient;
 import com.rose.pm.material.Manufacturer;
 
 public class Listener {
@@ -99,5 +96,35 @@ public class Listener {
 		}
 	}
 	
+	class ProvideListener implements ItemListener{
+		
+		private Patient patientProv, patientActual;
+		
+		protected Boolean isPatientProvided() {
+			if(patientActual == patientProv) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+		
+		protected Patient getActualPatient() {
+			return this.patientActual;
+		}
+
+		public ProvideListener() {
+			this.patientActual =  Isynet.getActualPatient();
+		}
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if(e.getStateChange() == ItemEvent.SELECTED) {
+				patientProv = this.patientActual;
+			}else {
+				patientProv = null;
+			}			
+		}
+		
+	}
 	
 }
