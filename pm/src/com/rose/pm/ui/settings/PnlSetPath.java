@@ -65,6 +65,10 @@ public abstract class PnlSetPath extends JPanel {
 		txtPath.getDocument().addDocumentListener(l);
 	}
 	
+	protected void setPathText(String path) {
+		txtPath.setText(path);
+	}
+	
 	
 
 }

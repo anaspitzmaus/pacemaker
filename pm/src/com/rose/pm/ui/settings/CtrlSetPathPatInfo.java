@@ -22,6 +22,7 @@ public class CtrlSetPathPatInfo {
 		prefs = Preferences.userNodeForPackage(this.getClass());
 		pnlSetPathPatInfo = new PnlSetPathPatInfo();
 		pnlSetPathPatInfo.getLblPath().setText("Pfad-PatInfo:");
+		pnlSetPathPatInfo.setPathText(prefs.get("Path_PatInfo", ""));
 		setListener();
 	}
 	

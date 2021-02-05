@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.ER;
+import com.rose.pm.material.ERType;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.ICD;
@@ -779,6 +781,92 @@ public class SQL_SELECT {
 		}
 		
 		return electrodes;
+	}
+
+	/**
+	 * select the types of eventRecorders
+	 * @return an arrayList of types of event recorders
+	 * @throws SQLException
+	 */
+	public static ArrayList<ERType> eventRecorderTypes() throws SQLException {
+		stmt = DB.getStatement();
+		ArrayList<ERType> types = new ArrayList<ERType>();
+		
+		rs = stmt.executeQuery(
+				"SELECT idevent_type, eventrec_type.idmanufacturer, eventrec_type.notation AS recorderTypeNotation, notice, manufacturer.notation AS manufacturerNotation, price "
+				+ "FROM eventrec_type "
+				+ "INNER JOIN manufacturer "
+				+ "ON eventrec_type.idmanufacturer = manufacturer.idmanufacturer");
+		
+		if(rs.isBeforeFirst()){
+			while(rs.next()) {
+				ERType type = new ERType(rs.getString("recorderTypeNotation"));
+				type.setId(rs.getInt("ideventrec_type"));					
+				type.setNotice(rs.getString("notice"));
+				type.setPrice(rs.getDouble("price"));
+				
+				Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
+				manufacturer.setId(rs.getInt("idmanufacturer"));
+				type.setManufacturer(manufacturer);
+				types.add(type);
+			}
+		}		
+		
+		return types;
+	}
+	
+	/**
+	 * selects the eventRecorders of a specific model
+	 * @param type the model of eventRecorder, if type is null, all eventRecorders are selected
+	 * @return an arrayList of the selected eventRecorders
+	 * @throws SQLException
+	 */
+
+	public static ArrayList<? extends ER> eventRecorder(ERType type) throws SQLException{
+		stmt = DB.getStatement();
+		ArrayList<ER> recorders = new ArrayList<ER>();
+		if(type == null) {
+			rs = stmt.executeQuery(
+				"SELECT ideventrec, eventrec.idtype, expire, serialnr, notice, status, eventrec_type.notation AS typeNotation "
+				+ "FROM eventrec "
+				+ "INNER JOIN eventrec_type "
+				+ "ON eventrec.idType = eventrec_type.ideventrec_type");
+		
+			if(rs.isBeforeFirst()){
+				while(rs.next()) {
+					type = new ERType(rs.getString("typeNotation"));
+					type.setId(rs.getInt("idtype"));
+					ER recorder	= new ER(type);
+					recorder.setId(rs.getInt("ideventrec"));					
+					recorder.setNotice(rs.getString("notice"));
+					recorder.setExpireDate(rs.getDate("expire").toLocalDate());
+					recorder.setSerialNr(rs.getString("serialnr"));
+					recorder.setStatus(Status.valueOf(rs.getString("status")));
+					recorders.add(recorder);
+				}
+			}
+		}else if (type.getId() instanceof Integer) {//if type of eventrecorder is know
+			rs = stmt.executeQuery(
+					"SELECT ideventrec, eventrec.idtype, expire, serialnr, notice, status "
+					+ "FROM eventrec "
+					+ "INNER JOIN eventrec_type "
+					+ "ON eventrec.idType = eventrec_type.ideventrec_type "
+					+ "WHERE eventrec_type.ideventrec_type = " + type.getId() + "");
+			
+			if(rs.isBeforeFirst()){
+				while(rs.next()) {
+					ER recorder	= new ER(type);
+					recorder.setId(rs.getInt("ideventrec"));					
+					recorder.setNotice(rs.getString("notice"));				
+					recorder.setExpireDate(rs.getDate("expire").toLocalDate());
+					recorder.setSerialNr(rs.getString("serialnr"));
+					recorder.setStatus(Status.valueOf(rs.getString("status")));
+					recorders.add(recorder);
+				}
+			}
+		}
+		
+		return recorders;
 	}
 	
 	

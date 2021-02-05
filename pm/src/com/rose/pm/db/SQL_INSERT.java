@@ -8,11 +8,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
+import javax.net.ssl.SSLEngineResult.Status;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.rose.pm.MD5;
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.ER;
+import com.rose.pm.material.ERType;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.ICD;
@@ -601,6 +604,85 @@ public class SQL_INSERT {
 		}			
 	
 	return id;
+	}
+
+	/**
+	 * inserts a type of event recorder
+	 * @param model - the type of eventRecorder
+	 * @return the id of the inserted data row
+	 * @throws SQLException
+	 */
+	
+	public static Integer eventRecorderType(ERType model) throws SQLException{
+		String insert = "INSERT INTO eventrec_type (notation, idmanufacturer, notice, price) VALUES (?,?,?,?)";
+		Connection con = DB.getConnection();
+		
+			DB.getConnection().setAutoCommit(true);
+			PreparedStatement ps = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, model.getNotation());
+			ps.setInt(2, model.getManufacturer().getId());
+			ps.setString(3, model.getNotice());
+			if (model.getPrice() != null) {
+				ps.setDouble(4, model.getPrice());
+			} else {
+				ps.setNull(4, Types.DOUBLE);
+			}
+			
+			
+			int row = ps.executeUpdate();
+			if (row == 0) {
+				JOptionPane.showMessageDialog(new JFrame(),
+					    "Class: SQL_INSERT eventRecorderType(ERType model) - kein Eintrag erfolgt!", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+	        }
+
+	        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	            	return (int) generatedKeys.getLong(1);
+	                //user.setId(generatedKeys.getLong(1));
+	            }
+	            else {
+	            	JOptionPane.showMessageDialog(new JFrame(),
+	            			 "Class: SQL_INSERT eventRecorderType(ERType model) - kein Eintrag erfolgt!", "SQL Exception warning",
+						    JOptionPane.WARNING_MESSAGE);
+	            	return null;
+	            }
+	        }
+	}
+
+	public static Integer eventRecorder(ER er) throws SQLException{
+		String insert = "INSERT INTO eventrec (idtype, expire, serialnr, notice, status) VALUES (?,?,?,?,?)";
+		Connection con = DB.getConnection();
+		
+			DB.getConnection().setAutoCommit(true);
+			PreparedStatement ps = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, er.getRecorderType().getId());
+			ps.setDate(2, Date.valueOf(er.getExpireDate()));
+			ps.setString(3, er.getSerialNr());
+			ps.setString(4, er.getNotice());
+			ps.setString(5, er.getStatus().name());
+			
+			
+			int row = ps.executeUpdate();
+			if (row == 0) {
+				JOptionPane.showMessageDialog(new JFrame(),
+					    "Class: SQL_INSERT eventRecorder(ER er) - kein Eintrag erfolgt!", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+	        }
+
+	        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	            	return (int) generatedKeys.getLong(1);
+	                
+	            }
+	            else {
+	            	JOptionPane.showMessageDialog(new JFrame(),
+	            			 "Class: SQL_INSERT eventRecorder(ER er) - kein Eintrag erfolgt!", "SQL Exception warning",
+						    JOptionPane.WARNING_MESSAGE);
+	            	return null;
+	            }
+	        }
+		
 	}
 	
 	
