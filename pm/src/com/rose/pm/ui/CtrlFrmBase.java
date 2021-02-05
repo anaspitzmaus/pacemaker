@@ -14,6 +14,7 @@ public class CtrlFrmBase {
 	CtrlPnlPM ctrlPnlPM;
 	CtrlPnlICDType ctrlPnlICDType;
 	CtrlPnlICD ctrlPnlICD;
+	CtrlPnlERType ctrlPnlERType;
 	TabChangeListener tabChangeListener;
 	
 	CtrlMenuBar ctrlMenuBar;

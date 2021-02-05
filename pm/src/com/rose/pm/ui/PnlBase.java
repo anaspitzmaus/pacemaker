@@ -49,5 +49,7 @@ public class PnlBase extends JPanel {
 	protected void addManufacturerListener(ItemListener listener) {
 		
 	}
+	
+	
 
 }
