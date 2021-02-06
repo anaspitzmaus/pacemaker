@@ -15,6 +15,8 @@ public class CtrlFrmBase {
 	CtrlPnlICDType ctrlPnlICDType;
 	CtrlPnlICD ctrlPnlICD;
 	CtrlPnlERType ctrlPnlERType;
+	CtrlPnlER ctrlPnlER;
+	CtrlER ctrlER;
 	TabChangeListener tabChangeListener;
 	
 	CtrlMenuBar ctrlMenuBar;
@@ -32,6 +34,8 @@ public class CtrlFrmBase {
 		frame.getTabbedPane().add(ctrlAggregates.getCtrlPnlAggregates().getPanel().getName(), ctrlAggregates.getCtrlPnlAggregates().getPanel());
 		frame.getTabbedPane().add(ctrlICD.getCtrlPnlAggregatesType().getPanel().getName(), ctrlICD.getCtrlPnlAggregatesType().getPanel());
 		frame.getTabbedPane().add(ctrlICD.getCtrlPnlAggregates().getPanel().getName(), ctrlICD.getCtrlPnlAggregates().getPanel());
+		frame.getTabbedPane().add(ctrlER.getCtrlPnlERType().getPanel().getName(), ctrlER.getCtrlPnlERType().getPanel());
+		frame.getTabbedPane().add(ctrlER.getCtrlPnlER().getPanel().getName(), ctrlER.getCtrlPnlER().getPanel());
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
 		setListener();
 		
@@ -47,10 +51,8 @@ public class CtrlFrmBase {
 		ctrlElectrodes = new CtrlElectrodes();
 		ctrlAggregates = new CtrlAggregates();
 		ctrlICD = new CtrlICD();
-//		ctrlPnlPMType = new CtrlPnlPMType();
-//		ctrlPnlPM = new CtrlPnlPM();
-//		ctrlPnlICDType = new CtrlPnlICDType();
-//		ctrlPnlICD = new CtrlPnlICD();
+		ctrlER = new CtrlER();
+
 		ctrlMenuBar = new CtrlMenuBar();
 	}
 	

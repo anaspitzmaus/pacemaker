@@ -316,7 +316,7 @@ public class CtrlPnlER extends CtrlPnlBase{
 				er.setNotice(noticeListener.getNotation());
 				er.setStatus(Status.Lager);
 				updateDBAndTblModel();
-				((PnlPM)panel).clearComponents();
+				((PnlER)panel).clearComponents();
 				serialNrListener.notation = "";
 			}
 		}

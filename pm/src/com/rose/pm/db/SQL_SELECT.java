@@ -793,7 +793,7 @@ public class SQL_SELECT {
 		ArrayList<ERType> types = new ArrayList<ERType>();
 		
 		rs = stmt.executeQuery(
-				"SELECT idevent_type, eventrec_type.idmanufacturer, eventrec_type.notation AS recorderTypeNotation, notice, manufacturer.notation AS manufacturerNotation, price "
+				"SELECT ideventrec_type, eventrec_type.idmanufacturer, eventrec_type.notation AS recorderTypeNotation, notice, manufacturer.notation AS manufacturerNotation, price "
 				+ "FROM eventrec_type "
 				+ "INNER JOIN manufacturer "
 				+ "ON eventrec_type.idmanufacturer = manufacturer.idmanufacturer");
@@ -827,7 +827,7 @@ public class SQL_SELECT {
 		ArrayList<ER> recorders = new ArrayList<ER>();
 		if(type == null) {
 			rs = stmt.executeQuery(
-				"SELECT ideventrec, eventrec.idtype, expire, serialnr, notice, status, eventrec_type.notation AS typeNotation "
+				"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status, eventrec_type.notation AS typeNotation "
 				+ "FROM eventrec "
 				+ "INNER JOIN eventrec_type "
 				+ "ON eventrec.idType = eventrec_type.ideventrec_type");
@@ -847,7 +847,7 @@ public class SQL_SELECT {
 			}
 		}else if (type.getId() instanceof Integer) {//if type of eventrecorder is know
 			rs = stmt.executeQuery(
-					"SELECT ideventrec, eventrec.idtype, expire, serialnr, notice, status "
+					"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status "
 					+ "FROM eventrec "
 					+ "INNER JOIN eventrec_type "
 					+ "ON eventrec.idType = eventrec_type.ideventrec_type "

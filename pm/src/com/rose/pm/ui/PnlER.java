@@ -208,8 +208,13 @@ public class PnlER extends PnlBase {
 	}
 	
 	protected void setERTblModel(AbstractTableModel erTblModel) {
-		table.setModel(erTblModel);
-		
+		table.setModel(erTblModel);		
+	}
+	
+	
+	protected void clearComponents() {
+		txtSerialNr.setText("");
+		txtNotice.setText("");
 	}
 
 }
