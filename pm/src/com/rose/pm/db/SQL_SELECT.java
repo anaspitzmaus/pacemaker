@@ -10,12 +10,15 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.ER;
+import com.rose.pm.material.ERType;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM;
+import com.rose.pm.material.Status;
 
 
 
@@ -556,9 +559,9 @@ public class SQL_SELECT {
 		ArrayList<PM> pms;
 		pms = new ArrayList<PM>();
 		try {
-			if(pmModel instanceof AggregateType) {//select pacemakers of a selected model
+			if(pmModel instanceof AggregateType && pmModel.getId() != null) {//select pacemakers of a selected model
 				rs = stmt.executeQuery(
-					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, pm_implant.notice "
+					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, pm_implant.notice, pm_implant.status "
 					+ "FROM pm_implant "
 					+ "INNER JOIN pm_type "
 					+ "ON pm_implant.pm_type = pm_type.idpm_type "
@@ -571,6 +574,7 @@ public class SQL_SELECT {
 						pm.setSerialNr(rs.getString("serialNr"));					
 						pm.setExpireDate(rs.getDate("expiry").toLocalDate());
 						pm.setNotice(rs.getString("notice"));
+						pm.setStatus(Status.valueOf(rs.getString("status")));
 						
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
@@ -584,7 +588,7 @@ public class SQL_SELECT {
 				}
 			}else {//select all pacemakers
 				rs = stmt.executeQuery(
-						 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation, expiry, serialNr, pm_implant.notice "
+						 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation, expiry, serialNr, pm_implant.notice, pm_implant.status "
 						+ "FROM pm_implant "
 						+ "INNER JOIN pm_type "
 						+ "ON pm_implant.pm_type = pm_type.idpm_type");
@@ -592,11 +596,13 @@ public class SQL_SELECT {
 				if(rs.isBeforeFirst()){
 					while(rs.next()) {
 						AggregateType type = new AggregateType(rs.getString("notation"));
+						type.setId(rs.getInt("pm_type"));
 						PM pm = new PM(type);
 						pm.setId(rs.getInt("id_pm_implant"));
 						pm.setSerialNr(rs.getString("serialNr"));					
 						pm.setExpireDate(rs.getDate("expiry").toLocalDate());
 						pm.setNotice(rs.getString("notice"));
+						pm.setStatus(Status.valueOf(rs.getString("status")));
 						
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
@@ -628,9 +634,9 @@ public class SQL_SELECT {
 		ArrayList<ICD> icds;
 		icds = new ArrayList<ICD>();
 		try {
-			if(type instanceof ICD_Type) {//select icds of a selected model
+			if(type instanceof ICD_Type && type.getId() != null) {//select icds of a selected model
 				rs = stmt.executeQuery(
-					 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, icd.notice "
+					 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, icd.notice, icd.status "
 					+ "FROM icd "
 					+ "INNER JOIN icd_type "
 					+ "ON icd.icd_type = icd_type.idicd_type "
@@ -643,6 +649,7 @@ public class SQL_SELECT {
 						icd.setSerialNr(rs.getString("serialNr"));					
 						icd.setExpireDate(rs.getDate("expiry").toLocalDate());
 						icd.setNotice(rs.getString("notice"));
+						icd.setStatus(Status.valueOf(rs.getString("status")));
 						
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
@@ -658,7 +665,7 @@ public class SQL_SELECT {
 				
 			}else {//select all icds
 				rs = stmt.executeQuery(
-						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation, expiry, serialNr, icd.notice "
+						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation, expiry, serialNr, icd.notice, icd.status "
 						+ "FROM icd "
 						+ "INNER JOIN icd_type "
 						+ "ON icd.icd_type = icd_type.idicd_type");
@@ -666,11 +673,13 @@ public class SQL_SELECT {
 				if(rs.isBeforeFirst()){
 					while(rs.next()) {
 						ICD_Type model = new ICD_Type(rs.getString("notation"));
+						model.setId(rs.getInt("icd_type"));
 						ICD icd = new ICD(model);
 						icd.setId(rs.getInt("id_icd"));
 						icd.setSerialNr(rs.getString("serialNr"));					
 						icd.setExpireDate(rs.getDate("expiry").toLocalDate());
 						icd.setNotice(rs.getString("notice"));
+						icd.setStatus(Status.valueOf(rs.getString("status")));
 						
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
@@ -772,6 +781,92 @@ public class SQL_SELECT {
 		}
 		
 		return electrodes;
+	}
+
+	/**
+	 * select the types of eventRecorders
+	 * @return an arrayList of types of event recorders
+	 * @throws SQLException
+	 */
+	public static ArrayList<ERType> eventRecorderTypes() throws SQLException {
+		stmt = DB.getStatement();
+		ArrayList<ERType> types = new ArrayList<ERType>();
+		
+		rs = stmt.executeQuery(
+				"SELECT idevent_type, eventrec_type.idmanufacturer, eventrec_type.notation AS recorderTypeNotation, notice, manufacturer.notation AS manufacturerNotation, price "
+				+ "FROM eventrec_type "
+				+ "INNER JOIN manufacturer "
+				+ "ON eventrec_type.idmanufacturer = manufacturer.idmanufacturer");
+		
+		if(rs.isBeforeFirst()){
+			while(rs.next()) {
+				ERType type = new ERType(rs.getString("recorderTypeNotation"));
+				type.setId(rs.getInt("ideventrec_type"));					
+				type.setNotice(rs.getString("notice"));
+				type.setPrice(rs.getDouble("price"));
+				
+				Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
+				manufacturer.setId(rs.getInt("idmanufacturer"));
+				type.setManufacturer(manufacturer);
+				types.add(type);
+			}
+		}		
+		
+		return types;
+	}
+	
+	/**
+	 * selects the eventRecorders of a specific model
+	 * @param type the model of eventRecorder, if type is null, all eventRecorders are selected
+	 * @return an arrayList of the selected eventRecorders
+	 * @throws SQLException
+	 */
+
+	public static ArrayList<? extends ER> eventRecorder(ERType type) throws SQLException{
+		stmt = DB.getStatement();
+		ArrayList<ER> recorders = new ArrayList<ER>();
+		if(type == null) {
+			rs = stmt.executeQuery(
+				"SELECT ideventrec, eventrec.idtype, expire, serialnr, notice, status, eventrec_type.notation AS typeNotation "
+				+ "FROM eventrec "
+				+ "INNER JOIN eventrec_type "
+				+ "ON eventrec.idType = eventrec_type.ideventrec_type");
+		
+			if(rs.isBeforeFirst()){
+				while(rs.next()) {
+					type = new ERType(rs.getString("typeNotation"));
+					type.setId(rs.getInt("idtype"));
+					ER recorder	= new ER(type);
+					recorder.setId(rs.getInt("ideventrec"));					
+					recorder.setNotice(rs.getString("notice"));
+					recorder.setExpireDate(rs.getDate("expire").toLocalDate());
+					recorder.setSerialNr(rs.getString("serialnr"));
+					recorder.setStatus(Status.valueOf(rs.getString("status")));
+					recorders.add(recorder);
+				}
+			}
+		}else if (type.getId() instanceof Integer) {//if type of eventrecorder is know
+			rs = stmt.executeQuery(
+					"SELECT ideventrec, eventrec.idtype, expire, serialnr, notice, status "
+					+ "FROM eventrec "
+					+ "INNER JOIN eventrec_type "
+					+ "ON eventrec.idType = eventrec_type.ideventrec_type "
+					+ "WHERE eventrec_type.ideventrec_type = " + type.getId() + "");
+			
+			if(rs.isBeforeFirst()){
+				while(rs.next()) {
+					ER recorder	= new ER(type);
+					recorder.setId(rs.getInt("ideventrec"));					
+					recorder.setNotice(rs.getString("notice"));				
+					recorder.setExpireDate(rs.getDate("expire").toLocalDate());
+					recorder.setSerialNr(rs.getString("serialnr"));
+					recorder.setStatus(Status.valueOf(rs.getString("status")));
+					recorders.add(recorder);
+				}
+			}
+		}
+		
+		return recorders;
 	}
 	
 	

@@ -4,23 +4,15 @@ import java.time.LocalDate;
 
 import com.rose.person.Patient;
 
-
-
-
-public class PM {
-	
+public class ER {
 	String serialNr;
 	LocalDate expireDate;
 //	Examination exam;
-	AggregateType aggregatModel;
+	ERType erType;
 	Integer id;
 	String notice;
 	Status status;
 	Patient patient;
-	
-	
-	
-	
 	
 	public Patient getPatient() {
 		return patient;
@@ -58,18 +50,18 @@ public class PM {
 
 
 
-	public PM(AggregateType pmModel) {		
-		this.aggregatModel = pmModel;
+	public ER(ERType erType) {		
+		this.erType = erType;
 	}		
 	
 	
 
-	public AggregateType getAggregatModel() {
-		return aggregatModel;
+	public ERType getRecorderType() {
+		return erType;
 	}
 	
-	public void setAggregateModel(AggregateType model) {
-		this.aggregatModel = model;
+	public void setERType(ERType type) {
+		this.erType = type;
 	}
 
 
@@ -104,17 +96,5 @@ public class PM {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-
-
-
-//	public Examination getExam() {
-//		return exam;
-//	}
-//	
-//	public void setExam(Examination exam) {
-//		this.exam = exam;
-//	}
-	
-	
 
 }

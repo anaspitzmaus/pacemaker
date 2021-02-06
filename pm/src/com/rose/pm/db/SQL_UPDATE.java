@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.ER;
+import com.rose.pm.material.ERType;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.ICD;
@@ -399,5 +401,18 @@ public class SQL_UPDATE {
 			return false;
 		}
 		
+	}
+
+	public static void deleteEventRecorderType(ERType type) throws SQLException{
+		stmt = DB.getStatement();
+		if(type instanceof ERType && type.getId() != null) {
+							
+			stmt.executeUpdate("DELETE FROM eventrec_type WHERE ideventrec_type = " + type.getId() + " LIMIT 1");					
+		}
+	}
+
+	public static void deleteEventRecorder(ER recorder) throws SQLException {
+		stmt = DB.getStatement();		
+		stmt.executeUpdate("DELETE FROM eventrec WHERE ideventrec = " + recorder.getId() + " LIMIT 1");
 	}
 }
