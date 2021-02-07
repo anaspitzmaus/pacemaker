@@ -1,5 +1,10 @@
 package com.rose.pm.ui;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -42,7 +47,17 @@ public class CtrlFrmBase {
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
 		setListener();
 		isynet = new Isynet();
-		isynet.readPatInfo();
+		try {
+			isynet.readPatInfo();
+			//create a new Patient out of the data 
+			//put the patients name to the menuBar
+		} catch (FileNotFoundException e) {			
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Dateipfad" , JOptionPane.ERROR_MESSAGE);
+		} catch (IOException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Dateipfad" , JOptionPane.ERROR_MESSAGE);
+		}
 	}
 	
 	private void setListener() {

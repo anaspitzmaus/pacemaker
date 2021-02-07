@@ -27,6 +27,10 @@ public class CtrlMenuBar {
 		menuBar.setBtnSettingsIcon(icon);
 		menuBar.setBtnSettingsText("");
 		
+		ImageIcon iconRefresh = new ImageIcon(getImage("images/refresh_16.png"));
+		iconRefresh.getImage();
+		menuBar.setBtnUpdateIcon(iconRefresh);
+		menuBar.setBtnUpdateText("");
 		setListener();
 	}
 	
