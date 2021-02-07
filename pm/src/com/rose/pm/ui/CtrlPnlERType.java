@@ -5,12 +5,18 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
+
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -18,14 +24,16 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.db.SQL_SELECT;
-import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ERType;
+import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
-import com.rose.pm.ui.CtrlPnlPMType.MRIListener;
-import com.rose.pm.ui.CtrlPnlPMType.PMTypeTblModel;
-import com.rose.pm.ui.CtrlPnlPMType.TblRowSelectionListener;
+import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodeModelBooleanRenderer;
+import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodeModelEMRenderer;
+import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodeModelStringRenderer;
+import com.rose.pm.ui.CtrlPnlElectrodeType.TblIntegerRenderer;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 public class CtrlPnlERType extends CtrlPnlBase{
 
@@ -33,13 +41,103 @@ public class CtrlPnlERType extends CtrlPnlBase{
 	ERTypeTblModel tblModel; 
 	ComboBoxModel<Manufacturer> manufacturerModel;
 	ManufacturerRenderer manufacturerRenderer;
-	ManufacturerListener manufacturerListener;
+	Renderer renderer;
 	Listener listener;
+	Listener.ManufacturerListener manufacturerListener;
+	Listener.PriceListener priceListener;
 	NotationListener notationListener, noticeListener;	
-	TableERTypeRenderer tablePMTypeRenderer;
-	TblStringRenderer tblStringRenderer;
-	TblERIDRenderer tblPMIDRenderer;
+	TableERTypeRenderer tableERTypeRenderer;
+	Renderer.TblStringRenderer tblStringRenderer;
+	Renderer.TblDoubleRenderer tblDoubleRenderer;
+	TblERIDRenderer tblERIDRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
+	
+	public CtrlPnlERType() {
+		panel = new PnlERType();
+		panel.setName("Eventrekordermodel");
+		panel.setOpaque(false);
+		panel.setBackground(Color.BLUE);
+		setListener();
+		setModel();
+		setRenderer();
+		setComponentText();
+		((PnlERType)panel).setManufacturerIndex(-1);
+		((PnlERType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	}
+	
+	private void setListener() {
+		listener = new Listener();
+		notationListener = listener.new NotationListener();	
+		((PnlERType)panel).addNotationListener(notationListener);
+		noticeListener = listener.new NotationListener();
+		((PnlERType)panel).addNoticeListener(noticeListener);
+		manufacturerListener = listener.new ManufacturerListener();
+		((PnlERType)panel).addManufacturerListener(manufacturerListener);
+		
+		tblRowSelectionListener = new TblRowSelectionListener();
+		((PnlERType)panel).addTblRowSelectionListener(tblRowSelectionListener);
+		priceListener = listener.new PriceListener();
+		((PnlERType)panel).addPriceChangeListener(priceListener);
+		
+	}
+	
+	private void setModel() {
+		ArrayList<Manufacturer> manufacturers = SQL_SELECT.manufacturers();
+		Manufacturer[] arr = new Manufacturer[manufacturers.size()]; 		  
+        // ArrayList to Array Conversion 
+        for (int i = 0; i < manufacturers.size(); i++) 
+            arr[i] = manufacturers.get(i);		
+		
+		manufacturerModel = new DefaultComboBoxModel<Manufacturer>(arr);
+	
+		((PnlERType)panel).setManufacturerModel(manufacturerModel);
+		
+		try {
+			tblModel = new ERTypeTblModel(SQL_SELECT.eventRecorderTypes());
+			((PnlERType)panel).setTblModel(tblModel);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(new JFrame(), e.getErrorCode() + ", " + e.getMessage() + ", das Tabellenmodel der Eventrekordertypen konnte nicht erstellt werden");
+		}
+		
+	}
+	
+	private void setRenderer() {
+		manufacturerRenderer = new ManufacturerRenderer();
+		((PnlERType)panel).setManufacturerRenderer(manufacturerRenderer);
+		
+		tblERIDRenderer = new TblERIDRenderer();
+		((PnlERType)panel).setTblERIDRenderer(ERType.class, tblERIDRenderer);
+		
+//		tableERTypeRenderer = new TableERTypeRenderer();
+//		((PnlERType)panel).setTableERTypeRenderer(ERType.class, tableERTypeRenderer);
+		renderer = new Renderer();
+		tblStringRenderer = renderer.new TblStringRenderer();
+		((PnlERType)panel).setTableStringRenderer(String.class, tblStringRenderer);
+		
+		tblDoubleRenderer = renderer.new TblDoubleRenderer();
+		((PnlERType)panel).setTblDoubleRenderer(Double.class, tblDoubleRenderer);
+	}
+
+	protected void setComponentText() {
+		((PnlERType)panel).setLblNotationText("Bezeichnung:");
+		((PnlERType)panel).setLblManufacturerText("Hersteller:");
+		((PnlERType)panel).setLblNoticeText("Bemerkung:");
+		((PnlERType)panel).setBtnCreateText("Eintragen");
+		((PnlERType)panel).setBtnDeleteText("Löschen");
+		((PnlERType)panel).setLblPriceText("Preis:");
+	}
+	
+	protected ComboBoxModel<Manufacturer> getManufacturerModel() {
+		return this.manufacturerModel;
+	}
+
+	protected NotationListener getNoticeListener() {
+		return this.noticeListener;
+	}
+	
+	protected NotationListener getNotationListener() {
+		return this.notationListener;
+	}
 	
 	
 	/**
@@ -358,17 +456,6 @@ public class CtrlPnlERType extends CtrlPnlBase{
 		((PnlERType)panel).addDeleteListener(deleteTypeListener);		
 	}
 	
-	protected ComboBoxModel<Manufacturer> getManufacturerModel() {
-		return this.manufacturerModel;
-	}
-
-	protected NotationListener getNoticeListener() {
-		return this.noticeListener;
-	}
-	
-	protected NotationListener getNotationListener() {
-		return this.notationListener;
-	}
 	
 	protected ERTypeTblModel getERTypeTableModel() {
 		return this.tblModel;

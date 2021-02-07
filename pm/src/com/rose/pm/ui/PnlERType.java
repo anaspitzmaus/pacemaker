@@ -3,10 +3,14 @@ package com.rose.pm.ui;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
@@ -19,7 +23,9 @@ import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.material.ERType;
 import com.rose.pm.material.Manufacturer;
-
+import com.rose.pm.ui.CtrlPnlERType.TableERTypeRenderer;
+import com.rose.pm.ui.CtrlPnlERType.TblERIDRenderer;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -30,17 +36,22 @@ public class PnlERType extends PnlBase {
 
 	JTextField txtNotation;
 	JTextField txtNotice;
+	JFormattedTextField ftxtPrice;
 	JComboBox<Manufacturer> cbxManufacturer;
 	JButton btnCreate, btnDelete;
 	JLabel lblNotation;
 	JLabel lblManufacturer;
-	JLabel lblNotice;
+	JLabel lblNotice, lblPrice;
 	Font font;
+	NumberFormat paymentFormat;
 	/**
 	 * Create the panel.
 	 */
 	public PnlERType() {
 		font = new Font("Tahoma", Font.PLAIN, 14);
+		paymentFormat = DecimalFormat.getInstance();
+		paymentFormat.setMinimumFractionDigits(2);
+		paymentFormat.setMaximumFractionDigits(2);
 		pnlInput.setLayout(new MigLayout("", "[][][][][][][][][grow][]", "[][][][]"));
 		
 		lblNotation = new JLabel("lblNotation");
@@ -69,9 +80,20 @@ public class PnlERType extends PnlBase {
 		pnlInput.add(txtNotice, "cell 5 0, growx");
 		txtNotice.setColumns(10);
 		
+		lblPrice = new JLabel("lblPrice");
+		lblPrice.setFont(font);
+		pnlInput.add(lblPrice, "cell 6 0");
+		
+		ftxtPrice = new JFormattedTextField(paymentFormat);
+		ftxtPrice.setFont(font);
+		pnlInput.add(ftxtPrice, "cell 7 0");
+		ftxtPrice.setColumns(10);
+		
+		lblPrice.setLabelFor(ftxtPrice);
+		
 		btnCreate = new JButton("btnCreate");
 		btnCreate.setFont(font);
-		pnlInput.add(btnCreate, "cell 6 0");
+		pnlInput.add(btnCreate, "cell 8 0");
 		
 		btnDelete = new JButton("BtnDelete");
 		btnDelete.setFont(font);
@@ -95,8 +117,12 @@ public class PnlERType extends PnlBase {
 		btnCreate.setText(txt);
 	}
 	
-	protected void setBtnDeleteTest(String txt) {
+	protected void setBtnDeleteText(String txt) {
 		btnDelete.setText(txt);
+	}
+	
+	protected void setLblPriceText(String txt) {
+		lblPrice.setText(txt);
 	}
 	
 	protected void setTblModel(AbstractTableModel model) {
@@ -162,13 +188,28 @@ public class PnlERType extends PnlBase {
 	}
 
 	public void addTblRowSelectionListener(ListSelectionListener listener) {
-		table.getSelectionModel().addListSelectionListener(listener);
-		
+		table.getSelectionModel().addListSelectionListener(listener);		
 	}
 
 	protected void addDeleteListener(ActionListener listener) {
-		btnDelete.addActionListener(listener);
+		btnDelete.addActionListener(listener);		
+	}
+	
+	protected void addPriceChangeListener(PropertyChangeListener priceListener) {
+		ftxtPrice.addPropertyChangeListener(priceListener);		
+	}
+
+//	protected void setTableERTypeRenderer(Class<ERType> erTypeClass, TableCellRenderer renderer) {
+//		table.setDefaultRenderer(erTypeClass, renderer);		
+//	}
+
+	protected void setTblDoubleRenderer(Class<Double> doubleClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(doubleClass, renderer);
 		
+	}
+
+	protected void setTblERIDRenderer(Class<ERType> erTypeClass, TblERIDRenderer renderer) {
+		table.setDefaultRenderer(erTypeClass, renderer);		
 	}
 
 }
