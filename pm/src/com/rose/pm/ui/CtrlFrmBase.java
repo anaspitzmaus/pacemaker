@@ -3,6 +3,8 @@ package com.rose.pm.ui;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.rose.Isynet;
+
 public class CtrlFrmBase {
 	FrmBase frame;
 	CtrlPnlElectrodeType ctrlPnlElectrodeType;
@@ -18,6 +20,7 @@ public class CtrlFrmBase {
 	CtrlPnlER ctrlPnlER;
 	CtrlER ctrlER;
 	TabChangeListener tabChangeListener;
+	Isynet isynet;
 	
 	CtrlMenuBar ctrlMenuBar;
 	
@@ -38,7 +41,8 @@ public class CtrlFrmBase {
 		frame.getTabbedPane().add(ctrlER.getCtrlPnlER().getPanel().getName(), ctrlER.getCtrlPnlER().getPanel());
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
 		setListener();
-		
+		isynet = new Isynet();
+		isynet.readPatInfo();
 	}
 	
 	private void setListener() {
