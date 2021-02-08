@@ -26,7 +26,7 @@ public class Isynet{
 		
 	}
 	
-	public HashMap<Integer, String> readPatInfo() throws FileNotFoundException, IOException {
+	public HashMap<Integer, String> readPatInfo() throws FileNotFoundException, IOException, StringIndexOutOfBoundsException {
 		BufferedReader reader;
 		HashMap<Integer, String> data = new HashMap<Integer, String>();
 		

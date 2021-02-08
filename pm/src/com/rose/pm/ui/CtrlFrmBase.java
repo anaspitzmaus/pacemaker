@@ -25,7 +25,8 @@ public class CtrlFrmBase {
 	CtrlPnlER ctrlPnlER;
 	CtrlER ctrlER;
 	TabChangeListener tabChangeListener;
-	Isynet isynet;
+	//Isynet isynet;
+	CtrlTbrIsynet ctrlTbrIsynet;
 	
 	CtrlMenuBar ctrlMenuBar;
 	
@@ -45,19 +46,9 @@ public class CtrlFrmBase {
 		frame.getTabbedPane().add(ctrlER.getCtrlPnlERType().getPanel().getName(), ctrlER.getCtrlPnlERType().getPanel());
 		frame.getTabbedPane().add(ctrlER.getCtrlPnlER().getPanel().getName(), ctrlER.getCtrlPnlER().getPanel());
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
+		frame.insertToolBar(ctrlTbrIsynet.getToolBar());
 		setListener();
-		isynet = new Isynet();
-		try {
-			isynet.readPatInfo();
-			//create a new Patient out of the data 
-			//put the patients name to the menuBar
-		} catch (FileNotFoundException e) {			
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Dateipfad" , JOptionPane.ERROR_MESSAGE);
-		} catch (IOException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Dateipfad" , JOptionPane.ERROR_MESSAGE);
-		}
+		
 	}
 	
 	private void setListener() {
@@ -73,6 +64,7 @@ public class CtrlFrmBase {
 		ctrlER = new CtrlER();
 
 		ctrlMenuBar = new CtrlMenuBar();
+		ctrlTbrIsynet = new CtrlTbrIsynet();
 	}
 	
 	public void showFrame() {
