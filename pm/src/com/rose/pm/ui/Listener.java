@@ -96,35 +96,35 @@ public class Listener {
 		}
 	}
 	
-	class ProvideListener implements ItemListener{
-		
-		private Patient patientProv, patientActual;
-		
-		protected Boolean isPatientProvided() {
-			if(patientActual == patientProv) {
-				return true;
-			}else {
-				return false;
-			}
-		}
-		
-		protected Patient getActualPatient() {
-			return this.patientActual;
-		}
-
-		public ProvideListener() {
-			this.patientActual =  Isynet.getActualPatient();
-		}
-
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-			if(e.getStateChange() == ItemEvent.SELECTED) {
-				patientProv = this.patientActual;
-			}else {
-				patientProv = null;
-			}			
-		}
-		
-	}
+//	class ProvideListener implements ItemListener{
+//		
+//		private Patient patientProv, patientActual;
+//		
+//		protected Boolean isPatientProvided() {
+//			if(patientActual == patientProv) {
+//				return true;
+//			}else {
+//				return false;
+//			}
+//		}
+//		
+//		protected Patient getActualPatient() {
+//			return this.patientActual;
+//		}
+//
+//		public ProvideListener() {
+//			this.patientActual =  Isynet.getActualPatient();
+//		}
+//
+//		@Override
+//		public void itemStateChanged(ItemEvent e) {
+//			if(e.getStateChange() == ItemEvent.SELECTED) {
+//				patientProv = this.patientActual;
+//			}else {
+//				patientProv = null;
+//			}			
+//		}
+//		
+//	}
 	
 }

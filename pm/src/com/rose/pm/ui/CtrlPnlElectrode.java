@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -18,16 +19,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import com.rose.Isynet;
+import com.rose.person.Patient;
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.ui.Listener.NotationListener;
@@ -375,19 +378,33 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	}
 	
 	class TblMouseAdaptor extends MouseAdapter{
+		 JTable table;
 		 @Override
 	    public void mouseClicked(MouseEvent mouseEvent){
 	        if(mouseEvent.getClickCount()==2){
-	        	 JTable table =(JTable) mouseEvent.getSource();
+	        	 table =(JTable) mouseEvent.getSource();
 	             Point point = mouseEvent.getPoint();
 	             int row = table.rowAtPoint(point);
 	             if (table.getSelectedRow() != -1 && row >= 0) {
 	                CtrlDlgChangeElectrode ctrlDlgChangeElectrode = new CtrlDlgChangeElectrode((Electrode) electrodeTblModel.getValueAt(row, 0), electrodeTblModel);
 	                ctrlDlgChangeElectrode.getDialog().setVisible(true);
 	             }
+	        }else if(SwingUtilities.isRightMouseButton(mouseEvent) == true){
+	        	table =(JTable) mouseEvent.getSource();
+	        	Point point = mouseEvent.getPoint();
+	        	int row = table.rowAtPoint(point);
+	        	if(table.getSelectedRow() == row) {
+	        		Isynet isynet = new Isynet();
+	        		Patient patient = isynet.getPatient();
+	        		PopupMenu menu = new PopupMenu(patient);
+	                menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+	        	}
 	        }
+	        		
 	    }
 	}
+	
+	
 	
 	
 	

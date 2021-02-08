@@ -46,9 +46,9 @@ public class CtrlDlgChangeElectrode extends CtrlDlgChange {
 				electrode.setExpireDate(ctrlPnlSetDate.getDate());
 				electrode.setSerialNr(serialNrListener.getNotation());
 				electrode.setNotice(noticeListener.getNotation());
-				if(provideListener.isPatientProvided()) {
-					electrode.setPatient(provideListener.getActualPatient());
-				}
+//				if(provideListener.isPatientProvided()) {
+//					electrode.setPatient(provideListener.getActualPatient());
+//				}
 				updateDBAndTblModel();				
 			}
 		}

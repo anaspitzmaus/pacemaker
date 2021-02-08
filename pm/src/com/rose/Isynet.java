@@ -11,6 +11,9 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.prefs.Preferences;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import com.rose.person.Patient;
 import com.rose.pm.ui.settings.CtrlSetPathPatInfo;
 
@@ -19,12 +22,12 @@ public class Isynet{
 	static Preferences prefs;
 	Path path;
 	
-	public static Patient getActualPatient() {
-		
-		Patient patient = new Patient("Test", "Fritz");
-		return patient;
-		
-	}
+//	public Patient getActualPatient() {
+//		
+//		Patient patient = new Patient("Test", "Fritz");
+//		return patient;
+//		
+//	}
 	
 	public HashMap<Integer, String> readPatInfo() throws FileNotFoundException, IOException, StringIndexOutOfBoundsException {
 		BufferedReader reader;
@@ -47,6 +50,38 @@ public class Isynet{
 			reader.close();					
 		}
 		return data;
+	}
+	
+	public Patient getPatient() {
+		Patient patient = null;
+		String lastname, firstname;
+		HashMap<Integer, String> data = null;;
+		try {
+			data = readPatInfo();
+		} catch (FileNotFoundException e) {			
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Dateipfad" , JOptionPane.ERROR_MESSAGE);
+		}catch(StringIndexOutOfBoundsException e) {
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage() + "PatInfo file is empty", "leere PatInfo Datei" , JOptionPane.ERROR_MESSAGE);
+		} catch (IOException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Dateipfad" , JOptionPane.ERROR_MESSAGE);
+		}	
+		
+		
+		
+		if(data != null && !data.isEmpty()) {
+			
+			String patName = data.get(3301);
+			String[] val= patName.split(",");
+			if(val.length == 2) {
+				lastname = val[0];
+				firstname = val[1];
+				patient = new Patient(lastname, firstname);
+			}
+		}
+		
+		return patient;
 	}
 	
 	

@@ -45,9 +45,9 @@ public class CtrlDlgChangePM extends CtrlDlgChange{
 				pm.setExpireDate(ctrlPnlSetDate.getDate());
 				pm.setSerialNr(serialNrListener.getNotation());
 				pm.setNotice(noticeListener.getNotation());
-				if(provideListener.isPatientProvided()) {
-					pm.setPatient(provideListener.getActualPatient());
-				}
+//				if(provideListener.isPatientProvided()) {
+//					pm.setPatient(provideListener.getActualPatient());
+//				}
 				
 				updateDBAndTblModel();
 				model.fireTableDataChanged();
