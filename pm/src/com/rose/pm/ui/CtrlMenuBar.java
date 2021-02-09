@@ -21,7 +21,7 @@ public class CtrlMenuBar {
 	FrmMenuBar menuBar;
 	ManufacturerListener manufacturerListener;
 	SettingsListener settingsListener;
-	UpdateListener updateListener;
+	
 	
 	protected FrmMenuBar getMenuBar() {
 		return this.menuBar;
@@ -35,10 +35,7 @@ public class CtrlMenuBar {
 		menuBar.setBtnSettingsIcon(icon);
 		menuBar.setBtnSettingsText("");
 		
-		ImageIcon iconRefresh = new ImageIcon(getImage("images/refresh_16.png"));
-		iconRefresh.getImage();
-		menuBar.setBtnUpdateIcon(iconRefresh);
-		menuBar.setBtnUpdateText("");
+		
 		setListener();
 	}
 	
@@ -49,34 +46,10 @@ public class CtrlMenuBar {
 		menuBar.addManufacturerListener(manufacturerListener);
 		settingsListener = new SettingsListener();
 		menuBar.addSettingsListener(settingsListener);
-		updateListener = new UpdateListener();
-		menuBar.addUpdateListener(updateListener);
-	}
-	
-	/**
-	 * listener for refreshing the active patient as set in isynet
-	 * @author Ekki
-	 *
-	 */
-	class UpdateListener implements ActionListener{
-		Isynet isynet;
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			isynet = new Isynet();
-			
-			try {
-				HashMap<Integer, String> data = isynet.readPatInfo();
-				//create a new Patient out of the data 
-				//put the patients name to the menuBar
-			} catch (FileNotFoundException e1) {					
-				JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Dateipfad" , JOptionPane.ERROR_MESSAGE);
-			} catch (IOException e1) {				
-				JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Dateipfad" , JOptionPane.ERROR_MESSAGE);
-			}
-			
-		}
 		
 	}
+	
+	
 
 
 

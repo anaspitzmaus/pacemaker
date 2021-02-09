@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Font;
 
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
@@ -63,4 +64,14 @@ public class TbrIsynet extends JToolBar{
 		txtPatient.setText(patient.getSurname() + ", " + patient.getFirstname());
 		
 	}
+
+	protected void setBtnRefreshIcon(ImageIcon iconRefresh) {
+		btnRefresh.setIcon(iconRefresh);		
+	}
+
+	protected void setBtnRefreshText(String txt) {
+		btnRefresh.setText(txt);		
+	}
+	
+	
 }
