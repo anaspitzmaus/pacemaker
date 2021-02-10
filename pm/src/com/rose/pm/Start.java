@@ -23,7 +23,7 @@ public class Start {
 			public void run() {
 				
 				try {
-					checkDBConnection();
+					checkDBConnection();					
 					CtrlFrmBase ctrlFrmBase = new CtrlFrmBase();
 					ctrlFrmBase.showFrame();
 				} catch (Exception e) {

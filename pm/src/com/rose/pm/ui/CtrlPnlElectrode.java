@@ -33,6 +33,7 @@ import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.material.Material;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblDateRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
@@ -396,13 +397,15 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	        	if(table.getSelectedRow() == row) {
 	        		Isynet isynet = new Isynet();
 	        		Patient patient = isynet.getPatient();
-	        		PopupMenu menu = new PopupMenu(patient);
+	        		PopupMenu menu = new PopupMenu(patient, (Electrode) electrodeTblModel.getValueAt(row, 0));
 	                menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
 	        	}
 	        }
 	        		
 	    }
 	}
+	
+	
 	
 	
 	

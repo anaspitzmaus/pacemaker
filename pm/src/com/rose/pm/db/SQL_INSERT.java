@@ -12,6 +12,7 @@ import javax.net.ssl.SSLEngineResult.Status;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.rose.person.Patient;
 import com.rose.pm.MD5;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ER;
@@ -44,7 +45,7 @@ public class SQL_INSERT {
 		try{
 			DB.getConnection().setAutoCommit(true);
 			rs = stmt.executeQuery("SELECT * "
-					+ "FROM staff "
+					+ "FROM sm.staff "
 					+ "WHERE admin = '" + 1 + "' "
 					+ "AND expiry IS NULL");
 			
@@ -340,7 +341,7 @@ public class SQL_INSERT {
 		
 			try {
 				DB.getConnection().setAutoCommit(true);
-				stmt.executeUpdate("INSERT INTO manufacturer (notation, contact_person, mobil) "
+				stmt.executeUpdate("INSERT INTO sm.manufacturer (notation, contact_person, mobil) "
 						+ "VALUES ('" + manufacturer.getNotation() + "', '" 
 						+ manufacturer.getContact_person() + "', '"
 						+ manufacturer.getMobile() + "')");
@@ -682,6 +683,36 @@ public class SQL_INSERT {
 	            	return null;
 	            }
 	        }
+		
+	}
+
+	public static Integer patient(Patient patient) throws SQLException{
+		String insert = "INSERT INTO kgp_new.patient (patnr) VALUES (?)";
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		PreparedStatement ps = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+		ps.setInt(1, patient.getNumber());
+		
+		int row = ps.executeUpdate();
+		if (row == 0) {
+			JOptionPane.showMessageDialog(new JFrame(),
+				    "Class: SQL_INSERT patient(Patient patient) - kein Eintrag erfolgt!", "SQL Exception warning",
+				    JOptionPane.WARNING_MESSAGE);
+        }
+
+        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+            	return (int) generatedKeys.getLong(1);
+                
+            }
+            else {
+            	JOptionPane.showMessageDialog(new JFrame(),
+            			 "Class: SQL_INSERT patient(Patient patient) - kein Eintrag erfolgt!", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+            	return null;
+            }
+        }
+		
 		
 	}
 	

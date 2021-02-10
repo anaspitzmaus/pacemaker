@@ -1,10 +1,13 @@
 package com.rose.pm.material;
 
+import com.rose.person.Patient;
+
 public abstract class Material {
 	String notation;
 	Manufacturer manufacturer;
 	String notice;
 	Double price;
+	Patient patient;
 
 	
 	public Manufacturer getManufacturer() {
@@ -49,6 +52,16 @@ public abstract class Material {
 
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+
+
+	public Patient getPatient() {
+		return patient;
+	}
+
+
+	public void setPatient(Patient patient) {
+		this.patient = patient;
 	}
 	
 	

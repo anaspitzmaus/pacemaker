@@ -5,28 +5,17 @@ import java.time.LocalDate;
 import com.rose.person.Patient;
 
 
-public class Electrode{
+public class Electrode extends Material{
 	
 	Integer resistance;
 	String serialNr;
 	ElectrodeType electrodeType;
-	LocalDate expireDate; 
-	String notice;
+	LocalDate expireDate; 	
 //	Examination exam;
 	Integer id;
-	Patient patient;
 	
 	
-	public Patient getPatient() {
-		return patient;
-	}
-
-
-	public void setPatient(Patient patient) {
-		this.patient = patient;
-	}
-
-
+	
 	public Integer getId() {
 		return id;
 	}
@@ -98,6 +87,7 @@ public class Electrode{
 
 
 	public Electrode(ElectrodeType electrodeModel) {
+		super("");
 		this.electrodeType = electrodeModel;
 	}
 

@@ -449,7 +449,7 @@ public class SQL_SELECT {
 		try {
 			rs = stmt.executeQuery(
 					 "SELECT idmanufacturer, notation, contact_person, mobil "					
-					+ "FROM manufacturer "
+					+ "FROM sm.manufacturer "
 					+ "WHERE expire IS NULL");
 			
 			if(rs.isBeforeFirst()){
@@ -478,9 +478,9 @@ public class SQL_SELECT {
 		try {
 			rs = stmt.executeQuery(
 					 "SELECT idpm_type, pm_type.notation AS pmNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice "
-					+ "FROM pm_type "
-					+ "INNER JOIN manufacturer "
-					+ "ON pm_type.id_manufacturer = manufacturer.idmanufacturer");
+					+ "FROM sm.pm_type "
+					+ "INNER JOIN sm.manufacturer "
+					+ "ON sm.pm_type.id_manufacturer = sm.manufacturer.idmanufacturer");
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
@@ -519,9 +519,9 @@ public class SQL_SELECT {
 		try {
 			rs = stmt.executeQuery(
 					 "SELECT idicd_type, icd_type.notation AS icdNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice "
-					+ "FROM icd_type "
-					+ "INNER JOIN manufacturer "
-					+ "ON icd_type.id_manufacturer = manufacturer.idmanufacturer");
+					+ "FROM sm.icd_type "
+					+ "INNER JOIN sm.manufacturer "
+					+ "ON sm.icd_type.id_manufacturer = sm.manufacturer.idmanufacturer");
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
@@ -562,10 +562,10 @@ public class SQL_SELECT {
 			if(pmModel instanceof AggregateType && pmModel.getId() != null) {//select pacemakers of a selected model
 				rs = stmt.executeQuery(
 					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, pm_implant.notice, pm_implant.status "
-					+ "FROM pm_implant "
-					+ "INNER JOIN pm_type "
-					+ "ON pm_implant.pm_type = pm_type.idpm_type "
-					+ "WHERE pm_implant.pm_type = " + pmModel.getId() + "");
+					+ "FROM sm.pm_implant "
+					+ "INNER JOIN sm.pm_type "
+					+ "ON sm.pm_implant.pm_type = sm.pm_type.idpm_type "
+					+ "WHERE sm.pm_implant.pm_type = " + pmModel.getId() + "");
 				
 				if(rs.isBeforeFirst()){
 					while(rs.next()) {
@@ -589,9 +589,9 @@ public class SQL_SELECT {
 			}else {//select all pacemakers
 				rs = stmt.executeQuery(
 						 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation, expiry, serialNr, pm_implant.notice, pm_implant.status "
-						+ "FROM pm_implant "
-						+ "INNER JOIN pm_type "
-						+ "ON pm_implant.pm_type = pm_type.idpm_type");
+						+ "FROM sm.pm_implant "
+						+ "INNER JOIN sm.pm_type "
+						+ "ON sm.pm_implant.pm_type = sm.pm_type.idpm_type");
 				
 				if(rs.isBeforeFirst()){
 					while(rs.next()) {
@@ -637,10 +637,10 @@ public class SQL_SELECT {
 			if(type instanceof ICD_Type && type.getId() != null) {//select icds of a selected model
 				rs = stmt.executeQuery(
 					 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, icd.notice, icd.status "
-					+ "FROM icd "
-					+ "INNER JOIN icd_type "
-					+ "ON icd.icd_type = icd_type.idicd_type "
-					+ "WHERE icd.icd_type = " + type.getId() + "");
+					+ "FROM sm.icd "
+					+ "INNER JOIN sm.icd_type "
+					+ "ON sm.icd.icd_type = sm.icd_type.idicd_type "
+					+ "WHERE sm.icd.icd_type = " + type.getId() + "");
 				
 				if(rs.isBeforeFirst()){
 					while(rs.next()) {
@@ -666,9 +666,9 @@ public class SQL_SELECT {
 			}else {//select all icds
 				rs = stmt.executeQuery(
 						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation, expiry, serialNr, icd.notice, icd.status "
-						+ "FROM icd "
-						+ "INNER JOIN icd_type "
-						+ "ON icd.icd_type = icd_type.idicd_type");
+						+ "FROM sm.icd "
+						+ "INNER JOIN sm.icd_type "
+						+ "ON sm.icd.icd_type = sm.icd_type.idicd_type");
 				
 				if(rs.isBeforeFirst()){
 					while(rs.next()) {
@@ -706,9 +706,9 @@ public class SQL_SELECT {
 		try {
 			rs = stmt.executeQuery(
 					"SELECT idelectrode_type, electrode_type.id_manufacturer, length, electrode_type.notation AS electrodeNotation, notice, mri, fixmode, manufacturer.notation AS manufacturerNotation, price "
-					+ "FROM electrode_type "
-					+ "INNER JOIN manufacturer "
-					+ "ON electrode_type.id_manufacturer = manufacturer.idmanufacturer");
+					+ "FROM sm.electrode_type "
+					+ "INNER JOIN sm.manufacturer "
+					+ "ON sm.electrode_type.id_manufacturer = sm.manufacturer.idmanufacturer");
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
@@ -750,16 +750,16 @@ public class SQL_SELECT {
 			if(type instanceof ElectrodeType) {//if type of electrode is known
 				rs = stmt.executeQuery(
 						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId "
-						+ "FROM electrode "
-						+ "INNER JOIN electrode_type "
-						+ "ON electrode_type.idelectrode_type = electrode.id_electrode_type "
-						+ "WHERE id_electrode_type = " + type.getId() + "");
+						+ "FROM sm.electrode "
+						+ "INNER JOIN sm.electrode_type "
+						+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type "
+						+ "WHERE sm.electrode.id_electrode_type = " + type.getId() + "");
 			}else {//select all electrodes
 				rs = stmt.executeQuery(
 						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId "
-						+ "FROM electrode "
-						+ "INNER JOIN electrode_type "
-						+ "ON electrode_type.idelectrode_type = electrode.id_electrode_type");
+						+ "FROM sm.electrode "
+						+ "INNER JOIN sm.electrode_type "
+						+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type");
 			}
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
@@ -794,9 +794,9 @@ public class SQL_SELECT {
 		
 		rs = stmt.executeQuery(
 				"SELECT ideventrec_type, eventrec_type.idmanufacturer, eventrec_type.notation AS recorderTypeNotation, notice, manufacturer.notation AS manufacturerNotation, price "
-				+ "FROM eventrec_type "
-				+ "INNER JOIN manufacturer "
-				+ "ON eventrec_type.idmanufacturer = manufacturer.idmanufacturer");
+				+ "FROM sm.eventrec_type "
+				+ "INNER JOIN sm.manufacturer "
+				+ "ON sm.eventrec_type.idmanufacturer = sm.manufacturer.idmanufacturer");
 		
 		if(rs.isBeforeFirst()){
 			while(rs.next()) {
@@ -828,9 +828,9 @@ public class SQL_SELECT {
 		if(type == null) {
 			rs = stmt.executeQuery(
 				"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status, eventrec_type.notation AS typeNotation "
-				+ "FROM eventrec "
-				+ "INNER JOIN eventrec_type "
-				+ "ON eventrec.idType = eventrec_type.ideventrec_type");
+				+ "FROM sm.eventrec "
+				+ "INNER JOIN sm.eventrec_type "
+				+ "ON sm.eventrec.idType = sm.eventrec_type.ideventrec_type");
 		
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
@@ -848,10 +848,10 @@ public class SQL_SELECT {
 		}else if (type.getId() instanceof Integer) {//if type of eventrecorder is know
 			rs = stmt.executeQuery(
 					"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status "
-					+ "FROM eventrec "
-					+ "INNER JOIN eventrec_type "
-					+ "ON eventrec.idType = eventrec_type.ideventrec_type "
-					+ "WHERE eventrec_type.ideventrec_type = " + type.getId() + "");
+					+ "FROM sm.eventrec "
+					+ "INNER JOIN sm.eventrec_type "
+					+ "ON sm.eventrec.idType = sm.eventrec_type.ideventrec_type "
+					+ "WHERE sm.eventrec_type.ideventrec_type = " + type.getId() + "");
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
