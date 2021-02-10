@@ -90,12 +90,12 @@ public class CtrlTbrIsynet {
 				patient = new Patient(lastname, firstname);
 			}
 			//birthday
-			String birth = patData.get(3303);
+			String birth = patData.get(3103);
 			
 			Integer day = Integer.valueOf(birth.substring(0, 2));
 			Integer month = Integer.valueOf(birth.substring(2, 4));
-			Integer year = Integer.valueOf(birth.substring(4, 6));
-			year = 1900 + year;
+			Integer year = Integer.valueOf(birth.substring(4, 8));
+			
 			
 			LocalDate birthday = LocalDate.of(year, month, day);
 			
