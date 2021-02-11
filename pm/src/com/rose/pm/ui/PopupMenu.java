@@ -3,6 +3,7 @@ package com.rose.pm.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -47,13 +48,21 @@ public class PopupMenu extends JPopupMenu {
 				
 				//insert patient to database if not already exists
 				try {
-					SQL_INSERT.patient(patient);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					Integer patId = SQL_INSERT.patient(patient);
+					if(patId instanceof Integer) {
+						material.setPatient(patient);
+						//update Table to show, that material is provided to a patient
+					}
+				} catch (SQLIntegrityConstraintViolationException e1) {
+					
+					//Patient always exists at database
+					material.setPatient(patient);
+					
+				} catch (SQLException e2) {
+					
 				}
 				
-				material.setPatient(patient);
+				
 				//
 			}
 			

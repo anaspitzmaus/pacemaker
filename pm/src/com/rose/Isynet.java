@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.prefs.Preferences;
 
@@ -78,6 +79,22 @@ public class Isynet{
 				lastname = val[0];
 				firstname = val[1];
 				patient = new Patient(lastname, firstname);
+				
+				//birthday
+				String birth = data.get(3103);
+				
+				Integer day = Integer.valueOf(birth.substring(0, 2));
+				Integer month = Integer.valueOf(birth.substring(2, 4));
+				Integer year = Integer.valueOf(birth.substring(4, 8));
+				
+				
+				LocalDate birthday = LocalDate.of(year, month, day);
+				
+				patient.setBirthday(birthday);
+				
+				//number of patient
+				Integer nr = Integer.parseInt(data.get(3600));
+				patient.setNumber(nr);
 			}
 		}
 		
