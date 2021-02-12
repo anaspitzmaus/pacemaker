@@ -711,18 +711,8 @@ public class SQL_INSERT {
 
         try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
             if (generatedKeys.next()) {
-            	String patExtended = "INSERT INTO human.patient_extended (id_patient, surname) VALUES (?,?)";	
-            	PreparedStatement psExt = con.prepareStatement(patExtended, Statement.RETURN_GENERATED_KEYS);
-            	psExt.setInt(1, (int) generatedKeys.getLong(1));
-            	psExt.setString(2, patient.getSurname());
-            	int rowExt = psExt.executeUpdate();
-            	if (rowExt == 0) {
-        			JOptionPane.showMessageDialog(new JFrame(),
-        				    "Class: SQL_INSERT patient(Patient patient) - kein Eintrag des Nachnamen erfolgt!", "SQL Exception warning",
-        				    JOptionPane.WARNING_MESSAGE);
-                }
-            	DB.getConnection().setAutoCommit(true);
-            	return (int) generatedKeys.getLong(1);
+            	patient.setId((int) generatedKeys.getLong(1)); //set the generated key (the id) to the patient and
+            	return patientExtended(patient);// insert the extended patient data
                 
             }
             else {
@@ -733,11 +723,41 @@ public class SQL_INSERT {
             	return null;
             }
         }
-        
-        
-		
-		
 	}
 	
-	
+	/**
+	 * insert the extended data of a given patient
+	 * @param patient
+	 * @return the generated key of the inserted dataSet
+	 * @throws SQLException
+	 */
+	private static Integer patientExtended(Patient patient) throws SQLException{
+		if(patient instanceof Patient && patient.getId() instanceof Integer) {
+			String string = "INSERT INTO human.patient_extended (id_patient, surname) VALUES (?,?)";
+			Connection con = DB.getConnection();
+			
+			PreparedStatement ps = con.prepareStatement(string, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, patient.getId());
+	    	ps.setString(2, patient.getSurname());
+	    	
+	    	int row = ps.executeUpdate();
+			if (row == 0) {
+				JOptionPane.showMessageDialog(new JFrame(),
+					    "Class: SQL_INSERT patientExtended(Patient patient) - kein Eintrag erfolgt!", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+	        }
+			DB.getConnection().setAutoCommit(true);
+			 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+				 if(generatedKeys.next()) {
+					 return (int)generatedKeys.getLong(1);
+				 }else {
+					 return null;
+				 }
+			 }
+		}else {
+			return null;
+		}		
+	}
 }
+
+
