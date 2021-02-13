@@ -25,37 +25,22 @@ import net.miginfocom.swing.MigLayout;
 
 public class PnlElectrode extends PnlBase {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 656734936297482035L;
-	JLabel lblSerialNr, lblNotice, lblElectrodeType;
-	JTextField txtSerialNr, txtNotice;
+	JLabel lblElectrodeType;
 	JComboBox<ElectrodeType> cbxElectrodeType;
-	JButton btnCreate, btnDelete, btnShowAll;
+	JButton btnShowAll;
 	
 	
 	
 	protected void setLblSerialNrText(String txt) {
-		lblSerialNr.setText(txt);
-	}
-	
-	protected void setLblNoticeText(String txt) {
-		lblNotice.setText(txt);
-	}
+		lblNotation.setText(txt);
+	}	
 	
 	protected void setLblElectrodeTypeText(String txt) {
 		lblElectrodeType.setText(txt);
-	}
-	
-	protected void setBtnCreateText(String txt) {
-		btnCreate.setText(txt);
-	}
-	
-	protected void setBtnDeleteText(String txt) {
-		btnDelete.setText(txt);
-	}
-	
+	}	
+		
 	protected void setBtnShowAllText(String txt) {
 		btnShowAll.setText(txt);
 	}
@@ -77,30 +62,16 @@ public class PnlElectrode extends PnlBase {
 		cbxElectrodeType.setFont(font);
 		pnlInput.add(cbxElectrodeType, "cell 1 1, growx");
 		
-		lblSerialNr = new JLabel("lblNotation");
-		lblSerialNr.setFont(font);
-		pnlInput.add(lblSerialNr, "cell 2 1");
+		pnlInput.add(lblNotation, "cell 2 1");
 		
-		txtSerialNr = new JTextField();
-		txtSerialNr.setFont(font);
-		pnlInput.add(txtSerialNr, "cell 3 1");
-		txtSerialNr.setColumns(10);
-		
-		lblNotice = new JLabel("lblNotice");
-		lblNotice.setFont(font);
+		pnlInput.add(txtNotation, "cell 3 1");
+				
 		pnlInput.add(lblNotice, "cell 5 1");
 		
-		txtNotice = new JTextField();
-		txtNotice.setFont(font);
-		txtNotice.setColumns(10);
 		pnlInput.add(txtNotice, "cell 6 1, growx");
 		
-		btnCreate = new JButton("btnCreate");
-		btnCreate.setFont(font);
 		pnlInput.add(btnCreate, "cell 7 1");
 		
-		btnDelete = new JButton("btnDelete");
-		btnDelete.setFont(font);
 		btnDelete.setHorizontalAlignment(SwingConstants.RIGHT);
 		pnlSouth.add(btnDelete);
 
@@ -112,11 +83,7 @@ public class PnlElectrode extends PnlBase {
 	}
 
 	protected void addSerialNrListener(DocumentListener listener) {
-		txtSerialNr.getDocument().addDocumentListener(listener);		
-	}
-	
-	protected void addNoticeListener(DocumentListener l) {
-		txtNotice.getDocument().addDocumentListener(l);
+		txtNotation.getDocument().addDocumentListener(listener);		
 	}
 	
 	protected void addElectrodeTypeListener(ItemListener l) {
@@ -145,17 +112,8 @@ public class PnlElectrode extends PnlBase {
 		table.setDefaultRenderer(elclass, r);
 	}
 	
-	protected void addCreateListener(ActionListener l) {
-		btnCreate.addActionListener(l);
-	}
-	
-	protected void addDeleteListener(ActionListener l) {
-		btnDelete.addActionListener(l);
-	}
-
 	protected void setElectrodeTblModel(AbstractTableModel aggregateTblModel) {
-		table.setModel(aggregateTblModel);
-		
+		table.setModel(aggregateTblModel);		
 	}
 	
 	protected void setElectrodeTypeSelectionIndex(Integer index) {

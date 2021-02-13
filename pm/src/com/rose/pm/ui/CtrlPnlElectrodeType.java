@@ -107,7 +107,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		manufacturerListener = listener.new ManufacturerListener();
 		((PnlElectrodeType)panel).addManufacturerListener(manufacturerListener);
 		fixModeListener = new FixModeListener();
-		((PnlElectrodeType)panel).addfixModeListener(fixModeListener);
+		((PnlElectrodeType)panel).addFixModeListener(fixModeListener);
 		lengthListener = new LengthListener();
 		((PnlElectrodeType)panel).addLengthListener(lengthListener);
 		lengthListener.length = ((PnlElectrodeType)panel).getLength();
@@ -149,7 +149,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		((PnlElectrodeType)panel).setTableStringRenderer(String.class, tblElectrodeModelStringRenderer);
 		renderer = new Renderer();
 		tblDoubleRenderer = renderer.new TblDoubleRenderer();
-		((PnlElectrodeType)panel).settblDoubleRenderer(Double.class, tblDoubleRenderer);
+		((PnlElectrodeType)panel).setTblDoubleRenderer(Double.class, tblDoubleRenderer);
 	}
 
 	protected void setComponentText() {
