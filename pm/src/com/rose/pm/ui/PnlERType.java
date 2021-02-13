@@ -34,34 +34,27 @@ public class PnlERType extends PnlBase {
 	
 	private static final long serialVersionUID = 8958719570479767135L;
 
-	JTextField txtNotation;
-	JTextField txtNotice;
+	
 	JFormattedTextField ftxtPrice;
-	JComboBox<Manufacturer> cbxManufacturer;
-	JButton btnCreate, btnDelete;
-	JLabel lblNotation;
+	JComboBox<Manufacturer> cbxManufacturer;	
 	JLabel lblManufacturer;
-	JLabel lblNotice, lblPrice;
-	Font font;
+	JLabel lblPrice;	
 	NumberFormat paymentFormat;
 	/**
 	 * Create the panel.
 	 */
 	public PnlERType() {
-		font = new Font("Tahoma", Font.PLAIN, 14);
+		
 		paymentFormat = DecimalFormat.getInstance();
 		paymentFormat.setMinimumFractionDigits(2);
 		paymentFormat.setMaximumFractionDigits(2);
 		pnlInput.setLayout(new MigLayout("", "[][][][][][][][][grow][]", "[][][][]"));
 		
-		lblNotation = new JLabel("lblNotation");
-		lblNotation.setFont(font);
+		
 		pnlInput.add(lblNotation, "cell 0 0,alignx trailing");
 		
-		txtNotation = new JTextField();
-		txtNotation.setFont(font);
 		pnlInput.add(txtNotation, "cell 1 0");
-		txtNotation.setColumns(10);
+		
 		
 		lblManufacturer = new JLabel("lblManufacturer");
 		lblManufacturer.setFont(font);
@@ -71,14 +64,10 @@ public class PnlERType extends PnlBase {
 		cbxManufacturer.setFont(font);
 		pnlInput.add(cbxManufacturer, "cell 3 0");
 		
-		lblNotice = new JLabel("lblNotice");
-		lblNotice.setFont(font);
 		pnlInput.add(lblNotice, "cell 4 0");
 		
-		txtNotice = new JTextField();
-		txtNotice.setFont(font);
 		pnlInput.add(txtNotice, "cell 5 0, growx");
-		txtNotice.setColumns(10);
+		
 		
 		lblPrice = new JLabel("lblPrice");
 		lblPrice.setFont(font);
@@ -89,38 +78,19 @@ public class PnlERType extends PnlBase {
 		pnlInput.add(ftxtPrice, "cell 7 0");
 		ftxtPrice.setColumns(10);
 		
-		lblPrice.setLabelFor(ftxtPrice);
+		lblPrice.setLabelFor(ftxtPrice);		
 		
-		btnCreate = new JButton("btnCreate");
-		btnCreate.setFont(font);
 		pnlInput.add(btnCreate, "cell 8 0");
 		
-		btnDelete = new JButton("BtnDelete");
-		btnDelete.setFont(font);
 		btnDelete.setHorizontalAlignment(SwingConstants.RIGHT);
 		pnlSouth.add(btnDelete);
 	}
 	
-	protected void setLblNotationText(String txt) {
-		lblNotation.setText(txt);
-	}
 	
 	protected void setLblManufacturerText(String txt) {
 		lblManufacturer.setText(txt);
 	}
 		
-	protected void setLblNoticeText(String txt) {
-		lblNotice.setText(txt);
-	}
-	
-	protected void setBtnCreateText(String txt) {
-		btnCreate.setText(txt);
-	}
-	
-	protected void setBtnDeleteText(String txt) {
-		btnDelete.setText(txt);
-	}
-	
 	protected void setLblPriceText(String txt) {
 		lblPrice.setText(txt);
 	}
@@ -138,13 +108,11 @@ public class PnlERType extends PnlBase {
 	}
 
 	protected void setManufacturerRenderer(ListCellRenderer<Manufacturer> manufacturerRenderer) {
-		cbxManufacturer.setRenderer(manufacturerRenderer);
-		
+		cbxManufacturer.setRenderer(manufacturerRenderer);		
 	}
 	
 	protected void addManufacturerListener(ItemListener l) {
-		cbxManufacturer.addItemListener(l);
-		
+		cbxManufacturer.addItemListener(l);		
 	}
 	
 	protected void setManufacturerIndex(Integer index) {
