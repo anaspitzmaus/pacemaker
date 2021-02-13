@@ -158,7 +158,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		((PnlPMType)panel).setLblMRIText("MRT");
 		((PnlPMType)panel).setLblNoticeText("Bemerkung");
 		((PnlPMType)panel).setBtnCreateText("Eintragen");
-		((PnlPMType)panel).setBtnDeleteTest("Löschen");
+		((PnlPMType)panel).setBtnDeleteText("Löschen");
 	}
 	
 	protected void checkChambers() {
@@ -228,8 +228,9 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 			columnNames.add("Bezeichnung");
 			columnNames.add("Hersteller");
 			columnNames.add("Typ");
-			columnNames.add("MRI");
+			columnNames.add("MRI");			
 			columnNames.add("Bemerkung");
+			
 		}
 		
 		@Override

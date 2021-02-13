@@ -13,8 +13,8 @@ import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -31,8 +31,8 @@ import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
-import com.rose.pm.material.Electrode;
 import com.rose.pm.material.PM;
+import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
 
 public class CtrlPnlPM extends CtrlPnlBase{
@@ -50,6 +50,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	TblPMIDRenderer tblPMIDRenderer;
 	TblStringRenderer tblStringRenderer;
 	TblAggregateTypeRenderer tblAggregateTypeRenderer;
+	TblStatusRenderer tblStatusRenderer;
 	com.rose.pm.ui.Renderer.TblDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
@@ -96,6 +97,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		((PnlPM)panel).addTblRowSelectionListener(tblRowSelectionListener);
 		deleteListener = new DeleteListener();
 		((PnlPM)panel).addDeleteListener(deleteListener);
+		
 	}
 	
 	/**
@@ -138,6 +140,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		((PnlPM)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 		tblAggregateTypeRenderer = new TblAggregateTypeRenderer();
 		((PnlPM)panel).setTblAggregateTypeRenderer(AggregateType.class, tblAggregateTypeRenderer);
+		tblStatusRenderer = new TblStatusRenderer();
+		((PnlPM)panel).setStatusRenderer(Status.class, tblStatusRenderer);
 	}
 	
 	class AggregateTypeListener implements ItemListener{
@@ -200,6 +204,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 				pm.setExpireDate(ctrlPnlSetDate.getDate());
 				pm.setSerialNr(serialNrListener.getNotation());
 				pm.setNotice(noticeListener.getNotation());
+				pm.setStatus(Status.Lager);
 				updateDBAndTblModel();
 				((PnlPM)panel).clearComponents();
 				serialNrListener.notation = "";
@@ -227,7 +232,9 @@ public class CtrlPnlPM extends CtrlPnlBase{
 
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends PM> aggregates;
-		
+		private final Class[] columnClass = new Class[] {
+			 PM.class, AggregateType.class, String.class, LocalDate.class, Status.class, String.class
+		};
 		
 		public AggregateTblModel(ArrayList<? extends PM> paceMakers) {
 			this.aggregates = paceMakers;
@@ -236,6 +243,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			columnNames.add("Modell");
 			columnNames.add("Seriennummer");
 			columnNames.add("Ablaufdatum");
+			columnNames.add("Status");
 			columnNames.add("Bemerkung");
 		}
 		
@@ -258,9 +266,11 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		
 		@Override
 		public Class getColumnClass(int col) {
-			return getValueAt(0, col).getClass();
+			return columnClass[col];
 		}
 
+		
+		
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 						
@@ -273,7 +283,9 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			
 			case 3: return aggregates.get(rowIndex).getExpireDate();
 			
-			case 4: return aggregates.get(rowIndex).getNotice();
+			case 4: return aggregates.get(rowIndex).getStatus();
+			
+			case 5: return aggregates.get(rowIndex).getNotice();
 			
 			default: return null;
 			
@@ -281,6 +293,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			
 		}
 		
+
 		
 		
 		protected void setAggregats(ArrayList<? extends PM> pm) {
@@ -353,6 +366,40 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			}
 			return this;
 		}
+		
+	}
+	
+	class TblStatusRenderer extends JLabel implements TableCellRenderer{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1457346148401818937L;
+
+		public TblStatusRenderer() {
+			super.setOpaque(true);
+			
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			Status status = (Status) value;
+			setText(status.name());
+			
+			setHorizontalAlignment(CENTER);
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}		
+			
+			return this;
+		}
+		
+		
+		
+		
 		
 	}
 	
