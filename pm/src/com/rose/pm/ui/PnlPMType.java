@@ -115,13 +115,11 @@ public class PnlPMType extends PnlBase{
 	}
 
 	protected void setManufacturerRenderer(ListCellRenderer<Manufacturer> manufacturerRenderer) {
-		cbxManufacturer.setRenderer(manufacturerRenderer);
-		
+		cbxManufacturer.setRenderer(manufacturerRenderer);		
 	}
 	
 	protected void addManufacturerListener(ItemListener l) {
-		cbxManufacturer.addItemListener(l);
-		
+		cbxManufacturer.addItemListener(l);		
 	}
 	
 	protected void setManufacturerIndex(Integer index) {
@@ -130,8 +128,7 @@ public class PnlPMType extends PnlBase{
 
 	
 	protected void setTypeModel(ComboBoxModel<PM_Kind> model) {
-		cbxType.setModel(model);
-		
+		cbxType.setModel(model);		
 	}
 	
 	protected void setRASelection(Boolean sel) {
@@ -213,4 +210,4 @@ public class PnlPMType extends PnlBase{
 		table.getSelectionModel().addListSelectionListener(listener);		
 	}
 
-	}
+}

@@ -212,25 +212,26 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	
 	class PMTypeTblModel extends AbstractTableModel{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -8444808544442905721L;
 
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends AggregateType> aggregates;
 		PM_Kind type;
 		
-		public PMTypeTblModel(ArrayList<? extends AggregateType> paceMakers) {
-			this.aggregates = paceMakers;
+		public PMTypeTblModel(ArrayList<? extends AggregateType> aggregates) {
+			this.aggregates = aggregates;
+			setColumns();		
+		}
+		
+		protected void setColumns() {
 			columnNames = new ArrayList<String>();
 			columnNames.add("Id");
 			columnNames.add("Bezeichnung");
 			columnNames.add("Hersteller");
 			columnNames.add("Typ");
 			columnNames.add("MRI");			
-			columnNames.add("Bemerkung");
-			
+			columnNames.add("Bemerkung");	
+			columnNames.add("Preis");
 		}
 		
 		@Override
@@ -273,6 +274,8 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 				
 				case 5: return aggregates.get(rowIndex).getNotice();
 				
+				case 6: return aggregates.get(rowIndex).getPrice();
+				
 				default: return null;
 				
 				}	
@@ -292,15 +295,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		}
 		
 		protected void setAggregats(ArrayList<? extends AggregateType> pm) {
-			this.aggregates = pm;
-//			if(icd) {
-//				if(!columnNames.contains("ATP")) {
-//					columnNames.add("ATP");//add columns for ICD-Model
-//				}				
-//			}else {//if pacemaker
-//				columnNames.remove("ATP");
-//			}
-			
+			this.aggregates = pm;			
 		}
 		
 	}

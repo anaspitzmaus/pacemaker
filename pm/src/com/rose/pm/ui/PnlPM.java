@@ -79,7 +79,7 @@ public class PnlPM extends PnlBase{
 	}
 
 	protected void addSerialNrListener(DocumentListener listener) {
-		txtNotation.getDocument().addDocumentListener(listener);		
+		super.addNotationListener(listener);	
 	}
 	
 	protected void addAggregateTypeListener(ItemListener l) {
@@ -135,22 +135,20 @@ public class PnlPM extends PnlBase{
 	}
 
 	protected void addTblMouseAdaptor(MouseListener tblMouseAdaptor) {
-		table.addMouseListener(tblMouseAdaptor);
-		
+		table.addMouseListener(tblMouseAdaptor);		
 	}
 
 	protected void clearComponents() {
 		txtNotation.setText("");
+		txtNotice.setText("");
 	}
 
 	protected void setTblAggregateTypeRenderer(Class<AggregateType> typeClass,	TableCellRenderer tblAggregateTypeRenderer) {
-		table.setDefaultRenderer(typeClass, tblAggregateTypeRenderer);
-		
+		table.setDefaultRenderer(typeClass, tblAggregateTypeRenderer);		
 	}
 
 	protected void setStatusRenderer(Class<Status> statusClass, TableCellRenderer tblStatusRenderer) {
-		table.setDefaultRenderer(statusClass, tblStatusRenderer);
-		
+		table.setDefaultRenderer(statusClass, tblStatusRenderer);		
 	}
 
 	

@@ -868,6 +868,11 @@ public class SQL_SELECT {
 		
 		return recorders;
 	}
+
+	public static ArrayList<? extends AggregateType> SICD_Kinds() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }

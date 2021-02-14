@@ -1,32 +1,24 @@
 package com.rose.pm.ui;
 
-import java.awt.Font;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
 import javax.swing.ComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-
-
 import com.rose.pm.material.ERType;
 import com.rose.pm.material.Manufacturer;
-import com.rose.pm.ui.CtrlPnlERType.TableERTypeRenderer;
 import com.rose.pm.ui.CtrlPnlERType.TblERIDRenderer;
-import com.rose.pm.ui.Renderer.TblDoubleRenderer;
-
 import net.miginfocom.swing.MigLayout;
 
 public class PnlERType extends PnlBase {
@@ -118,27 +110,12 @@ public class PnlERType extends PnlBase {
 	protected void setManufacturerIndex(Integer index) {
 		cbxManufacturer.setSelectedIndex(index);
 	}
-
-	protected void addNotationListener(DocumentListener notationListener) {
-		txtNotation.getDocument().addDocumentListener(notationListener);
-		
-	}
-	
-	protected void addNoticeListener(DocumentListener l) {
-		txtNotice.getDocument().addDocumentListener(l);
-	}
 	
 	protected void emptyTextFields() {
 		txtNotation.setText("");
 		txtNotice.setText("");
 	}
 	
-	protected void addCreateListener(ActionListener l) {
-		btnCreate.addActionListener(l);
-		
-	}
-	
-		
 	protected void setTableStringRenderer(Class<String> colclass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(colclass, renderer);
 	}
@@ -159,21 +136,12 @@ public class PnlERType extends PnlBase {
 		table.getSelectionModel().addListSelectionListener(listener);		
 	}
 
-	protected void addDeleteListener(ActionListener listener) {
-		btnDelete.addActionListener(listener);		
-	}
-	
 	protected void addPriceChangeListener(PropertyChangeListener priceListener) {
 		ftxtPrice.addPropertyChangeListener(priceListener);		
 	}
 
-//	protected void setTableERTypeRenderer(Class<ERType> erTypeClass, TableCellRenderer renderer) {
-//		table.setDefaultRenderer(erTypeClass, renderer);		
-//	}
-
 	protected void setTblDoubleRenderer(Class<Double> doubleClass, TableCellRenderer renderer) {
-		table.setDefaultRenderer(doubleClass, renderer);
-		
+		table.setDefaultRenderer(doubleClass, renderer);		
 	}
 
 	protected void setTblERIDRenderer(Class<ERType> erTypeClass, TblERIDRenderer renderer) {

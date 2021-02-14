@@ -1,24 +1,22 @@
 package com.rose.pm.ui;
 
-import java.awt.Font;
 
-import javax.swing.JButton;
-
+import java.awt.event.ItemListener;
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
-
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
 import com.rose.pm.material.Manufacturer;
-
 import net.miginfocom.swing.MigLayout;
 
 
 public class PnlSICDType extends PnlBase {
 
 	JLabel lblManufacturer;
-	JComboBox<Manufacturer> cbxManufacturer;
-	
+	JComboBox<Manufacturer> cbxManufacturer;	
 	
 	
 	private static final long serialVersionUID = 5280759806419439713L;
@@ -51,5 +49,41 @@ public class PnlSICDType extends PnlBase {
 		pnlSouth.add(btnDelete);
 			
 	}
+	
+	protected void setTblModel(AbstractTableModel model) {
+		table.setModel(model);
+	}
+	
+	protected void setTblSelectionMode(int singleSelection) {
+		table.setSelectionMode(singleSelection);
+	}
+	
+	protected void setManufacturerModel(ComboBoxModel<Manufacturer> l) {
+		cbxManufacturer.setModel(l);
+	}
 
+	protected void setManufacturerRenderer(ListCellRenderer<Manufacturer> manufacturerRenderer) {
+		cbxManufacturer.setRenderer(manufacturerRenderer);		
+	}
+	
+	protected void addManufacturerListener(ItemListener l) {
+		cbxManufacturer.addItemListener(l);		
+	}
+	
+	protected void setManufacturerIndex(Integer index) {
+		cbxManufacturer.setSelectedIndex(index);
+	}
+	
+	protected void emptyTextFields() {
+		txtNotation.setText("");
+		txtNotice.setText("");		
+	}
+	
+	protected int getSelectedTblRow() {		
+		return table.getSelectedRow();
+	}
+	
+	public void addTblRowSelectionListener(ListSelectionListener listener) {
+		table.getSelectionModel().addListSelectionListener(listener);		
+	}
 }

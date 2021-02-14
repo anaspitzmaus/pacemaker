@@ -83,7 +83,7 @@ public class PnlElectrode extends PnlBase {
 	}
 
 	protected void addSerialNrListener(DocumentListener listener) {
-		txtNotation.getDocument().addDocumentListener(listener);		
+		super.addNotationListener(listener);				
 	}
 	
 	protected void addElectrodeTypeListener(ItemListener l) {
