@@ -3,9 +3,14 @@ package com.rose.pm.ui;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
@@ -15,6 +20,8 @@ import javax.swing.table.TableCellRenderer;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
+import com.rose.pm.ui.Listener.PriceListener;
+
 import net.miginfocom.swing.MigLayout;
 
 public class PnlPMType extends PnlBase{
@@ -25,16 +32,19 @@ public class PnlPMType extends PnlBase{
 	JCheckBox checkMRI;
 	JLabel lblManufacturer;
 	JLabel lblMRI;
+	NumberFormat paymentFormat;
+	JFormattedTextField ftxtPrice;
+	JLabel lblPrice;
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2047308671221451668L;
 
 	/**
 	 * Create the panel.
 	 */
 	public PnlPMType() {
+		paymentFormat = DecimalFormat.getInstance();
+		paymentFormat.setMinimumFractionDigits(2);
+		paymentFormat.setMaximumFractionDigits(2);
 		pnlInput.setLayout(new MigLayout("", "[][][][][][][][][grow][]", "[][][][]"));
 		
 		pnlInput.add(lblNotation, "cell 0 0,alignx trailing");
@@ -73,18 +83,24 @@ public class PnlPMType extends PnlBase{
 		
 		checkLV = new JCheckBox("Linker Ventrikel");
 		checkLV.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		pnlInput.add(checkLV, "cell 6 3");
+		pnlInput.add(checkLV, "cell 6 3");		
 		
+		pnlInput.add(lblNotice, "cell 7 0");		
 		
-		pnlInput.add(lblNotice, "cell 7 0");
+		pnlInput.add(txtNotice, "cell 8 0, growx");		
 		
+		lblPrice = new JLabel("lblPrice");
+		lblPrice.setFont(font);
+		pnlInput.add(lblPrice, "cell 9 0");
 		
-		pnlInput.add(txtNotice, "cell 8 0, growx");
+		ftxtPrice = new JFormattedTextField(paymentFormat);
+		ftxtPrice.setFont(font);
+		ftxtPrice.setColumns(10);
+		pnlInput.add(ftxtPrice, "cell 10 0");		
 		
+		lblPrice.setLabelFor(ftxtPrice);
 		
-		
-		pnlInput.add(btnCreate, "cell 9 0");
-		
+		pnlInput.add(btnCreate, "cell 11 0");
 	
 		btnDelete.setHorizontalAlignment(SwingConstants.RIGHT);
 		pnlSouth.add(btnDelete);	
@@ -206,8 +222,12 @@ public class PnlPMType extends PnlBase{
 		return (AggregateType) table.getValueAt(row, column);
 	}
 
-	public void addTblRowSelectionListener(ListSelectionListener listener) {
+	protected void addTblRowSelectionListener(ListSelectionListener listener) {
 		table.getSelectionModel().addListSelectionListener(listener);		
+	}
+
+	protected void addPriceChangeListener(PropertyChangeListener priceListener) {
+		ftxtPrice.addPropertyChangeListener(priceListener);		
 	}
 
 }

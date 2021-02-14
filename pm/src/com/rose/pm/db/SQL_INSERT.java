@@ -366,29 +366,71 @@ public class SQL_INSERT {
 	 * @param pmModel
 	 * @return the id of the inserted type of pacemaker
 	 */
-	public static Integer pacemakerModel(AggregateType pmModel) {
-		Integer id = null;
-		stmt = DB.getStatement();
-		Integer ra = 0; 
-		Integer rv= 0;
-		Integer lv = 0;
+	public static Integer pacemakerModel(AggregateType pmModel) throws SQLException{
 		Integer mri = 0;
-		
-		if(pmModel.getRa()) {
-			ra = 1;
-		}
-		
-		if(pmModel.getRv()) {
-			rv = 1;		
-		}
-		
-		if(pmModel.getLv()) {
-			lv = 1;
-		}
 		
 		if(pmModel.getMri()) {
 			mri = 1;
 		}
+		
+		String insert = "INSERT INTO pm_type (notation, id_manufacturer, ra, rv, lv, mri, notice, price) VALUES (?,?,?,?,?,?,?,?)";
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		PreparedStatement ps = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+		ps.setString(1, pmModel.getNotation());
+		ps.setInt(2, pmModel.getManufacturer().getId());
+		ps.setBoolean(3, pmModel.getRa());
+		ps.setBoolean(4, pmModel.getRv());
+		ps.setBoolean(5, pmModel.getLv());
+		ps.setInt(6, mri);
+		ps.setString(7, pmModel.getNotice());
+		if (pmModel.getPrice() != null) {
+			ps.setDouble(8, pmModel.getPrice());
+		} else {
+			ps.setNull(8, Types.DOUBLE);
+		}
+		Integer id = null;
+		
+		int row = ps.executeUpdate();
+		if (row == 0) {
+			JOptionPane.showMessageDialog(new JFrame(),
+				    "Class: SQL_INSERT pacemakerModel(AggregateModel pmModel) - kein Eintrag erfolgt!", "SQL Exception warning",
+				    JOptionPane.WARNING_MESSAGE);
+        }
+
+        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+            	return (int) generatedKeys.getLong(1);
+                
+            }
+            else {
+            	JOptionPane.showMessageDialog(new JFrame(),
+					    "Class: SQL_INSERT pacemakerModel(AggregateModel pmModel) - kein Eintrag erfolgt!", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+            	return null;
+            }
+        }
+//		stmt = DB.getStatement();
+//		Integer ra = 0; 
+//		Integer rv= 0;
+//		Integer lv = 0;
+//		Integer mri = 0;
+//		
+//		if(pmModel.getRa()) {
+//			ra = 1;
+//		}
+//		
+//		if(pmModel.getRv()) {
+//			rv = 1;		
+//		}
+//		
+//		if(pmModel.getLv()) {
+//			lv = 1;
+//		}
+//		
+//		if(pmModel.getMri()) {
+//			mri = 1;
+//		}
 			try {
 				DB.getConnection().setAutoCommit(true);
 				stmt.executeUpdate("INSERT INTO pm_type (notation, id_manufacturer, ra, rv, lv, mri, notice) "

@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
-
 import javax.swing.AbstractButton;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -23,18 +22,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Manufacturer;
-import com.rose.pm.material.Material;
 import com.rose.pm.material.PM_Kind;
-import com.rose.pm.ui.CtrlAggregates.CreateTypeListener;
-import com.rose.pm.ui.CtrlAggregates.DeleteTypeListener;
-import com.rose.pm.ui.CtrlPnlPM.AggregateTblModel;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Listener.PriceListener;
 
 
 
@@ -65,6 +60,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	TblPMIDRenderer tblPMIDRenderer;
 	TblBooleanRenderer tblBooleanRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
+	PriceListener priceListener;
 	
 	
 	
@@ -146,7 +142,8 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		((PnlPMType)panel).addLVListener(lvListener);
 		raListener = new RAListener();
 		((PnlPMType)panel).addRALIstener(raListener);
-		
+		priceListener = listener.new PriceListener();
+		((PnlPMType)panel).addPriceChangeListener(priceListener);
 		tblRowSelectionListener = new TblRowSelectionListener();
 		((PnlPMType)panel).addTblRowSelectionListener(tblRowSelectionListener);
 		

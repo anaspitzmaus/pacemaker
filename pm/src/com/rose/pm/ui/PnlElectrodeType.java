@@ -106,8 +106,8 @@ public class PnlElectrodeType extends PnlBase {
 		
 		ftxtPrice = new JFormattedTextField(paymentFormat);
 		ftxtPrice.setFont(font);
-		pnlInput.add(ftxtPrice, "cell 14 0");
 		ftxtPrice.setColumns(10);
+		pnlInput.add(ftxtPrice, "cell 14 0");		
 		
 		lblPrice.setLabelFor(ftxtPrice);
 		
