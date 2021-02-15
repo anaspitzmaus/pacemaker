@@ -6,14 +6,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+
 import javax.swing.AbstractButton;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
@@ -22,6 +28,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
@@ -30,6 +37,7 @@ import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Listener.PriceListener;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 
 
@@ -48,19 +56,19 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	MRIListener mriListener;
 	Boolean ra = false;
 	Boolean rv = false;
-	Boolean lv = false;
-	
+	Boolean lv = false;	
 	PM_Kind[] pmType;
 	TypeRenderer typeRenderer;
 	TypeListener typeListener;
 	DefaultComboBoxModel<PM_Kind> pmTypeModel;
-	CreateListener createListener;
 	TablePMTypeRenderer tablePMTypeRenderer;
 	TblStringRenderer tblStringRenderer;
 	TblPMIDRenderer tblPMIDRenderer;
 	TblBooleanRenderer tblBooleanRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	PriceListener priceListener;
+	Renderer renderer;
+	TblDoubleRenderer tblDoubleRenderer;
 	
 	
 	
@@ -117,6 +125,9 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		((PnlPMType)panel).setTableIDRenderer(AggregateType.class, tblPMIDRenderer);
 		tblBooleanRenderer = new TblBooleanRenderer();
 		((PnlPMType)panel).setTableBooleanRenderer(Boolean.class, tblBooleanRenderer);
+		renderer = new Renderer();
+		tblDoubleRenderer = renderer.new TblDoubleRenderer();
+		((PnlPMType)panel).setTblDoubleRenderer(Double.class, tblDoubleRenderer);
 	}
 	
 //	protected void setListener() {
@@ -586,50 +597,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		
 	}
 	
-	class CreateListener implements ActionListener{
-		
-		 
-		AggregateType aggModel;
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			
-			if(manufacturerListener.getManufacturer() != null && notationListener.getNotation() != null && checkElectrodes()) {
-				
-				initiate();					
-				aggModel.setManufacturer(manufacturerListener.getManufacturer());
-				aggModel.setRa(ra);
-				aggModel.setRv(rv);
-				aggModel.setLv(lv);
-				aggModel.setMri(mriListener.getMRI());
-				aggModel.setNotice(noticeListener.getNotation());
-				updateDBAndModel(aggModel);
-			}	
-				
-				tblModel.fireTableDataChanged();
-				((PnlPMType)panel).emptyTextFields();
-							
-		}
-		
-		protected void updateDBAndModel(AggregateType aggModel) {
-			SQL_INSERT.pacemakerModel(aggModel);
-			tblModel.setAggregats(SQL_SELECT.pacemakerKinds());
-		}
-		
-		protected void initiate() {
-			aggModel = new AggregateType(notationListener.getNotation());
-		}
-		/**
-		 * check if at least one Electrode was selected
-		 * @return
-		 */
-		protected Boolean checkElectrodes() {
-			if(ra || rv || lv) {
-				return true;
-			}
-			return false;
-		}
-		
-	}
+
 	
 	/**
 	 * renderer for the table that displays the kinds of pacemakers
@@ -837,8 +805,11 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	}
 
 	protected void addDeleteListener(ActionListener deleteTypeListener) {
-		((PnlPMType)panel).addDeleteListener(deleteTypeListener);
-		
+		((PnlPMType)panel).addDeleteListener(deleteTypeListener);		
+	}
+
+	protected PropertyChangeListener getPriceListener() {
+		return this.priceListener;
 	}
 
 	

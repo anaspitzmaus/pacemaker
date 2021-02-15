@@ -21,6 +21,7 @@ import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
 import com.rose.pm.ui.Listener.PriceListener;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -228,6 +229,10 @@ public class PnlPMType extends PnlBase{
 
 	protected void addPriceChangeListener(PropertyChangeListener priceListener) {
 		ftxtPrice.addPropertyChangeListener(priceListener);		
+	}
+
+	protected void setTblDoubleRenderer(Class<Double> doubleClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(doubleClass, renderer);		
 	}
 
 }

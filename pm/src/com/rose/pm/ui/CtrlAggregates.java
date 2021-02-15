@@ -2,15 +2,18 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
-
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.ui.Listener.PriceListener;
 
 
 public class CtrlAggregates {
@@ -63,13 +66,25 @@ public class CtrlAggregates {
 				model.setRv(ctrlPnlPMType.getRVListener().getValue());
 				model.setLv(ctrlPnlPMType.getLVListener().getValue());
 				model.setNotice(ctrlPnlPMType.getNoticeListener().getNotation());	
+				model.setPrice(((PriceListener)ctrlPnlPMType.getPriceListener()).getPrice());
 				actualizeDBAndModels();
 			}			
 		}
 		
 		protected void actualizeDBAndModels() {
 			if(model instanceof AggregateType) {				
-				Integer id = SQL_INSERT.pacemakerModel(model);	
+				Integer id = null;
+				try {
+					id = SQL_INSERT.pacemakerModel(model);
+				}catch (SQLIntegrityConstraintViolationException e) {
+					JOptionPane.showMessageDialog(null, "Dieses Schrittmachmodell existiert bereits!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+
+				}catch(SQLException e) {
+					JOptionPane.showMessageDialog(new JFrame(),
+						    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT PacemakerModel(PM_Model pmModel)", "SQL Exception warning",
+						    JOptionPane.WARNING_MESSAGE);
+				}
+				
 				if(id != null) {
 					model.setId(id);
 					ctrlPnlPMType.getAggregateTypeTableModel().setAggregats(SQL_SELECT.pacemakerKinds());

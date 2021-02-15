@@ -10,7 +10,6 @@ import javax.swing.JOptionPane;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ERType;
 import com.rose.pm.material.Manufacturer;
 

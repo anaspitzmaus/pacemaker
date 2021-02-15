@@ -473,39 +473,40 @@ public class SQL_SELECT {
 	 */
 	public static ArrayList<AggregateType>pacemakerKinds(){
 		stmt = DB.getStatement();
-		ArrayList<AggregateType> pmKinds;
-		pmKinds = new ArrayList<AggregateType>();
+		ArrayList<AggregateType> pmTypes;
+		pmTypes = new ArrayList<AggregateType>();
 		try {
 			rs = stmt.executeQuery(
-					 "SELECT idpm_type, pm_type.notation AS pmNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice "
+					 "SELECT idpm_type, pm_type.notation AS pmNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice, price "
 					+ "FROM sm.pm_type "
 					+ "INNER JOIN sm.manufacturer "
 					+ "ON sm.pm_type.id_manufacturer = sm.manufacturer.idmanufacturer");
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
-					AggregateType pm = new AggregateType(rs.getString("pmNotation"));
-					pm.setId(rs.getInt("idpm_type"));					
-					pm.setRa(rs.getBoolean("ra"));
-					pm.setRv(rs.getBoolean("rv"));
-					pm.setLv(rs.getBoolean("lv"));
-					pm.setMri(rs.getBoolean("mri"));
+					AggregateType pmType = new AggregateType(rs.getString("pmNotation"));
+					pmType.setId(rs.getInt("idpm_type"));					
+					pmType.setRa(rs.getBoolean("ra"));
+					pmType.setRv(rs.getBoolean("rv"));
+					pmType.setLv(rs.getBoolean("lv"));
+					pmType.setMri(rs.getBoolean("mri"));
 					if(rs.getString("notice") != null) {
-						pm.setNotice(rs.getString("notice"));
+						pmType.setNotice(rs.getString("notice"));
 					}else {
-						pm.setNotice("");
+						pmType.setNotice("");
 					}
+					pmType.setPrice(rs.getDouble("price"));
 					
 					Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
 					manufacturer.setId(rs.getInt("id_manufacturer"));
-					pm.setManufacturer(manufacturer);
-					pmKinds.add(pm);
+					pmType.setManufacturer(manufacturer);
+					pmTypes.add(pmType);
 				}
 			}
 		} catch (SQLException e) {
 			System.out.println(e);
 		}
-		return pmKinds;
+		return pmTypes;
 	}
 	
 	/**
@@ -514,39 +515,40 @@ public class SQL_SELECT {
 	 */
 	public static ArrayList<ICD_Type>ICD_Kinds(){
 		stmt = DB.getStatement();
-		ArrayList<ICD_Type> icdKinds;
-		icdKinds = new ArrayList<ICD_Type>();
+		ArrayList<ICD_Type> icdTypes;
+		icdTypes = new ArrayList<ICD_Type>();
 		try {
 			rs = stmt.executeQuery(
-					 "SELECT idicd_type, icd_type.notation AS icdNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice "
+					 "SELECT idicd_type, icd_type.notation AS icdNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice, price "
 					+ "FROM sm.icd_type "
 					+ "INNER JOIN sm.manufacturer "
 					+ "ON sm.icd_type.id_manufacturer = sm.manufacturer.idmanufacturer");
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
-					ICD_Type icd = new ICD_Type(rs.getString("icdNotation"));
-					icd.setId(rs.getInt("idicd_type"));					
-					icd.setRa(rs.getBoolean("ra"));
-					icd.setRv(rs.getBoolean("rv"));
-					icd.setLv(rs.getBoolean("lv"));
-					icd.setMri(rs.getBoolean("mri"));
+					ICD_Type icdType = new ICD_Type(rs.getString("icdNotation"));
+					icdType.setId(rs.getInt("idicd_type"));					
+					icdType.setRa(rs.getBoolean("ra"));
+					icdType.setRv(rs.getBoolean("rv"));
+					icdType.setLv(rs.getBoolean("lv"));
+					icdType.setMri(rs.getBoolean("mri"));
 					if(rs.getString("notice") != null) {
-						icd.setNotice(rs.getString("notice"));
+						icdType.setNotice(rs.getString("notice"));
 					}else {
-						icd.setNotice("");
+						icdType.setNotice("");
 					}
+					icdType.setPrice(rs.getDouble("price"));
 					
 					Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
 					manufacturer.setId(rs.getInt("id_manufacturer"));
-					icd.setManufacturer(manufacturer);
-					icdKinds.add(icd);
+					icdType.setManufacturer(manufacturer);
+					icdTypes.add(icdType);
 				}
 			}
 		} catch (SQLException e) {
 			System.out.println(e);
 		}
-		return icdKinds;
+		return icdTypes;
 	}
 
 	/**

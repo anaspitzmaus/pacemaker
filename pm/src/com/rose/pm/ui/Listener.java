@@ -88,6 +88,7 @@ public class Listener {
 				price = l.doubleValue();
 			}else if (field.getValue() != null){
 				price = (Double) field.getValue();
+				System.out.println(price);
 			}
 		}	
 		

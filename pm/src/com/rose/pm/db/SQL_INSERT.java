@@ -389,7 +389,7 @@ public class SQL_INSERT {
 		} else {
 			ps.setNull(8, Types.DOUBLE);
 		}
-		Integer id = null;
+		
 		
 		int row = ps.executeUpdate();
 		if (row == 0) {
@@ -431,32 +431,32 @@ public class SQL_INSERT {
 //		if(pmModel.getMri()) {
 //			mri = 1;
 //		}
-			try {
-				DB.getConnection().setAutoCommit(true);
-				stmt.executeUpdate("INSERT INTO pm_type (notation, id_manufacturer, ra, rv, lv, mri, notice) "
-						+ "VALUES ('" + pmModel.getNotation() + "', '" 
-						+ pmModel.getManufacturer().getId() + "', '"
-						+ ra + "', '"
-						+ rv + "', '"
-						+ lv + "', '"
-						+ mri + "', '"
-						+ pmModel.getNotice() + "')");
-				ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
-				if(rs.isBeforeFirst()){
-					rs.next();
-					id = rs.getInt("ID");
-				}
-			} catch (SQLException e) {
-				if(e.getErrorCode() == 1062) {
-					JOptionPane.showMessageDialog(null, "Dieses Schrittmachmodell existiert bereits!", "Hinweis", JOptionPane.WARNING_MESSAGE);
-				}else {
-					JOptionPane.showMessageDialog(new JFrame(),
-					    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT PacemakerModel(PM_Model pmModel)", "SQL Exception warning",
-					    JOptionPane.WARNING_MESSAGE);
-				}
-			}			
-		
-		return id;
+//			try {
+//				DB.getConnection().setAutoCommit(true);
+//				stmt.executeUpdate("INSERT INTO pm_type (notation, id_manufacturer, ra, rv, lv, mri, notice) "
+//						+ "VALUES ('" + pmModel.getNotation() + "', '" 
+//						+ pmModel.getManufacturer().getId() + "', '"
+//						+ ra + "', '"
+//						+ rv + "', '"
+//						+ lv + "', '"
+//						+ mri + "', '"
+//						+ pmModel.getNotice() + "')");
+//				ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
+//				if(rs.isBeforeFirst()){
+//					rs.next();
+//					id = rs.getInt("ID");
+//				}
+//			} catch (SQLException e) {
+//				if(e.getErrorCode() == 1062) {
+//					JOptionPane.showMessageDialog(null, "Dieses Schrittmachmodell existiert bereits!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+//				}else {
+//					JOptionPane.showMessageDialog(new JFrame(),
+//					    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT PacemakerModel(PM_Model pmModel)", "SQL Exception warning",
+//					    JOptionPane.WARNING_MESSAGE);
+//				}
+//			}			
+//		
+//		return id;
 		
 	}
 	
@@ -613,14 +613,7 @@ public class SQL_INSERT {
 						    JOptionPane.WARNING_MESSAGE);
 	            	return null;
 	            }
-	        }
-//		} catch (SQLException e) {
-//			JOptionPane.showMessageDialog(new JFrame(),
-//				    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT electrodeModel(ElectrodeModel electrodeModel)", "SQL Exception warning",
-//				    JOptionPane.WARNING_MESSAGE);
-//			return null;
-//		}		
-		
+	        }		
 	}
 
 	public static Integer electrode(Electrode electrode) {
