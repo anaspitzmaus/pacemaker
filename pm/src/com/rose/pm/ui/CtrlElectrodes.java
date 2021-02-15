@@ -12,8 +12,7 @@ import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
-import com.rose.pm.ui.Listener.ManufacturerListener;
-import com.rose.pm.ui.Listener.NotationListener;
+
 
 public class CtrlElectrodes {
 	CtrlPnlElectrodeType ctrlPnlElectrodeType;

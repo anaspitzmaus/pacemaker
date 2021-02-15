@@ -367,12 +367,7 @@ public class SQL_INSERT {
 	 * @return the id of the inserted type of pacemaker
 	 */
 	public static Integer pacemakerModel(AggregateType pmModel) throws SQLException{
-		Integer mri = 0;
-		
-		if(pmModel.getMri()) {
-			mri = 1;
-		}
-		
+				
 		String insert = "INSERT INTO pm_type (notation, id_manufacturer, ra, rv, lv, mri, notice, price) VALUES (?,?,?,?,?,?,?,?)";
 		Connection con = DB.getConnection();
 		DB.getConnection().setAutoCommit(true);
@@ -382,7 +377,7 @@ public class SQL_INSERT {
 		ps.setBoolean(3, pmModel.getRa());
 		ps.setBoolean(4, pmModel.getRv());
 		ps.setBoolean(5, pmModel.getLv());
-		ps.setInt(6, mri);
+		ps.setBoolean(6, pmModel.getMri());
 		ps.setString(7, pmModel.getNotice());
 		if (pmModel.getPrice() != null) {
 			ps.setDouble(8, pmModel.getPrice());
@@ -409,107 +404,53 @@ public class SQL_INSERT {
 					    JOptionPane.WARNING_MESSAGE);
             	return null;
             }
-        }
-//		stmt = DB.getStatement();
-//		Integer ra = 0; 
-//		Integer rv= 0;
-//		Integer lv = 0;
-//		Integer mri = 0;
-//		
-//		if(pmModel.getRa()) {
-//			ra = 1;
-//		}
-//		
-//		if(pmModel.getRv()) {
-//			rv = 1;		
-//		}
-//		
-//		if(pmModel.getLv()) {
-//			lv = 1;
-//		}
-//		
-//		if(pmModel.getMri()) {
-//			mri = 1;
-//		}
-//			try {
-//				DB.getConnection().setAutoCommit(true);
-//				stmt.executeUpdate("INSERT INTO pm_type (notation, id_manufacturer, ra, rv, lv, mri, notice) "
-//						+ "VALUES ('" + pmModel.getNotation() + "', '" 
-//						+ pmModel.getManufacturer().getId() + "', '"
-//						+ ra + "', '"
-//						+ rv + "', '"
-//						+ lv + "', '"
-//						+ mri + "', '"
-//						+ pmModel.getNotice() + "')");
-//				ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
-//				if(rs.isBeforeFirst()){
-//					rs.next();
-//					id = rs.getInt("ID");
-//				}
-//			} catch (SQLException e) {
-//				if(e.getErrorCode() == 1062) {
-//					JOptionPane.showMessageDialog(null, "Dieses Schrittmachmodell existiert bereits!", "Hinweis", JOptionPane.WARNING_MESSAGE);
-//				}else {
-//					JOptionPane.showMessageDialog(new JFrame(),
-//					    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT PacemakerModel(PM_Model pmModel)", "SQL Exception warning",
-//					    JOptionPane.WARNING_MESSAGE);
-//				}
-//			}			
-//		
-//		return id;
-		
+        }		
 	}
 	
 	/**
 	 * insert a type of icd
 	 * @param icdModel
 	 * @return the id of the inserted type of icd
+	 * @throws SQLException 
 	 */
-	public static Integer icd_Model(ICD_Type icdModel) {
-		Integer id = null;
-		stmt = DB.getStatement();
-		Integer ra = 0; 
-		Integer rv= 0;
-		Integer lv = 0;
-		Integer mri = 0;
-		Integer atp = 0;
-		
-		if(icdModel.getRa()) {
-			ra = 1;
+	public static Integer icd_Model(ICD_Type icdModel) throws SQLException {
+		String insert = "INSERT INTO icd_type (notation, id_manufacturer, ra, rv, lv, mri, notice, price) VALUES (?,?,?,?,?,?,?,?)";
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		PreparedStatement ps = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+		ps.setString(1, icdModel.getNotation());
+		ps.setInt(2, icdModel.getManufacturer().getId());
+		ps.setBoolean(3, icdModel.getRa());
+		ps.setBoolean(4, icdModel.getRv());
+		ps.setBoolean(5, icdModel.getLv());
+		ps.setBoolean(6, icdModel.getMri());
+		ps.setString(7, icdModel.getNotice());
+		if (icdModel.getPrice() != null) {
+			ps.setDouble(8, icdModel.getPrice());
+		} else {
+			ps.setNull(8, Types.DOUBLE);
 		}
 		
-		if(icdModel.getRv()) {
-			rv = 1;		
-		}
 		
-		if(icdModel.getLv()) {
-			lv = 1;
-		}
-		
-		if(icdModel.getMri()) {
-			mri = 1;
-		}
-			try {
-				DB.getConnection().setAutoCommit(true);
-				stmt.executeUpdate("INSERT INTO icd_type (notation, id_manufacturer, ra, rv, lv, mri) "
-						+ "VALUES ('" + icdModel.getNotation() + "', '" 
-						+ icdModel.getManufacturer().getId() + "', '"
-						+ ra + "', '"
-						+ rv + "', '"
-						+ lv + "', '"
-						+ mri + "')");
-				ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
-				if(rs.isBeforeFirst()){
-					rs.next();
-					id = rs.getInt("ID");
-				}
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(new JFrame(),
-					    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT icd_Model(ICD_Model icdModel)", "SQL Exception warning",
+		int row = ps.executeUpdate();
+		if (row == 0) {
+			JOptionPane.showMessageDialog(new JFrame(),
+				    "Class: SQL_INSERT icd_Model(ICD_Type pmModel) - kein Eintrag erfolgt!", "SQL Exception warning",
+				    JOptionPane.WARNING_MESSAGE);
+        }
+
+        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+            	return (int) generatedKeys.getLong(1);
+                
+            }
+            else {
+            	JOptionPane.showMessageDialog(new JFrame(),
+					    "Class: SQL_INSERT icd_Model(ICD_Type pmModel) - kein Eintrag erfolgt!", "SQL Exception warning",
 					    JOptionPane.WARNING_MESSAGE);
-			}			
-		
-		return id;
+            	return null;
+            }
+        }		
 		
 	}
 	

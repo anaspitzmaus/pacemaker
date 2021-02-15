@@ -64,7 +64,4 @@ public abstract class Material {
 		this.patient = patient;
 	}
 	
-	
-	
-	
 }

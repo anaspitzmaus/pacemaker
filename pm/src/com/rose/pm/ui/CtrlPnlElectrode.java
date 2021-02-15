@@ -154,6 +154,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 			columnNames.add("Seriennummer");
 			columnNames.add("Ablaufdatum");
 			columnNames.add("Bemerkung");
+			columnNames.add("Status");
+			columnNames.add("Patient");
 		}
 		
 		@Override
@@ -189,6 +191,10 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 			case 3: return electrodes.get(rowIndex).getExpireDate();
 			
 			case 4: return electrodes.get(rowIndex).getNotice();
+			
+			case 5: return electrodes.get(rowIndex).getStatus();
+			
+			case 6: return electrodes.get(rowIndex).getPatient();
 			
 			default: return null;
 			

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.rose.person.Patient;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ER;
 import com.rose.pm.material.ERType;
@@ -751,20 +752,21 @@ public class SQL_SELECT {
 		try {
 			if(type instanceof ElectrodeType) {//if type of electrode is known
 				rs = stmt.executeQuery(
-						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId "
+						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided "
 						+ "FROM sm.electrode "
 						+ "INNER JOIN sm.electrode_type "
 						+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type "
 						+ "WHERE sm.electrode.id_electrode_type = " + type.getId() + "");
 			}else {//select all electrodes
 				rs = stmt.executeQuery(
-						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId "
+						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided "
 						+ "FROM sm.electrode "
 						+ "INNER JOIN sm.electrode_type "
 						+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type");
 			}
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
+					Integer patProv;
 					ElectrodeType model = new ElectrodeType(rs.getString("notation"));
 					model.setId(rs.getInt("modelId"));
 					Electrode electrode = new Electrode(model);
@@ -772,7 +774,16 @@ public class SQL_SELECT {
 					electrode.setNotice(rs.getString("notice"));
 					electrode.setSerialNr(rs.getString("serialNr"));
 					electrode.setExpireDate(rs.getDate("expire").toLocalDate());
+					electrode.setStatus(Status.valueOf(rs.getString("status")));
+					patProv = rs.getInt("idpat_provided");
 					
+					if(patProv == 0) {
+						electrode.setPatient(new Patient("Test", "Test"));
+					}else{
+						Patient patient = new Patient("Test", "Test");
+						patient.setNumber(rs.getInt("idpat_provided"));
+						electrode.setPatient(patient);
+					}					
 					electrodes.add(electrode);
 				}
 			}
