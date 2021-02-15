@@ -7,7 +7,7 @@ import com.rose.person.Patient;
 
 
 
-public class PM {
+public class PM extends Material{
 	
 	String serialNr;
 	LocalDate expireDate;
@@ -15,25 +15,12 @@ public class PM {
 	AggregateType aggregatModel;
 	Integer id;
 	String notice;
-	Status status;
-	Patient patient;
 	
 	
 	
 	
 	
-	public Patient getPatient() {
-		return patient;
-	}
-
-
-
-	public void setPatient(Patient patient) {
-		this.patient = patient;
-	}
-
-
-
+	
 	public String getNotice() {
 		return notice;
 	}
@@ -58,7 +45,8 @@ public class PM {
 
 
 
-	public PM(AggregateType pmModel) {		
+	public PM(AggregateType pmModel) {	
+		super("");
 		this.aggregatModel = pmModel;
 	}		
 	
@@ -91,19 +79,9 @@ public class PM {
 
 
 	public void setExpireDate(LocalDate date) {
-		this.expireDate = date;
-		
+		this.expireDate = date;		
 	}
 
-
-
-	public Status getStatus() {
-		return this.status;
-	}
-	
-	public void setStatus(Status status) {
-		this.status = status;
-	}
 
 
 

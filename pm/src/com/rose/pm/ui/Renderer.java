@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
+import com.rose.person.Patient;
+
 public class Renderer {
 
 	class TblDateRenderer extends JLabel implements TableCellRenderer{
@@ -78,6 +80,32 @@ public class Renderer {
 			
 			setText(df2.format(value) + " €");
 			setHorizontalAlignment(JLabel.RIGHT);
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);  
+			}
+			return this;
+		}
+		
+	}
+	
+	class TblPatientRenderer extends JLabel implements TableCellRenderer{
+		
+		private static final long serialVersionUID = -9124714500922535749L;
+
+		public TblPatientRenderer() {
+			setOpaque(true);
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			if(value instanceof Patient) {
+				setText(String.valueOf(((Patient)value).getNumber()));
+			}else {
+				setText("");
+			}
 			if(isSelected) {
 				setBackground(Color.ORANGE);
 			}else {

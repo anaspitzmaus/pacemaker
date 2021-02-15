@@ -7,10 +7,13 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.table.AbstractTableModel;
 
 import com.rose.person.Patient;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.material.Material;
+import com.rose.pm.material.Status;
+import com.rose.pm.ui.Renderer.TblPatientRenderer;
 
 /**
  * popupMenu to provide selected material to the active patient
@@ -25,14 +28,21 @@ public class PopupMenu extends JPopupMenu {
 	ProvideListener provideListener;
 	Patient patient;
 	Material material;
+	AbstractTableModel model;
 	
-    public PopupMenu(Patient patient, Material material) {
+	
+	
+    public PopupMenu(Patient patient, Material material, AbstractTableModel model) {
     	this.patient = patient;
     	this.material = material;
+    	this.model = model;
         itemProvide = new JMenuItem("bereitstellen");
         add(itemProvide);
         setListener();
+        
     }
+    
+   
     
     private void setListener() {
     	provideListener = new ProvideListener();
@@ -51,15 +61,19 @@ public class PopupMenu extends JPopupMenu {
 					Integer patId = SQL_INSERT.patient(patient);
 					if(patId instanceof Integer) {
 						material.setPatient(patient);
-						//update Table to show, that material is provided to a patient
+						material.setStatus(Status.Bereitgestellt);
+						model.fireTableDataChanged();
+						//update database that material is provided for a patient
 					}
 				} catch (SQLIntegrityConstraintViolationException e1) {
 					
 					//Patient always exists at database
 					material.setPatient(patient);
+					material.setStatus(Status.Bereitgestellt);
+					model.fireTableDataChanged();
 					
 				} catch (SQLException e2) {
-					
+					System.out.println(e2.getMessage());
 				}
 				
 				

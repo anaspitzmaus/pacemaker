@@ -17,9 +17,11 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import com.rose.person.Patient;
 import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.ui.Renderer.TblPatientRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -153,8 +155,11 @@ public class PnlElectrode extends PnlBase {
 	}
 
 	protected void addTblMouseAdaptor(MouseListener mouseAdaptor) {
-		table.addMouseListener(mouseAdaptor);
-		
+		table.addMouseListener(mouseAdaptor);		
+	}
+
+	protected void setTblPatientRenderer(Class<Patient> patientClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(patientClass, renderer);		
 	}
 
 

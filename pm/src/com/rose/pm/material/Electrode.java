@@ -13,18 +13,11 @@ public class Electrode extends Material{
 	LocalDate expireDate; 	
 //	Examination exam;
 	Integer id;
-	Status status;
 	
 	
 	
-	public Status getStatus() {
-		return status;
-	}
-
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
+	
+	
 
 
 	public Integer getId() {

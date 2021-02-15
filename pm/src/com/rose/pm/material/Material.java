@@ -7,9 +7,20 @@ public abstract class Material {
 	Manufacturer manufacturer;
 	String notice;
 	Double price;
-	Patient patient;
+	Patient patient; //the patient, the material is provided for
+	Status status; //the status of the material
 
 	
+	public Status getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+
 	public Manufacturer getManufacturer() {
 		return manufacturer;
 	}

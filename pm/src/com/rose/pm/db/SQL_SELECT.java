@@ -778,7 +778,7 @@ public class SQL_SELECT {
 					patProv = rs.getInt("idpat_provided");
 					
 					if(patProv == 0) {
-						electrode.setPatient(new Patient("Test", "Test"));
+						electrode.setPatient(null);
 					}else{
 						Patient patient = new Patient("Test", "Test");
 						patient.setNumber(rs.getInt("idpat_provided"));

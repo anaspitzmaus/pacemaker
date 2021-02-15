@@ -4,26 +4,17 @@ import java.time.LocalDate;
 
 import com.rose.person.Patient;
 
-public class ER {
+public class ER extends Material{
 	String serialNr;
 	LocalDate expireDate;
 //	Examination exam;
 	ERType erType;
 	Integer id;
 	String notice;
-	Status status;
-	Patient patient;
 	
-	public Patient getPatient() {
-		return patient;
-	}
-
-
-
-	public void setPatient(Patient patient) {
-		this.patient = patient;
-	}
-
+	
+	
+	
 
 
 	public String getNotice() {
@@ -50,7 +41,8 @@ public class ER {
 
 
 
-	public ER(ERType erType) {		
+	public ER(ERType erType) {	
+		super("");
 		this.erType = erType;
 	}		
 	
@@ -89,12 +81,7 @@ public class ER {
 
 
 
-	public Status getStatus() {
-		return this.status;
-	}
 	
-	public void setStatus(Status status) {
-		this.status = status;
-	}
+	
 
 }

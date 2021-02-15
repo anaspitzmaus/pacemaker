@@ -36,6 +36,7 @@ import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Material;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblDateRenderer;
+import com.rose.pm.ui.Renderer.TblPatientRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 
@@ -58,6 +59,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	CreateListener createListener;
 	TblMouseAdaptor tblMouseAdaptor;
 	DeleteListener deleteListener; 
+	TblPatientRenderer tblPatientRenderer;
 	
 	public CtrlPnlElectrode() {
 		createPanel();
@@ -133,6 +135,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 ((PnlElectrode)panel).setElectrodeRenderer(Electrode.class, electrodeRenderer);
 		 tblElectrodeTypeRenderer = new TblElectrodeTypeRenderer();
 		 ((PnlElectrode)panel).setTblElectrodeTypeRenderer(ElectrodeType.class, tblElectrodeTypeRenderer);
+		 tblPatientRenderer = renderer.new TblPatientRenderer();
+		 ((PnlElectrode)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
 	 }
 
 	 class ElectrodeTblModel extends AbstractTableModel{
@@ -177,7 +181,13 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		
 		@Override
 		public Class getColumnClass(int col) {
-			return getValueAt(0, col).getClass();
+			switch (col) {
+			case 6://as patient can be null
+				return Patient.class;
+			default:
+				return getValueAt(0, col).getClass();				
+			}
+			
 		}
 
 		@Override
@@ -403,7 +413,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	        	if(table.getSelectedRow() == row) {
 	        		Isynet isynet = new Isynet();
 	        		Patient patient = isynet.getPatient();
-	        		PopupMenu menu = new PopupMenu(patient, (Electrode) electrodeTblModel.getValueAt(row, 0));
+	        		PopupMenu menu = new PopupMenu(patient, (Electrode) electrodeTblModel.getValueAt(row, 0), electrodeTblModel);
 	                menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
 	        	}
 	        }
