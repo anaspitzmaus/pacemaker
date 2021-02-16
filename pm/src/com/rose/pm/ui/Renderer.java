@@ -10,6 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.person.Patient;
+import com.rose.pm.material.Status;
 
 public class Renderer {
 
@@ -106,6 +107,28 @@ public class Renderer {
 			}else {
 				setText("");
 			}
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);  
+			}
+			return this;
+		}
+		
+	}
+	
+	class TblStatusRenderer extends JLabel implements TableCellRenderer{
+
+		private static final long serialVersionUID = 6751749887945145998L;
+
+		public TblStatusRenderer() {
+			setOpaque(true);
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			setText(((Status)value).name());
 			if(isSelected) {
 				setBackground(Color.ORANGE);
 			}else {

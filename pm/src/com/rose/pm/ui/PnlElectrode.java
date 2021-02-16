@@ -21,7 +21,9 @@ import com.rose.person.Patient;
 import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.material.Status;
 import com.rose.pm.ui.Renderer.TblPatientRenderer;
+import com.rose.pm.ui.Renderer.TblStatusRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -160,6 +162,10 @@ public class PnlElectrode extends PnlBase {
 
 	protected void setTblPatientRenderer(Class<Patient> patientClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(patientClass, renderer);		
+	}
+
+	protected void setTblStatusRenderer(Class<Status> statusClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(statusClass, renderer);			
 	}
 
 

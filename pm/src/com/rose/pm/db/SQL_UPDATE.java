@@ -1,9 +1,12 @@
 package com.rose.pm.db;
 
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -16,6 +19,7 @@ import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.Material;
 import com.rose.pm.material.PM;
 
 
@@ -414,5 +418,18 @@ public class SQL_UPDATE {
 	public static void deleteEventRecorder(ER recorder) throws SQLException {
 		stmt = DB.getStatement();		
 		stmt.executeUpdate("DELETE FROM eventrec WHERE ideventrec = " + recorder.getId() + " LIMIT 1");
+	}
+	
+	public static void setPatProvided(Material material) throws SQLException{
+		String update = "UPDATE electrode SET status = ?, idpat_provided = ? WHERE idelectrode = ?";
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		PreparedStatement ps = con.prepareStatement(update, Statement.RETURN_GENERATED_KEYS);
+		ps.setString(1, material.getStatus().name());
+		ps.setInt(2, material.getPatient().getId());
+		ps.setInt(3, ((Electrode)material).getId());	
+		
+		ps.executeUpdate();
+		ps.close();
 	}
 }

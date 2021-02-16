@@ -1,6 +1,7 @@
 package com.rose.pm.db;
 
 import java.io.File;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -752,17 +753,21 @@ public class SQL_SELECT {
 		try {
 			if(type instanceof ElectrodeType) {//if type of electrode is known
 				rs = stmt.executeQuery(
-						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided "
+						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided, patnr "
 						+ "FROM sm.electrode "
 						+ "INNER JOIN sm.electrode_type "
 						+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type "
+						+ "INNER JOIN human.patient "
+						+ "ON sm.electrode.idpat_provided = human.patient.idpatient "
 						+ "WHERE sm.electrode.id_electrode_type = " + type.getId() + "");
 			}else {//select all electrodes
 				rs = stmt.executeQuery(
-						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided "
+						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided, patnr "
 						+ "FROM sm.electrode "
 						+ "INNER JOIN sm.electrode_type "
-						+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type");
+						+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type "
+						+ "LEFT OUTER JOIN human.patient "
+						+ "ON sm.electrode.idpat_provided = human.patient.idpatient");
 			}
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
@@ -775,13 +780,15 @@ public class SQL_SELECT {
 					electrode.setSerialNr(rs.getString("serialNr"));
 					electrode.setExpireDate(rs.getDate("expire").toLocalDate());
 					electrode.setStatus(Status.valueOf(rs.getString("status")));
+					
 					patProv = rs.getInt("idpat_provided");
 					
 					if(patProv == 0) {
 						electrode.setPatient(null);
 					}else{
 						Patient patient = new Patient("Test", "Test");
-						patient.setNumber(rs.getInt("idpat_provided"));
+						patient.setId(patProv);
+						patient.setNumber(rs.getInt("patNr"));
 						electrode.setPatient(patient);
 					}					
 					electrodes.add(electrode);
@@ -885,6 +892,32 @@ public class SQL_SELECT {
 	public static ArrayList<? extends AggregateType> SICD_Kinds() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	/**
+	 * select a patient by its number
+	 * @param number
+	 * @return the patient of the given number
+	 * @throws SQLException
+	 */
+	public static Patient patient(Integer number) throws SQLException{
+		stmt = DB.getStatement();
+		Patient patient = null;
+				
+		rs = stmt.executeQuery(
+				 "SELECT idpatient, firstname, birth, surname "
+				+ "FROM human.patient "
+				+ "INNER JOIN human.patient_extended "
+				+ "WHERE patient.patnr = " + number + "");
+		if(rs.isBeforeFirst()){
+			rs.next();
+			patient = new Patient(rs.getString("surname"), rs.getString("firstname"));
+			patient.setId(rs.getInt("idpatient"));
+			patient.setBirthday(rs.getDate("birth").toLocalDate());
+			patient.setNumber(number);
+		}
+		
+		return patient;
 	}
 	
 	

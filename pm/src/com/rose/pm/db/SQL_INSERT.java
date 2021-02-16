@@ -663,7 +663,7 @@ public class SQL_INSERT {
 	}
 
 	/**
-	 * insert a patient
+	 * insert a patient, the new generated id of the table is given to the patient
 	 * @param patient
 	 * @return the id of the inserted patient or null if the patient could not be inserted
 	 * @throws SQLException

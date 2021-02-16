@@ -34,9 +34,11 @@ import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Material;
+import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblDateRenderer;
 import com.rose.pm.ui.Renderer.TblPatientRenderer;
+import com.rose.pm.ui.Renderer.TblStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 
@@ -60,6 +62,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	TblMouseAdaptor tblMouseAdaptor;
 	DeleteListener deleteListener; 
 	TblPatientRenderer tblPatientRenderer;
+	TblStatusRenderer tblStatusRenderer;
 	
 	public CtrlPnlElectrode() {
 		createPanel();
@@ -137,6 +140,9 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 ((PnlElectrode)panel).setTblElectrodeTypeRenderer(ElectrodeType.class, tblElectrodeTypeRenderer);
 		 tblPatientRenderer = renderer.new TblPatientRenderer();
 		 ((PnlElectrode)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
+		 tblStatusRenderer = renderer.new TblStatusRenderer();
+		 ((PnlElectrode)panel).setTblStatusRenderer(Status.class, tblStatusRenderer);
+		 
 	 }
 
 	 class ElectrodeTblModel extends AbstractTableModel{

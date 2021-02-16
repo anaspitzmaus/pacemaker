@@ -11,9 +11,11 @@ import javax.swing.table.AbstractTableModel;
 
 import com.rose.person.Patient;
 import com.rose.pm.db.SQL_INSERT;
+import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.Material;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.Renderer.TblPatientRenderer;
+
 
 /**
  * popupMenu to provide selected material to the active patient
@@ -63,17 +65,33 @@ public class PopupMenu extends JPopupMenu {
 						material.setPatient(patient);
 						material.setStatus(Status.Bereitgestellt);
 						model.fireTableDataChanged();
+						
 						//update database that material is provided for a patient
 					}
 				} catch (SQLIntegrityConstraintViolationException e1) {
 					
 					//Patient always exists at database
-					material.setPatient(patient);
-					material.setStatus(Status.Bereitgestellt);
-					model.fireTableDataChanged();
+					//get the id of the patient and set the id to the patient
+					try {
+						patient = SQL_SELECT.patient(patient.getNumber());
+						material.setPatient(patient);
+						material.setStatus(Status.Bereitgestellt);
+						model.fireTableDataChanged();
+					} catch (SQLException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+					
 					
 				} catch (SQLException e2) {
 					System.out.println(e2.getMessage());
+				}
+				
+				try {
+					SQL_UPDATE.setPatProvided(material);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				
 				
