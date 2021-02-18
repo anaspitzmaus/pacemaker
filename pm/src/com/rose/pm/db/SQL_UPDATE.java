@@ -11,6 +11,7 @@ import java.sql.Types;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.rose.person.Patient;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ER;
 import com.rose.pm.material.ERType;
@@ -21,6 +22,8 @@ import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Material;
 import com.rose.pm.material.PM;
+import com.rose.pm.material.SICD;
+import com.rose.pm.material.Status;
 
 
 
@@ -411,25 +414,57 @@ public class SQL_UPDATE {
 		stmt = DB.getStatement();
 		if(type instanceof ERType && type.getId() != null) {
 							
-			stmt.executeUpdate("DELETE FROM eventrec_type WHERE ideventrec_type = " + type.getId() + " LIMIT 1");					
+			stmt.executeUpdate("DELETE FROM sm.eventrec_type WHERE ideventrec_type = " + type.getId() + " LIMIT 1");					
 		}
 	}
 
 	public static void deleteEventRecorder(ER recorder) throws SQLException {
 		stmt = DB.getStatement();		
-		stmt.executeUpdate("DELETE FROM eventrec WHERE ideventrec = " + recorder.getId() + " LIMIT 1");
+		stmt.executeUpdate("DELETE FROM sm.eventrec WHERE ideventrec = " + recorder.getId() + " LIMIT 1");
 	}
 	
+	/**
+	 * assign or remove a patient to/from a selected material and set the appropriate provided status
+	 * if the material has no assigned patient, the patient is set to null else inserted to the dataSet
+	 * @param material with the assigned patient
+	 * @throws SQLException
+	 */
 	public static void setPatProvided(Material material) throws SQLException{
-		String update = "UPDATE electrode SET status = ?, idpat_provided = ? WHERE idelectrode = ?";
-		Connection con = DB.getConnection();
-		DB.getConnection().setAutoCommit(true);
-		PreparedStatement ps = con.prepareStatement(update, Statement.RETURN_GENERATED_KEYS);
-		ps.setString(1, material.getStatus().name());
-		ps.setInt(2, material.getPatient().getId());
-		ps.setInt(3, ((Electrode)material).getId());	
+		String table = "";
 		
-		ps.executeUpdate();
-		ps.close();
+		//select the appropriate table
+		if(material instanceof Electrode) {
+			table = "electrode";
+		}else if(material instanceof ICD) {
+			table = "icd";
+		}else if(material instanceof PM) {
+			table = "pm_implant";
+		}else if(material instanceof ER) {
+			table = "eventrec";
+		}else if(material instanceof SICD) {
+			table = "sicd";
+		}
+		
+		//do the statement
+		if(table != "") {
+			String update = "UPDATE sm." + table + " SET status = ?, idpat_provided = ? WHERE idelectrode = ?";
+			Connection con = DB.getConnection();
+			DB.getConnection().setAutoCommit(true);
+			PreparedStatement ps = con.prepareStatement(update, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, material.getStatus().name());
+			if(material.getPatient() instanceof Patient) {//if material has to be provided to a patient
+				ps.setInt(2, material.getPatient().getId());
+			}else {//if the provided material has to be removed from the patient
+				ps.setNull(2, Types.INTEGER);
+			}
+			ps.setInt(3, ((Electrode)material).getId());	
+			
+			ps.executeUpdate();
+			ps.close();
+		}
 	}
+	
+	
+
+	
 }

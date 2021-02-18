@@ -144,6 +144,14 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 ((PnlElectrode)panel).setTblStatusRenderer(Status.class, tblStatusRenderer);
 		 
 	 }
+	 
+	 private Boolean isElectrodeProvided(Electrode electrode) {		
+		 if(electrode.getPatient() instanceof Patient) {
+			 return true;
+		 }else {
+			 return false;
+		 }
+	 }
 
 	 class ElectrodeTblModel extends AbstractTableModel{
 

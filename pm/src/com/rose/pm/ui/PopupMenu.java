@@ -38,7 +38,11 @@ public class PopupMenu extends JPopupMenu {
     	this.patient = patient;
     	this.material = material;
     	this.model = model;
-        itemProvide = new JMenuItem("bereitstellen");
+    	if(material.getPatient() instanceof Patient) {
+    		itemProvide = new JMenuItem("Bereitstellung lösen");
+    	}else {
+    		itemProvide = new JMenuItem("bereitstellen");
+    	}
         add(itemProvide);
         setListener();
         
@@ -56,9 +60,31 @@ public class PopupMenu extends JPopupMenu {
     	
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(patient instanceof Patient && material instanceof Material) {
-				
-				//insert patient to database if not already exists
+			if(material instanceof Material) {
+				if(material.getPatient() instanceof Patient) {
+					//delete the provided status
+					deleteProvided();
+				}else if(patient instanceof Patient) {
+					//set the material provided to the patient
+					provideMaterial();
+				}
+				try {
+					SQL_UPDATE.setPatProvided(material);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}			
+		}
+		
+		private void deleteProvided() {
+			material.setPatient(null);
+			material.setStatus(Status.Lager);
+			model.fireTableDataChanged();			
+		}
+		
+		 private void provideMaterial() {
+		    	//insert patient to database if not already exists
 				try {
 					Integer patId = SQL_INSERT.patient(patient);
 					if(patId instanceof Integer) {
@@ -86,19 +112,10 @@ public class PopupMenu extends JPopupMenu {
 				} catch (SQLException e2) {
 					System.out.println(e2.getMessage());
 				}
-				
-				try {
-					SQL_UPDATE.setPatProvided(material);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				
-				//
-			}
-			
-		}
+										
+		    }
     	
     }
+    
+   
 }
