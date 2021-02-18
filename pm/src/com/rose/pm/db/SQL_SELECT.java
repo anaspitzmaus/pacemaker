@@ -1,7 +1,6 @@
 package com.rose.pm.db;
 
 import java.io.File;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,6 +19,8 @@ import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM;
+import com.rose.pm.material.SICD;
+import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
 
 
@@ -770,8 +771,9 @@ public class SQL_SELECT {
 						+ "ON sm.electrode.idpat_provided = human.patient.idpatient");
 			}
 			if(rs.isBeforeFirst()){
+				Integer patProv;
 				while(rs.next()) {
-					Integer patProv;
+					
 					ElectrodeType model = new ElectrodeType(rs.getString("notation"));
 					model.setId(rs.getInt("modelId"));
 					Electrode electrode = new Electrode(model);
@@ -889,10 +891,7 @@ public class SQL_SELECT {
 		return recorders;
 	}
 
-	public static ArrayList<? extends AggregateType> SICD_Kinds() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 	
 	/**
 	 * select a patient by its number
@@ -918,6 +917,91 @@ public class SQL_SELECT {
 		}
 		
 		return patient;
+	}
+
+	/**
+	 * select all types of sicd
+	 * @return an array list with the selected sicds
+	 * @throws SQLException
+	 */
+	public static ArrayList<SICDType> sicdTypes() throws SQLException{
+		stmt = DB.getStatement();
+		ArrayList<SICDType> sicdTypes;
+		sicdTypes = new ArrayList<SICDType>();
+		
+		rs = stmt.executeQuery(
+				 "SELECT idsicdtype, sicd_type.notation AS sicdNotation, sicd_type.idmanufacturer, manufacturer.notation AS manufacturerNotation, notice, price "
+				+ "FROM sm.sicd_type "
+				+ "INNER JOIN sm.manufacturer "
+				+ "ON sm.sicd_type.idmanufacturer = sm.manufacturer.idmanufacturer");
+		
+		if(rs.isBeforeFirst()){
+			while(rs.next()) {
+				SICDType sicdType = new SICDType(rs.getString("sicdNotation"));
+				sicdType.setId(rs.getInt("idsicd_type"));					
+				if(rs.getString("notice") != null) {
+					sicdType.setNotice(rs.getString("notice"));
+				}else {
+					sicdType.setNotice("");
+				}
+				sicdType.setPrice(rs.getDouble("price"));
+				
+				Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
+				manufacturer.setId(rs.getInt("id_manufacturer"));
+				sicdType.setManufacturer(manufacturer);
+				sicdTypes.add(sicdType);
+			}
+		}
+		
+		return sicdTypes;
+	}
+
+	public static ArrayList<? extends SICD> sicds(SICDType type) throws SQLException{
+		stmt = DB.getStatement();
+		ArrayList<SICD> sicds;
+		sicds = new ArrayList<SICD>();
+		
+			if(type instanceof SICDType) {//select sicds of a selected model
+				if(type.getId() != null) {
+					rs = stmt.executeQuery(
+						 "SELECT sicd.idsicd, sicd.idexam, icd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided "
+						+ "FROM sm.sicd "
+						+ "INNER JOIN sm.sicd_type "
+						+ "ON sm.sicd.sicd_type = sm.sicd_type.idsicdtype "
+						+ "WHERE sm.sicd.id_sicd_type = " + type.getId() + "");
+				}else {//select all sicds
+					rs = stmt.executeQuery(
+						 "SELECT sicd.idsicd, sicd.idexam, icd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided "
+						+ "FROM sm.sicd "
+						+ "INNER JOIN sm.sicd_type "
+						+ "ON sm.sicd.sicd_type = sm.sicd_type.idsicdtype");
+						
+				}
+				
+				if(rs.isBeforeFirst()){
+					Integer patProv;
+					while(rs.next()) {
+						SICD sicd = new SICD(type);
+						sicd.setId(rs.getInt("idsicd"));
+						sicd.setSerialNr(rs.getString("serialnr"));					
+						sicd.setExpireDate(rs.getDate("expiry").toLocalDate());
+						sicd.setNotice(rs.getString("notice"));
+						sicd.setStatus(Status.valueOf(rs.getString("status")));
+						patProv = rs.getInt("idpat_provided");
+						
+						if(patProv == 0) {
+							sicd.setPatient(null);
+						}else{
+							Patient patient = new Patient("Test", "Test");
+							patient.setId(patProv);
+							patient.setNumber(rs.getInt("patNr"));
+							sicd.setPatient(patient);
+						}					
+						sicds.add(sicd);
+					}					
+				}			
+			}	
+		return sicds;
 	}
 	
 	

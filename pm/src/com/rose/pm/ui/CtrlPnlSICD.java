@@ -1,33 +1,49 @@
 package com.rose.pm.ui;
 
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import com.rose.person.Patient;
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
-
+import com.rose.pm.ui.CtrlPnlICD.AggregateTypeListener;
+import com.rose.pm.ui.CtrlPnlPM.AggregateTblModel;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Renderer.TblStatusRenderer;
+import com.rose.pm.ui.Renderer.TblStringRenderer;
 
-public class CtrlPnlSICD extends CtrlPnlBase{
+public class CtrlPnlSICD extends CtrlPnlICD{
 	Ctrl_PnlSetDate ctrlPnlSetDate;
 	Listener listener;
 	Renderer renderer;
@@ -38,7 +54,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	SICDTblModel sicdTblModel;
 	CreateListener createListener;
 	ShowAllListener showAllListener;
-	TblPMIDRenderer tblPMIDRenderer;
+	TblSICDIDRenderer tblSICDIDRenderer;
 	TblStringRenderer tblStringRenderer;
 	TblAggregateTypeRenderer tblAggregateTypeRenderer;
 	TblStatusRenderer tblStatusRenderer;
@@ -46,6 +62,8 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
+	
+	
 	protected void createPanel() {
 		panel = new PnlSICD();
 		panel.setName("SICD");
@@ -60,18 +78,18 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		((PnlSICD)panel).setBtnShowAllText("Alle Modelle");
 	}
 	
-	private void setStandardListener() {
-		listener = new Listener();
-		serialNrListener = listener.new NotationListener();
-		((PnlSICD)panel).addSerialNrListener(serialNrListener);
-		noticeListener = listener.new NotationListener();
-		((PnlSICD)panel).addNoticeListener(noticeListener);		
-		tblRowSelectionListener = new TblRowSelectionListener();
-		((PnlSICD)panel).addTblRowSelectionListener(tblRowSelectionListener);
-		deleteListener = new DeleteListener();
-		((PnlSICD)panel).addDeleteListener(deleteListener);
-		
-	}
+//	private void setStandardListener() {
+//		listener = new Listener();
+//		serialNrListener = listener.new NotationListener();
+//		((PnlSICD)panel).addSerialNrListener(serialNrListener);
+//		noticeListener = listener.new NotationListener();
+//		((PnlSICD)panel).addNoticeListener(noticeListener);		
+//		tblRowSelectionListener = new TblRowSelectionListener();
+//		((PnlSICD)panel).addTblRowSelectionListener(tblRowSelectionListener);
+//		deleteListener = new DeleteListener();
+//		((PnlSICD)panel).addDeleteListener(deleteListener);
+//		
+//	}
 	
 	/**
 	 * overridable Listeners
@@ -79,26 +97,33 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	protected void setListener() {
 		createListener = new CreateListener();
 		((PnlSICD)panel).addCreateListener(createListener);
-		sicdTypeListener = new SICDTypeListener();
-		((PnlSICD)panel).addSICDTypeListener(sicdTypeListener);	
+		aggregateTypeListener = new AggregateTypeListener();
+		((PnlSICD)panel).addAggregateTypeListener(aggregateTypeListener);
 		showAllListener = new ShowAllListener();
 		((PnlSICD)panel).addShowAllListener(showAllListener);
 		tblMouseAdaptor = new TblMouseAdaptor();
 		((PnlSICD)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
-	 void setModel() {
-		ArrayList<SICDType> sicdTypes = SQL_SELECT.sicdTypes();
-		SICDType[] arr = new SICDType[sicdTypes.size()]; 		  
-        // ArrayList to Array Conversion 
-        for (int i = 0; i < sicdTypes.size(); i++) 
-            arr[i] = sicdTypes.get(i);		
-		
-		sicdTypeModel = new DefaultComboBoxModel<SICDType>(arr);
-		//aggregateTypeModel = new AggregateTypeModel();
-		((PnlSICD)panel).setSICDTypeModel(sicdTypeModel);
-		sicdTblModel = new SICDTblModel(SQL_SELECT.sicds(sicdTypeListener.model));
-		((PnlSICD)panel).setSICDTblModel(sicdTblModel);
+	 protected void setModel() {
+		 ArrayList<? extends AggregateType> aggregateTypes;
+		try {
+			aggregateTypes = SQL_SELECT.sicdTypes();
+			AggregateType[] arr = new AggregateType[aggregateTypes.size()]; 		  
+	        // ArrayList to Array Conversion 
+	        for (int i = 0; i < aggregateTypes.size(); i++) 
+	            arr[i] = aggregateTypes.get(i);		
+			
+			aggregateTypeModel = new DefaultComboBoxModel<AggregateType>(arr);
+			
+			((PnlSICD)panel).setAggregatTypeModel(aggregateTypeModel);
+			aggregateTblModel = new AggregateTblModel(SQL_SELECT.sicds((SICDType) aggregateTypeListener.model));
+			((PnlSICD)panel).setAggregateTblModel(aggregateTblModel);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
 	}
 	
 	class SICDTblModel extends AbstractTableModel{
@@ -197,7 +222,12 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		}
 		
 		protected void updateTblModel() {
-			sicdTblModel.setSICDs(SQL_SELECT.sicds(model));			
+			try {
+				sicdTblModel.setSICDs(SQL_SELECT.sicds(model));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
 			sicdTblModel.fireTableDataChanged();
 		}		
 	}
@@ -247,11 +277,151 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		}
 		
 		protected void updateDBAndTblModel() {
-			SQL_INSERT.sicd(sicd);				
-			sicdTblModel.setSICDs((SQL_SELECT.sicds((SICDType) sicdTypeModel.getSelectedItem()));
+			try {
+				SQL_INSERT.sicd(sicd);
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(new JFrame(),
+					    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT sicd(SICD sicd)", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+			}				
+			try {
+				sicdTblModel.setSICDs(SQL_SELECT.sicds((SICDType) sicdTypeModel.getSelectedItem()));
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(new JFrame(),
+					    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_SELECT sicds(SICDType sicdType)", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+			}
 			sicdTblModel.fireTableDataChanged();
 		}
 		
 	}
+	
+	class ShowAllListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			((PnlSICD)panel).setAggregateTypeSelectionIndex(-1);
+			update();
+		}
+		
+		protected void update() {
+			try {
+				sicdTblModel.setSICDs(SQL_SELECT.sicds(null));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+			sicdTblModel.fireTableDataChanged();
+		}
+		
+	}
+	
+	/**
+	 * shoul be set to renderer class and overrided
+	 * @author user2
+	 *
+	 */
+	class TblSICDIDRenderer extends JLabel implements TableCellRenderer{		
+		
+		private static final long serialVersionUID = -7832440906483552566L;
+		
+		public TblSICDIDRenderer() {
+			super.setOpaque(true);
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+			Integer id = ((SICD)value).getId();
+			setText(id.toString());
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+		}
+		
+	}
+	
+	class TblAggregateTypeRenderer extends JLabel implements TableCellRenderer{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2455144833293671793L;
+
+		public TblAggregateTypeRenderer() {
+			super.setOpaque(true);
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			SICDType type = (SICDType) value;
+			setText(type.getNotation());
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+		}
+		
+	}
+	
+	class TblRowSelectionListener implements ListSelectionListener{
+		SICD sicd;
+		@Override
+		public void valueChanged(ListSelectionEvent arg0) {
+			if (((PnlSICD)panel).getSelectedTblRow() > -1) {			
+				int row = ((PnlSICD)panel).getSelectedTblRow();
+	            sicd = (SICD) ((PnlSICD)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
+	        }			
+		}
+		
+		protected SICD getAggregatSelected() {
+			return sicd;
+		}		
+	}
+	
+	class DeleteListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(tblRowSelectionListener.getAggregatSelected() instanceof SICD) {
+				if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
+					if(SQL_UPDATE.deleteAggregate(tblRowSelectionListener.getAggregatSelected())){
+						sicdTblModel.sicds.remove(tblRowSelectionListener.getAggregatSelected());
+						sicdTblModel.fireTableDataChanged();
+					}
+				}
+			
+			}
+		
+		}
+	}
+	
+	class TblMouseAdaptor extends MouseAdapter{
+		int row;
+		 @Override
+	    public void mouseClicked(MouseEvent mouseEvent){
+	        if(mouseEvent.getClickCount()==2){
+	        	 JTable table =(JTable) mouseEvent.getSource();
+	             Point point = mouseEvent.getPoint();
+	             row = table.rowAtPoint(point);
+	             if (table.getSelectedRow() != -1 && row >= 0) {
+	                initiateDialog();
+	             }
+	        }
+	    }
+		 
+		 protected void initiateDialog() {
+			 CtrlDlgChangeSICD ctrlDlgChangeSICD = new CtrlDlgChangeSICD((SICD) sicdTblModel.getValueAt(row, 0), sicdTblModel);
+             ctrlDlgChangeSICD.getDialog().setVisible(true);
+
+		 }
+	}
+	
 	
 }

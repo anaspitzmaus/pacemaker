@@ -25,17 +25,16 @@ import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
-public class PnlPMType extends PnlBase{
+public class PnlPMType extends PnlAggregateTypeBase{
 	
-	JComboBox<Manufacturer> cbxManufacturer;
+	
 	JComboBox<PM_Kind> cbxType;
 	JCheckBox checkRA, checkRV, checkLV;
 	JCheckBox checkMRI;
-	JLabel lblManufacturer;
+	
 	JLabel lblMRI;
-	NumberFormat paymentFormat;
-	JFormattedTextField ftxtPrice;
-	JLabel lblPrice;
+	
+	
 	
 	private static final long serialVersionUID = -2047308671221451668L;
 
@@ -43,9 +42,7 @@ public class PnlPMType extends PnlBase{
 	 * Create the panel.
 	 */
 	public PnlPMType() {
-		paymentFormat = DecimalFormat.getInstance();
-		paymentFormat.setMinimumFractionDigits(2);
-		paymentFormat.setMaximumFractionDigits(2);
+		
 		pnlInput.setLayout(new MigLayout("", "[][][][][][][][][grow][]", "[][][][]"));
 		
 		pnlInput.add(lblNotation, "cell 0 0,alignx trailing");
@@ -53,13 +50,8 @@ public class PnlPMType extends PnlBase{
 		
 		pnlInput.add(txtNotation, "cell 1 0");
 		
-		
-		lblManufacturer = new JLabel("lblManufacturer");
-		lblManufacturer.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		pnlInput.add(lblManufacturer, "cell 2 0,alignx trailing");
 		
-		cbxManufacturer = new JComboBox<Manufacturer>();
-		cbxManufacturer.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		pnlInput.add(cbxManufacturer, "cell 3 0");
 		
 		lblMRI = new JLabel("lblMRI");
@@ -90,13 +82,9 @@ public class PnlPMType extends PnlBase{
 		
 		pnlInput.add(txtNotice, "cell 8 0, growx");		
 		
-		lblPrice = new JLabel("lblPrice");
-		lblPrice.setFont(font);
-		pnlInput.add(lblPrice, "cell 9 0");
 		
-		ftxtPrice = new JFormattedTextField(paymentFormat);
-		ftxtPrice.setFont(font);
-		ftxtPrice.setColumns(10);
+		pnlInput.add(lblPrice, "cell 9 0");		
+		
 		pnlInput.add(ftxtPrice, "cell 10 0");		
 		
 		lblPrice.setLabelFor(ftxtPrice);
@@ -106,43 +94,11 @@ public class PnlPMType extends PnlBase{
 		btnDelete.setHorizontalAlignment(SwingConstants.RIGHT);
 		pnlSouth.add(btnDelete);	
 	}
-	
-	
-	
-	protected void setLblManufacturerText(String txt) {
-		lblManufacturer.setText(txt);
-	}
+		
 	
 	protected void setLblMRIText(String txt) {
 		lblMRI.setText(txt);
-	}
-	
-	
-	
-	protected void setTblModel(AbstractTableModel model) {
-		table.setModel(model);
-	}
-	
-	protected void setTblSelectionMode(int singleSelection) {
-		table.setSelectionMode(singleSelection);
-	}
-	
-	protected void setManufacturerModel(ComboBoxModel<Manufacturer> l) {
-		cbxManufacturer.setModel(l);
-	}
-
-	protected void setManufacturerRenderer(ListCellRenderer<Manufacturer> manufacturerRenderer) {
-		cbxManufacturer.setRenderer(manufacturerRenderer);		
-	}
-	
-	protected void addManufacturerListener(ItemListener l) {
-		cbxManufacturer.addItemListener(l);		
-	}
-	
-	protected void setManufacturerIndex(Integer index) {
-		cbxManufacturer.setSelectedIndex(index);
-	}
-
+	}	
 	
 	protected void setTypeModel(ComboBoxModel<PM_Kind> model) {
 		cbxType.setModel(model);		
@@ -203,36 +159,10 @@ public class PnlPMType extends PnlBase{
 		table.setDefaultRenderer(colclass, renderer);		
 	}
 	
-	protected void setTableStringRenderer(Class<String> colclass, TableCellRenderer renderer) {
-		table.setDefaultRenderer(colclass, renderer);
-	}
-
-	protected void setTableIDRenderer(Class<AggregateType> idClass, TableCellRenderer renderer) {
-		table.setDefaultRenderer(idClass, renderer);
-	}
-	
 	protected void setTableBooleanRenderer(Class<Boolean> bolClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(bolClass, renderer);
 	}
 
-	protected int getSelectedTblRow() {		
-		return table.getSelectedRow();
-	}
 	
-	protected AggregateType getTableValueAt(int row, int column) {
-		return (AggregateType) table.getValueAt(row, column);
-	}
-
-	protected void addTblRowSelectionListener(ListSelectionListener listener) {
-		table.getSelectionModel().addListSelectionListener(listener);		
-	}
-
-	protected void addPriceChangeListener(PropertyChangeListener priceListener) {
-		ftxtPrice.addPropertyChangeListener(priceListener);		
-	}
-
-	protected void setTblDoubleRenderer(Class<Double> doubleClass, TableCellRenderer renderer) {
-		table.setDefaultRenderer(doubleClass, renderer);		
-	}
 
 }

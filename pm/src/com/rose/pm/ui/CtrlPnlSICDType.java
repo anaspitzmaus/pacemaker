@@ -1,10 +1,11 @@
 package com.rose.pm.ui;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.AggregateType;
-import com.rose.pm.ui.CtrlPnlPMType.PMTypeTblModel;
+
 
 
 public class CtrlPnlSICDType extends CtrlPnlICDType{
@@ -17,7 +18,12 @@ public class CtrlPnlSICDType extends CtrlPnlICDType{
 	
 	@Override
 	protected void setModel() {
-		tblModel = new SICDTypeTblModel(SQL_SELECT.SICD_Kinds());
+		try {
+			tblModel = new SICDTypeTblModel(SQL_SELECT.sicdTypes());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		((PnlSICDType)panel).setTblModel(tblModel);
 	}
 	

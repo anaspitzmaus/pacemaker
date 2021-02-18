@@ -1,14 +1,8 @@
 package com.rose.pm.ui;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.rose.Isynet;
 
 public class CtrlFrmBase {
 	FrmBase frame;
@@ -21,9 +15,12 @@ public class CtrlFrmBase {
 	CtrlPnlPM ctrlPnlPM;
 	CtrlPnlICDType ctrlPnlICDType;
 	CtrlPnlICD ctrlPnlICD;
+	CtrlPnlSICDType ctrlPnlSICDType;
+	CtrlPnlSICD ctrlPnlSICD;
 	CtrlPnlERType ctrlPnlERType;
 	CtrlPnlER ctrlPnlER;
 	CtrlER ctrlER;
+	CtrlSICD ctrlSICD;
 	TabChangeListener tabChangeListener;
 	//Isynet isynet;
 	CtrlTbrIsynet ctrlTbrIsynet;
@@ -45,6 +42,8 @@ public class CtrlFrmBase {
 		frame.getTabbedPane().add(ctrlICD.getCtrlPnlAggregates().getPanel().getName(), ctrlICD.getCtrlPnlAggregates().getPanel());
 		frame.getTabbedPane().add(ctrlER.getCtrlPnlERType().getPanel().getName(), ctrlER.getCtrlPnlERType().getPanel());
 		frame.getTabbedPane().add(ctrlER.getCtrlPnlER().getPanel().getName(), ctrlER.getCtrlPnlER().getPanel());
+		frame.getTabbedPane().add(ctrlSICD.getCtrlPnlAggregatesType().getPanel().getName(), ctrlSICD.getCtrlPnlAggregatesType().getPanel());
+		frame.getTabbedPane().add(ctrlSICD.getCtrlPnlAggregates().getPanel().getName(), ctrlSICD.getCtrlPnlAggregates().getPanel());
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
 		frame.insertToolBar(ctrlTbrIsynet.getToolBar());
 		setListener();
@@ -62,6 +61,7 @@ public class CtrlFrmBase {
 		ctrlAggregates = new CtrlAggregates();
 		ctrlICD = new CtrlICD();
 		ctrlER = new CtrlER();
+		ctrlSICD = new CtrlSICD();
 
 		ctrlMenuBar = new CtrlMenuBar();
 		ctrlTbrIsynet = new CtrlTbrIsynet();

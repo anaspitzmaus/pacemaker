@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
-import com.rose.pm.material.AggregateType;
+
 import com.rose.pm.material.ICD_Type;
 
 public class CtrlICD extends CtrlAggregates{

@@ -9,14 +9,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeListener;
 import javax.swing.JToolBar;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.JSeparator;
-import java.awt.Color;
-import javax.swing.SwingConstants;
+
 
 
 public class FrmBase extends JFrame {
