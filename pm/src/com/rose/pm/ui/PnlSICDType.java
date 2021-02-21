@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 
 
 
-public class PnlSICDType extends PnlICDType {
+public class PnlSICDType extends PnlAggregateTypeBase {
 
 	JLabel lblManufacturer;
 		

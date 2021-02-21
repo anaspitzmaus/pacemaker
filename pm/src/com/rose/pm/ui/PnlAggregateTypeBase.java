@@ -28,6 +28,13 @@ public abstract class PnlAggregateTypeBase extends PnlBase {
 	JFormattedTextField ftxtPrice;
 	JLabel lblPrice;
 	
+	protected void setLblPriceText(String txt) {
+		lblPrice.setText(txt);
+	}
+	
+	protected void setLblManufacturerText(String txt) {
+		lblManufacturer.setText(txt);
+	}
 	/**
 	 * Create the panel.
 	 */
@@ -51,9 +58,7 @@ public abstract class PnlAggregateTypeBase extends PnlBase {
 		ftxtPrice.setColumns(10);
 	}
 	
-	protected void setLblManufacturerText(String txt) {
-		lblManufacturer.setText(txt);
-	}
+	
 	
 	protected void setTblModel(AbstractTableModel model) {
 		table.setModel(model);
@@ -83,7 +88,7 @@ public abstract class PnlAggregateTypeBase extends PnlBase {
 		table.setDefaultRenderer(colclass, renderer);
 	}
 
-	protected void setTableIDRenderer(Class<AggregateType> idClass, TableCellRenderer renderer) {
+	protected void setTableIDRenderer(Class<? extends AggregateType> idClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(idClass, renderer);
 	}
 	

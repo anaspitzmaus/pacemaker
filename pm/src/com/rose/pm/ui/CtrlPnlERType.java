@@ -271,7 +271,7 @@ public class CtrlPnlERType extends CtrlPnlBase{
 
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends ERType> recordTypes;
-		PM_Kind type;
+		
 		
 		public ERTypeTblModel(ArrayList<? extends ERType> recorders) {
 			this.recordTypes = recorders;

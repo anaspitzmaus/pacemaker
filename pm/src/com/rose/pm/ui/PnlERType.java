@@ -29,6 +29,8 @@ public class PnlERType extends PnlBase {
 	JLabel lblManufacturer;
 	JLabel lblPrice;	
 	NumberFormat paymentFormat;
+	
+	
 	/**
 	 * Create the panel.
 	 */

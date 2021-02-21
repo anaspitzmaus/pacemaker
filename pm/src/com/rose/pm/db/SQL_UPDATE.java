@@ -23,6 +23,7 @@ import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Material;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
+import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
 
 
@@ -462,6 +463,15 @@ public class SQL_UPDATE {
 			ps.executeUpdate();
 			ps.close();
 		}
+	}
+
+	public static void deleteSICDType(AggregateType type) throws SQLException{
+		stmt = DB.getStatement();
+		if(type instanceof SICDType && type.getId() != null) {
+							
+			stmt.executeUpdate("DELETE FROM sm.sicd_type WHERE idsicdtype = " + type.getId() + " LIMIT 1");					
+		}
+		
 	}
 	
 	

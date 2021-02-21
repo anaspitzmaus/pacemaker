@@ -119,12 +119,12 @@ public class DB {
 	private static Connection getDriverConnection(){
 		pref = Preferences.userNodeForPackage(Dlg_DBSettings.class); //get Preferences
 		
-		//String host = pref.get("DB_Host", "localhost");
+		String host = pref.get("DB_Host", "localhost");
 		String port = pref.get("DB_Port", "");
 		//String host = "127.0.0.1:3306";
-		String host = "192.168.200.1:3306";
+		//String host = "192.168.200.1:3306";
 		String user = pref.get("DB_User", "root");
-		user = "AP02";
+		//user = "AP02";
 		String passwd = pref.get("DB_PW", ""); 
 		if(host.equals("localhost")){
 			host = host + ":" + port;
