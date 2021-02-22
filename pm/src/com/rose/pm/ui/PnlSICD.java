@@ -3,25 +3,27 @@ package com.rose.pm.ui;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseListener;
-
+import java.time.LocalDate;
 import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-
-import com.rose.pm.material.AggregateType;
+import javax.swing.table.TableCellRenderer;
+import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
+import com.rose.pm.material.Status;
 
 import net.miginfocom.swing.MigLayout;
 
 ;
 
-public class PnlSICD extends PnlICD {
+public class PnlSICD extends PnlBase {
 
 	private static final long serialVersionUID = 3214318116528507442L;
 	JLabel lblAggregateType;	
@@ -110,6 +112,45 @@ public class PnlSICD extends PnlICD {
 	protected void setAggregateTblModel(AbstractTableModel aggregateTblModel) {
 		table.setModel(aggregateTblModel);		
 	}
+	
+	protected void integratePnlDate(Pnl_SetDate pnlDate) {
+		pnlInput.add(pnlDate, "cell 4 1");
+	}
+	
+	protected void setAggregateTypeModel(ComboBoxModel<SICDType> model) {
+		cbxSICDType.setModel(model);		
+	}
 
+	protected void setAggregateTypeRenderer(ListCellRenderer<SICDType> renderer) {
+		cbxSICDType.setRenderer(renderer);		
+	}
 
+	protected void setAggregateIDRenderer(Class<SICD> sicdClass, TableCellRenderer r) {
+		table.setDefaultRenderer(sicdClass, r);
+	}
+	
+	protected void setStringRenderer(Class<String> stringClass, TableCellRenderer r) {
+		table.setDefaultRenderer(stringClass, r);
+	}
+	
+	protected void setDateRenderer(Class<LocalDate> dateClass, TableCellRenderer r) {
+		table.setDefaultRenderer(dateClass, r);
+	}
+	
+	protected void setTblSelectionMode(int selectionMode) {
+		table.setSelectionMode(selectionMode);		
+	}
+	
+	protected void setStatusRenderer(Class<Status> statusClass, TableCellRenderer tblStatusRenderer) {
+		table.setDefaultRenderer(statusClass, tblStatusRenderer);		
+	}
+	
+	protected void setTblAggregateTypeRenderer(Class<SICDType> typeClass,	TableCellRenderer renderer) {
+		table.setDefaultRenderer(typeClass, renderer);		
+	}
+	
+	protected void clearComponents() {
+		txtNotation.setText("");
+		txtNotice.setText("");
+	}
 }

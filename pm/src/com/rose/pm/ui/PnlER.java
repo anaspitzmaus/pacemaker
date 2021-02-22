@@ -128,7 +128,7 @@ public class PnlER extends PnlBase {
 	
 	protected void setDateRenderer(Class<LocalDate> dateClass, TableCellRenderer r) {
 		table.setDefaultRenderer(dateClass, r);
-}
+	}
 
 	protected void setTblSelectionMode(int selectionMode) {
 		table.setSelectionMode(selectionMode);		

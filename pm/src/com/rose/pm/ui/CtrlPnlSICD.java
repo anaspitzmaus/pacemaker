@@ -21,6 +21,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
@@ -37,13 +38,11 @@ import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.CtrlPnlICD.AggregateTypeListener;
-import com.rose.pm.ui.CtrlPnlPM.AggregateTblModel;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
 
-public class CtrlPnlSICD extends CtrlPnlICD{
+public class CtrlPnlSICD extends CtrlPnlBase{
 	Ctrl_PnlSetDate ctrlPnlSetDate;
 	Listener listener;
 	Renderer renderer;
@@ -63,6 +62,20 @@ public class CtrlPnlSICD extends CtrlPnlICD{
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
 	
+	public CtrlPnlSICD() {
+		createPanel();
+		setComponentLabeling();
+		
+		ctrlPnlSetDate = new Ctrl_PnlSetDate("dd.MM.yyyy", LocalDate.now(), LocalDate.now());
+		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
+		((PnlSICD)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
+		setStandardListener();
+		setListener();
+		setModel();
+		setRenderer();
+		((PnlER)panel).setERTypeSelectionIndex(-1);
+		((PnlER)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	}
 	
 	protected void createPanel() {
 		panel = new PnlSICD();
@@ -78,18 +91,18 @@ public class CtrlPnlSICD extends CtrlPnlICD{
 		((PnlSICD)panel).setBtnShowAllText("Alle Modelle");
 	}
 	
-//	private void setStandardListener() {
-//		listener = new Listener();
-//		serialNrListener = listener.new NotationListener();
-//		((PnlSICD)panel).addSerialNrListener(serialNrListener);
-//		noticeListener = listener.new NotationListener();
-//		((PnlSICD)panel).addNoticeListener(noticeListener);		
-//		tblRowSelectionListener = new TblRowSelectionListener();
-//		((PnlSICD)panel).addTblRowSelectionListener(tblRowSelectionListener);
-//		deleteListener = new DeleteListener();
-//		((PnlSICD)panel).addDeleteListener(deleteListener);
-//		
-//	}
+	private void setStandardListener() {
+		listener = new Listener();
+		serialNrListener = listener.new NotationListener();
+		((PnlSICD)panel).addSerialNrListener(serialNrListener);
+		noticeListener = listener.new NotationListener();
+		((PnlSICD)panel).addNoticeListener(noticeListener);		
+		tblRowSelectionListener = new TblRowSelectionListener();
+		((PnlSICD)panel).addTblRowSelectionListener(tblRowSelectionListener);
+		deleteListener = new DeleteListener();
+		((PnlSICD)panel).addDeleteListener(deleteListener);
+		
+	}
 	
 	/**
 	 * overridable Listeners
@@ -97,8 +110,8 @@ public class CtrlPnlSICD extends CtrlPnlICD{
 	protected void setListener() {
 		createListener = new CreateListener();
 		((PnlSICD)panel).addCreateListener(createListener);
-		aggregateTypeListener = new AggregateTypeListener();
-		((PnlSICD)panel).addAggregateTypeListener(aggregateTypeListener);
+		sicdTypeListener = new SICDTypeListener();
+		((PnlSICD)panel).addAggregateTypeListener(sicdTypeListener);
 		showAllListener = new ShowAllListener();
 		((PnlSICD)panel).addShowAllListener(showAllListener);
 		tblMouseAdaptor = new TblMouseAdaptor();
@@ -109,15 +122,15 @@ public class CtrlPnlSICD extends CtrlPnlICD{
 		 ArrayList<? extends AggregateType> aggregateTypes;
 		try {
 			aggregateTypes = SQL_SELECT.sicdTypes();
-			AggregateType[] arr = new AggregateType[aggregateTypes.size()]; 		  
+			SICDType[] arr = new SICDType[aggregateTypes.size()]; 		  
 	        // ArrayList to Array Conversion 
 	        for (int i = 0; i < aggregateTypes.size(); i++) 
-	            arr[i] = aggregateTypes.get(i);		
+	            arr[i] = (SICDType) aggregateTypes.get(i);		
 			
-			aggregateTypeModel = new DefaultComboBoxModel<AggregateType>(arr);
+			sicdTypeModel = new DefaultComboBoxModel<SICDType>(arr);
 			
-			((PnlSICD)panel).setAggregatTypeModel(aggregateTypeModel);
-			aggregateTblModel = new AggregateTblModel(SQL_SELECT.sicds((SICDType) aggregateTypeListener.model));
+			((PnlSICD)panel).setAggregateTypeModel(sicdTypeModel);
+			sicdTblModel = new SICDTblModel(SQL_SELECT.sicds((SICDType) sicdTypeListener.model));
 			((PnlSICD)panel).setAggregateTblModel(aggregateTblModel);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
