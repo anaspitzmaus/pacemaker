@@ -17,7 +17,14 @@ import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Manufacturer;
-
+/**
+ * an abstract panel that inherits the PnlBase and adds components for 
+ * aggregate type panels that is:
+ * Label and JComboBox for the Manufacturer
+ * Label and JFormattedTextField for the Price
+ * @author Ekki
+ *
+ */
 public abstract class PnlAggregateTypeBase extends PnlBase {
 
 	

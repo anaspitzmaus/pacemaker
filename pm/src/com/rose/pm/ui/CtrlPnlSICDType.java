@@ -75,8 +75,8 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		setModel();
 		setRenderer();
 		setComponentText();
-		((PnlERType)panel).setManufacturerIndex(-1);
-		((PnlERType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		((PnlSICDType)panel).setManufacturerIndex(-1);
+		((PnlSICDType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	
 	private void setListener() {
@@ -148,6 +148,7 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		ArrayList<? extends AggregateType> aggregateTypes;
 		
 		public SICDTypeTblModel(ArrayList<? extends AggregateType> aggregateTypes) {
+			this.aggregateTypes = aggregateTypes;
 			columnNames = new ArrayList<String>();
 			columnNames.add("Id");
 			columnNames.add("Bezeichnung");

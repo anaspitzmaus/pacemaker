@@ -33,12 +33,18 @@ import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.ER;
+import com.rose.pm.material.ERType;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.CtrlPnlER.ERTypeRenderer;
+import com.rose.pm.ui.CtrlPnlER.TblERIDRenderer;
+import com.rose.pm.ui.CtrlPnlER.TblERTypeRenderer;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Renderer.TblDateRenderer;
 import com.rose.pm.ui.Renderer.TblStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
 
@@ -73,8 +79,8 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		setListener();
 		setModel();
 		setRenderer();
-		((PnlER)panel).setERTypeSelectionIndex(-1);
-		((PnlER)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		((PnlSICD)panel).setAggregateTypeSelectionIndex(-1);
+		((PnlSICD)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	
 	protected void createPanel() {
@@ -131,13 +137,29 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 			
 			((PnlSICD)panel).setAggregateTypeModel(sicdTypeModel);
 			sicdTblModel = new SICDTblModel(SQL_SELECT.sicds((SICDType) sicdTypeListener.model));
-			((PnlSICD)panel).setAggregateTblModel(aggregateTblModel);
+			((PnlSICD)panel).setAggregateTblModel(sicdTblModel);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 			
 	}
+	 
+	 private void setRenderer() {
+			renderer = new Renderer();
+			sicdTypeRenderer = new SICDTypeRenderer();
+			((PnlSICD)panel).setAggregateTypeRenderer(sicdTypeRenderer);
+			tblSICDIDRenderer = new TblSICDIDRenderer();
+			((PnlSICD)panel).setAggregateIDRenderer(SICD.class, tblSICDIDRenderer);
+			tblStringRenderer = renderer.new TblStringRenderer();
+			((PnlSICD)panel).setStringRenderer(String.class, tblStringRenderer);
+			tblDateRenderer = renderer.new TblDateRenderer();
+			((PnlSICD)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
+			tblAggregateTypeRenderer = new TblAggregateTypeRenderer();
+			((PnlSICD)panel).setTblAggregateTypeRenderer(SICDType.class, tblAggregateTypeRenderer);
+			tblStatusRenderer = renderer.new TblStatusRenderer();
+			((PnlSICD)panel).setStatusRenderer(Status.class, tblStatusRenderer);
+		}
 	
 	class SICDTblModel extends AbstractTableModel{
 

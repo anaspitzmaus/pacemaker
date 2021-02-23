@@ -120,11 +120,11 @@ class CreateSICDTypeListener implements ActionListener{
 					}
 						
 						//for all types of aggregates
-					for(int i = 0; i< ctrlPnlSICD.aggregateTypeModel.getSize(); i++) {
+					for(int i = 0; i< ctrlPnlSICD.sicdTypeModel.getSize(); i++) {
 						//if notation of deleted aggregate type is same as notation of aggregate type in the ComboBoxModel
-						if(ctrlPnlSICD.aggregateTypeModel.getElementAt(i).getNotation().equals(type.getNotation())) {
+						if(ctrlPnlSICD.sicdTypeModel.getElementAt(i).getNotation().equals(type.getNotation())) {
 							//remove type of aggregate from the comboBoxModel
-							ctrlPnlSICD.aggregateTypeModel.removeElementAt(i);
+							ctrlPnlSICD.sicdTypeModel.removeElementAt(i);
 						}
 					}
 				}
