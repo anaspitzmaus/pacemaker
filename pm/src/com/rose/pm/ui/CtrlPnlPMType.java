@@ -276,7 +276,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 				
 				case 2: return aggregates.get(rowIndex).getManufacturer().getNotation();
 				
-				case 3: return aggregates.get(rowIndex).getType();
+				case 3: return aggregates.get(rowIndex).getPM_Kind();
 				
 				case 4: return aggregates.get(rowIndex).getMri();
 				
@@ -292,13 +292,13 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		
 		protected void setType(AggregateType pm) {
 			if(pm.getRa() && pm.getRv() && pm.getLv()) {
-				pm.setType(PM_Kind.CRT);
+				pm.setPM_Kind(PM_Kind.CRT);
 			}else if(pm.getRa() && pm.getRv() || pm.getRa() && pm.getLv() || pm.getRv() && pm.getLv()) {
-				pm.setType(PM_Kind.Double_Chamber);
+				pm.setPM_Kind(PM_Kind.Double_Chamber);
 			}else if(pm.getRa() || pm.getRv() || pm.getLv()) {
-				pm.setType(PM_Kind.Single_Chamber);
+				pm.setPM_Kind(PM_Kind.Single_Chamber);
 			}else {
-				pm.setType(null);
+				pm.setPM_Kind(null);
 			}
 		}
 		

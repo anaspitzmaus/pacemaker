@@ -116,10 +116,6 @@ public class PnlElectrode extends PnlBase {
 		table.setDefaultRenderer(elclass, r);
 	}
 	
-	protected void setElectrodeTblModel(AbstractTableModel aggregateTblModel) {
-		table.setModel(aggregateTblModel);		
-	}
-	
 	protected void setElectrodeTypeSelectionIndex(Integer index) {
 		cbxElectrodeType.setSelectedIndex(index);		
 	}
@@ -138,26 +134,10 @@ public class PnlElectrode extends PnlBase {
 	
 	protected void setDateRenderer(Class<LocalDate> dateClass, TableCellRenderer r) {
 		table.setDefaultRenderer(dateClass, r);
-}
+	}
 
-	protected void setTblSelectionMode(int selectionMode) {
-		table.setSelectionMode(selectionMode);		
-	}
-	
-	protected void addTblRowSelectionListener(ListSelectionListener listener) {
-		table.getSelectionModel().addListSelectionListener(listener);		
-	}
-	
-	protected int getSelectedTblRow() {		
-		return table.getSelectedRow();
-	}
-	
 	protected Electrode getTableValueAt(int row, int column) {
 		return (Electrode) table.getValueAt(row, column);
-	}
-
-	protected void addTblMouseAdaptor(MouseListener mouseAdaptor) {
-		table.addMouseListener(mouseAdaptor);		
 	}
 
 	protected void setTblPatientRenderer(Class<Patient> patientClass, TableCellRenderer renderer) {

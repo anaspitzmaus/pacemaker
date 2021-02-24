@@ -4,8 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
-
+import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,7 +12,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
 
+/**
+ * abstract JPanel that builds a primitive JPanel with a panel at north and a panel at south
+ * and a scrollPane with a JTable at the center. 
+ * Also a Label ´notation´ and a Label ´notice´ with the associated JTextFields are created
+ * it offers methods to add listeners and models to the components
+ * @author Ekki
+ *
+ */
 
 public abstract class PnlBase extends JPanel {
 	/**
@@ -74,10 +83,10 @@ public abstract class PnlBase extends JPanel {
 
 	}
 	
-	protected void addManufacturerListener(ItemListener listener) {
-		
-	}
-	
+	/**
+	 * set the notation to the label 'notation'	
+	 * @param txt a String value
+	 */
 	protected void setLblNotationText(String txt) {
 		lblNotation.setText(txt);
 	}
@@ -108,6 +117,26 @@ public abstract class PnlBase extends JPanel {
 	
 	protected void addDeleteListener(ActionListener listener) {
 		btnDelete.addActionListener(listener);		
+	}
+	
+	protected void setTblModel(AbstractTableModel model) {
+		table.setModel(model);
+	}
+	
+	protected void setTblSelectionMode(int singleSelection) {
+		table.setSelectionMode(singleSelection);
+	}
+	
+	protected int getSelectedTblRow() {		
+		return table.getSelectedRow();
+	}
+	
+	protected void addTblRowSelectionListener(ListSelectionListener listener) {
+		table.getSelectionModel().addListSelectionListener(listener);		
+	}
+	
+	protected void addTblMouseAdaptor(MouseListener mouseAdaptor) {
+		table.addMouseListener(mouseAdaptor);		
 	}
 	
 	

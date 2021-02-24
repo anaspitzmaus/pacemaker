@@ -1,8 +1,8 @@
 package com.rose.pm.material;
 
-public class AggregateType extends Material
+public class AggregateType extends MaterialType
 {	
-	PM_Kind type;	
+	PM_Kind pmKind;	
 	Integer id;
 	Boolean ra, rv, lv;
 	Boolean mri;
@@ -27,13 +27,13 @@ public class AggregateType extends Material
 
 	
 
-	public PM_Kind getType() {
-		return type;
+	public PM_Kind getPM_Kind() {
+		return pmKind;
 	}
 
 
-	public void setType(PM_Kind type) {
-		this.type = type;
+	public void setPM_Kind(PM_Kind pmKind) {
+		this.pmKind = pmKind;
 	}	
 
 
@@ -62,8 +62,7 @@ public class AggregateType extends Material
 	}
 
 	public AggregateType(String notation) {
-		super(notation);
-		// TODO Auto-generated constructor stub
+		super(notation);		
 	}
 
 	

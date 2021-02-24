@@ -1,6 +1,6 @@
 package com.rose.pm.material;
 
-public class ElectrodeType extends Material{
+public class ElectrodeType extends MaterialType{
 
 	Integer id;
 	Integer length;
@@ -10,18 +10,6 @@ public class ElectrodeType extends Material{
 	
 	
 	
-	public String getNotice() {
-		return notice;
-	}
-
-
-
-	public void setNotice(String notice) {
-		this.notice = notice;
-	}
-
-
-
 	public String getFixMode() {
 		return fixMode;
 	}

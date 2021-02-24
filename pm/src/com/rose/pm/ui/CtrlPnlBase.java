@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 
 public class CtrlPnlBase {
 
-	JPanel panel;
+	PnlBase panel;
 	
 	protected JPanel getPanel() {
 		return this.panel;

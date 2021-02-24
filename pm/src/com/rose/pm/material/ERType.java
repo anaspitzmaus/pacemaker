@@ -1,12 +1,11 @@
 package com.rose.pm.material;
 
-public class ERType extends Material{
+public class ERType extends MaterialType{
 
 	Integer id;
 	
 	public ERType(String notation) {
-		super(notation);
-		// TODO Auto-generated constructor stub
+		super(notation);		
 	}
 	
 	public Integer getId() {

@@ -20,7 +20,7 @@ import com.rose.pm.material.Manufacturer;
 /**
  * an abstract panel that inherits the PnlBase and adds components for 
  * aggregate type panels that is:
- * Label and JComboBox for the Manufacturer
+ * Label and JComboBox for the Manufacturer, 
  * Label and JFormattedTextField for the Price
  * @author Ekki
  *
@@ -63,17 +63,8 @@ public abstract class PnlAggregateTypeBase extends PnlBase {
 		ftxtPrice = new JFormattedTextField(paymentFormat);
 		ftxtPrice.setFont(font);
 		ftxtPrice.setColumns(10);
-	}
+	}	
 	
-	
-	
-	protected void setTblModel(AbstractTableModel model) {
-		table.setModel(model);
-	}
-	
-	protected void setTblSelectionMode(int singleSelection) {
-		table.setSelectionMode(singleSelection);
-	}
 	
 	protected void setManufacturerModel(ComboBoxModel<Manufacturer> l) {
 		cbxManufacturer.setModel(l);
@@ -97,11 +88,7 @@ public abstract class PnlAggregateTypeBase extends PnlBase {
 
 	protected void setTableIDRenderer(Class<? extends AggregateType> idClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(idClass, renderer);
-	}
-	
-	protected int getSelectedTblRow() {		
-		return table.getSelectedRow();
-	}
+	}	
 	
 	protected AggregateType getTableValueAt(int row, int column) {
 		return (AggregateType) table.getValueAt(row, column);

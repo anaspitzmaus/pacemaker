@@ -4,13 +4,24 @@ import com.rose.person.Patient;
 
 public abstract class Material {
 	String notation;
-	Manufacturer manufacturer;
 	String notice;
 	Double price;
 	Patient patient; //the patient, the material is provided for
 	Status status; //the status of the material
-
+	MaterialType materialType;// the type of material, the material belongs to
 	
+	
+	
+	public MaterialType getMaterialType() {
+		return materialType;
+	}
+
+
+	public void setMaterialType(MaterialType materialType) {
+		this.materialType = materialType;
+	}
+
+
 	public Status getStatus() {
 		return status;
 	}
@@ -18,16 +29,6 @@ public abstract class Material {
 
 	public void setStatus(Status status) {
 		this.status = status;
-	}
-
-
-	public Manufacturer getManufacturer() {
-		return manufacturer;
-	}
-
-
-	public void setManufacturer(Manufacturer manufacturer) {
-		this.manufacturer = manufacturer;
 	}
 
 

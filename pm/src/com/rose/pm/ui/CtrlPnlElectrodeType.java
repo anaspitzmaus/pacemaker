@@ -95,15 +95,15 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		setRenderer();
 		setComponentText();
 		((PnlElectrodeType)panel).setManufacturerIndex(-1);
-		((PnlElectrodeType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	
 	private void setListener() {
 		listener = new Listener();
 		notationListener = listener.new NotationListener();	
-		((PnlElectrodeType)panel).addNotationListener(notationListener);
+		panel.addNotationListener(notationListener);
 		noticeListener = listener.new NotationListener();
-		((PnlElectrodeType)panel).addNoticeListener(noticeListener);
+		panel.addNoticeListener(noticeListener);
 		manufacturerListener = listener.new ManufacturerListener();
 		((PnlElectrodeType)panel).addManufacturerListener(manufacturerListener);
 		fixModeListener = new FixModeListener();
@@ -133,7 +133,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		((PnlElectrodeType)panel).setManufacturerModel(manufacturerModel);
 		
 		tblElectrodesModel = new TblElectrodesModel(SQL_SELECT.electrodeModels());
-		((PnlElectrodeType)panel).setTblElectrodesModel(tblElectrodesModel);
+		panel.setTblModel(tblElectrodesModel);
 	}
 	
 	private void setRenderer() {

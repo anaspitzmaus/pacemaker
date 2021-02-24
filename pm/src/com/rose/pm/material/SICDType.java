@@ -7,12 +7,12 @@ public class SICDType extends ICD_Type {
 	}
 
 	@Override
-	public PM_Kind getType() {
+	public PM_Kind getPM_Kind() {
 		return null;
 	}
 
 	@Override
-	public void setType(PM_Kind type) {
+	public void setPM_Kind(PM_Kind type) {
 		
 	}
 

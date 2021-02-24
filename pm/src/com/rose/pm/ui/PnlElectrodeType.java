@@ -174,10 +174,6 @@ public class PnlElectrodeType extends PnlBase {
 		return (Integer) spinLength.getModel().getValue();
 	}
 
-	protected void setTblElectrodesModel(AbstractTableModel tblElectrodesModel) {
-		table.setModel(tblElectrodesModel);
-		
-	}
 	
 	protected void setTableEMTypeRenderer(Class<ElectrodeType> colclass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(colclass, renderer);
@@ -208,22 +204,11 @@ public class PnlElectrodeType extends PnlBase {
 		table.setDefaultRenderer(dblClass, r);
 	}
 	
-	protected void setTblSelectionMode(int selection) {
-		table.setSelectionMode(selection);
-	}
-
-	protected int getSelectedTblRow() {
-		return table.getSelectedRow();
-	}
-
 	protected ElectrodeType getTableValueAt(int row, int column) {
 		return (ElectrodeType) table.getValueAt(row, column);
 	}
 
-	protected void addTblRowSelectionListener(ListSelectionListener listener) {
-		table.getSelectionModel().addListSelectionListener(listener);		
-	}
-
+	
 	protected void addPriceChangeListener(PropertyChangeListener priceListener) {
 		ftxtPrice.addPropertyChangeListener(priceListener);		
 	}

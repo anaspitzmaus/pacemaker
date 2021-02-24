@@ -79,7 +79,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		setModel();
 		setRenderer();
 		((PnlElectrode)panel).setElectrodeTypeSelectionIndex(-1);
-		((PnlElectrode)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tblMouseAdaptor = new TblMouseAdaptor();
 		((PnlElectrode)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
@@ -102,10 +102,11 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
             arr[i] = electrodeTypes.get(i);		
             electrodeTypeModel.addElement(electrodeTypes.get(i));
 	 	}
-		//aggregateTypeModel = new AggregateTypeModel();
+		
 		((PnlElectrode)panel).setElectrodeTypeModel(electrodeTypeModel);
 		electrodeTblModel = new ElectrodeTblModel(SQL_SELECT.electrodes(electrodeTypeListener.model));
-		((PnlElectrode)panel).setElectrodeTblModel(electrodeTblModel);
+		panel.setTblModel(electrodeTblModel);
+		
 	}
 	 
 	 private void setListener() {
