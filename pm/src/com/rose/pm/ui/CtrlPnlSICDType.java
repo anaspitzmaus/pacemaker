@@ -52,11 +52,13 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		createPanel();
 		
 		setModel();
+		
 		setRenderer();
 		setListener();
 		setComponentText();
 		((PnlSICDType)panel).setManufacturerIndex(-1);
 		((PnlSICDType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 	}
 	
 	protected void createPanel() {
@@ -85,7 +87,7 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		((PnlSICDType)panel).setManufacturerRenderer(manufacturerRenderer);
 		
 		tblSICDTypeIDRenderer = new TblSICDTypeIDRenderer();
-		((PnlSICDType)panel).setTableIDRenderer(AggregateType.class, tblSICDTypeIDRenderer);
+		((PnlSICDType)panel).setTableSICDIDRenderer(SICDType.class, tblSICDTypeIDRenderer);
 		
 		renderer = new Renderer();
 		tblStringRenderer = renderer.new TblStringRenderer();
@@ -110,9 +112,11 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		try {
 			tblModel = new SICDTypeTblModel(SQL_SELECT.sicdTypes());
 			((PnlSICDType)panel).setTblModel(tblModel);
+			System.out.println("SICDType" + ((PnlSICDType)panel).table.getColumnClass(0));
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(new JFrame(), e.getErrorCode() + ", " + e.getMessage() + ", das Tabellenmodel der SICD-Typen konnte nicht erstellt werden");
 		}
+		
 		
 	}
 	
@@ -177,6 +181,13 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		public String getColumnName(int column) {
 	        return columnNames.get(column);
 	    }
+		
+		@Override
+		public Class getColumnClass(int col) {
+			return getValueAt(0, col).getClass();
+			
+			
+		}
 		
 		protected void setAggregateTypes(ArrayList<SICDType> aggregateTypes) {
 			this.aggregateTypes = aggregateTypes;		

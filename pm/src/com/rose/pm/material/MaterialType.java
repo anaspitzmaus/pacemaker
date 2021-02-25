@@ -7,7 +7,15 @@ public abstract class MaterialType {
 	Manufacturer manufacturer;
 	Double price;
 	ArrayList<Material> material;
+	Integer id;
 	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	
 	public String getNotation() {
 		return notation;

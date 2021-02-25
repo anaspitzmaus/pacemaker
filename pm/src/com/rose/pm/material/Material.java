@@ -1,5 +1,7 @@
 package com.rose.pm.material;
 
+import java.time.LocalDate;
+
 import com.rose.person.Patient;
 
 public abstract class Material {
@@ -9,6 +11,8 @@ public abstract class Material {
 	Patient patient; //the patient, the material is provided for
 	Status status; //the status of the material
 	MaterialType materialType;// the type of material, the material belongs to
+	Integer id;
+	LocalDate expireDate;
 	
 	
 	
@@ -19,6 +23,15 @@ public abstract class Material {
 
 	public void setMaterialType(MaterialType materialType) {
 		this.materialType = materialType;
+	}
+	
+	public LocalDate getExpireDate() {
+		return this.expireDate;
+	}
+
+
+	public void setExpireDate(LocalDate date) {
+		this.expireDate = date;		
 	}
 
 
@@ -44,6 +57,10 @@ public abstract class Material {
 
 	public Material(String notation) {
 		this.notation = notation;
+	}
+	
+	public Material(MaterialType type) {
+		this.materialType = type;
 	}
 
 
@@ -74,6 +91,14 @@ public abstract class Material {
 
 	public void setPatient(Patient patient) {
 		this.patient = patient;
+	}
+	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
 }

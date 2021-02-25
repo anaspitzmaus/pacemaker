@@ -410,6 +410,10 @@ public class SQL_UPDATE {
 		}
 		
 	}
+	
+	public static boolean deleteSICD(SICD sicd) {
+		return true;
+	}
 
 	public static void deleteEventRecorderType(ERType type) throws SQLException{
 		stmt = DB.getStatement();
@@ -465,7 +469,7 @@ public class SQL_UPDATE {
 		}
 	}
 
-	public static void deleteSICDType(AggregateType type) throws SQLException{
+	public static void deleteSICDType(SICDType type) throws SQLException{
 		stmt = DB.getStatement();
 		if(type instanceof SICDType && type.getId() != null) {
 							

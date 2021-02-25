@@ -3,7 +3,7 @@ package com.rose.pm.material;
 public class AggregateType extends MaterialType
 {	
 	PM_Kind pmKind;	
-	Integer id;
+	
 	Boolean ra, rv, lv;
 	Boolean mri;
 	
@@ -17,13 +17,7 @@ public class AggregateType extends MaterialType
 		this.mri = mri;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	
 
 	
 

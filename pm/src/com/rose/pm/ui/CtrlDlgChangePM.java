@@ -8,6 +8,7 @@ import javax.swing.table.AbstractTableModel;
 
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.PM;
 import com.rose.pm.ui.CtrlPnlPM.AggregateTblModel;
 
@@ -58,7 +59,7 @@ public class CtrlDlgChangePM extends CtrlDlgChange{
 		
 		protected void updateDBAndTblModel() {
 			SQL_UPDATE.Pacemaker(pm);				
-			((AggregateTblModel)model).setAggregats(SQL_SELECT.pacemakers(pm.getAggregatModel()));			
+			((AggregateTblModel)model).setAggregats(SQL_SELECT.pacemakers((AggregateType) pm.getMaterialType()));			
 		}
 		
 	}

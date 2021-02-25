@@ -1,5 +1,10 @@
 package com.rose.pm.ui;
 
+import javax.swing.table.TableCellRenderer;
+
+import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.SICDType;
+
 import net.miginfocom.swing.MigLayout;
 
 
@@ -28,6 +33,10 @@ public class PnlSICDType extends PnlAggregateTypeBase {
 		pnlInput.add(ftxtPrice, "cell 7 0");
 		pnlInput.add(btnCreate, "cell 8 0");	
 			
+	}
+	
+	protected void setTableSICDIDRenderer(Class<SICDType> idClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(idClass, renderer);
 	}
 	
 	

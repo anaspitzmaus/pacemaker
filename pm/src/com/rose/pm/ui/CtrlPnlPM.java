@@ -277,7 +277,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			switch(columnIndex) {
 			case 0: return aggregates.get(rowIndex);
 			
-			case 1: return aggregates.get(rowIndex).getAggregatModel();
+			case 1: return aggregates.get(rowIndex).getMaterialType();
 			
 			case 2: return aggregates.get(rowIndex).getSerialNr();
 			

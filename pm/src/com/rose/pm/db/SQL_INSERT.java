@@ -462,7 +462,7 @@ public class SQL_INSERT {
 		try {
 			DB.getConnection().setAutoCommit(true);
 			stmt.executeUpdate("INSERT INTO pm_implant (pm_type, expiry, serialNr, notice, status) "
-					+ "VALUES ('" + pm.getAggregatModel().getId() + "', '" 
+					+ "VALUES ('" + pm.getMaterialType().getId() + "', '" 
 					+ Date.valueOf(pm.getExpireDate()) + "', '"
 					+ pm.getSerialNr() + "', '"
 					+ pm.getNotice() + "', '"
@@ -490,7 +490,7 @@ public class SQL_INSERT {
 		try {
 			DB.getConnection().setAutoCommit(true);
 			stmt.executeUpdate("INSERT INTO icd (icd_type, expiry, serialNr, notice, status) "
-					+ "VALUES ('" + icd.getAggregatModel().getId() + "', '" 
+					+ "VALUES ('" + icd.getMaterialType().getId() + "', '" 
 					+ Date.valueOf(icd.getExpireDate()) + "', '"
 					+ icd.getSerialNr() + "', '"
 					+ icd.getNotice() + "', '"
@@ -744,7 +744,7 @@ public class SQL_INSERT {
 		
 			DB.getConnection().setAutoCommit(true);
 			stmt.executeUpdate("INSERT INTO sicd (id_sicd_type, expiry, serialnr, notice, status) "
-					+ "VALUES ('" + sicd.getAggregatModel().getId() + "', '" 
+					+ "VALUES ('" + sicd.getMaterialType().getId() + "', '" 
 					+ Date.valueOf(sicd.getExpireDate()) + "', '"
 					+ sicd.getSerialNr() + "', '"
 					+ sicd.getNotice() + "', '"

@@ -32,19 +32,11 @@ import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.AggregateType;
-import com.rose.pm.material.ER;
-import com.rose.pm.material.ERType;
-import com.rose.pm.material.ICD_Type;
-import com.rose.pm.material.PM;
+import com.rose.pm.material.MaterialType;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.CtrlPnlER.ERTypeRenderer;
-import com.rose.pm.ui.CtrlPnlER.TblERIDRenderer;
-import com.rose.pm.ui.CtrlPnlER.TblERTypeRenderer;
 import com.rose.pm.ui.Listener.NotationListener;
-import com.rose.pm.ui.Renderer.TblDateRenderer;
 import com.rose.pm.ui.Renderer.TblStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
 
@@ -125,7 +117,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	}
 	
 	 protected void setModel() {
-		 ArrayList<? extends AggregateType> aggregateTypes;
+		 ArrayList<? extends MaterialType> aggregateTypes;
 		try {
 			aggregateTypes = SQL_SELECT.sicdTypes();
 			SICDType[] arr = new SICDType[aggregateTypes.size()]; 		  
@@ -216,7 +208,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 			switch(columnIndex) {
 			case 0: return sicds.get(rowIndex);
 			
-			case 1: return sicds.get(rowIndex).getAggregatModel();
+			case 1: return sicds.get(rowIndex).getMaterialType();
 			
 			case 2: return sicds.get(rowIndex).getSerialNr();
 			
@@ -426,7 +418,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		public void actionPerformed(ActionEvent e) {
 			if(tblRowSelectionListener.getAggregatSelected() instanceof SICD) {
 				if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
-					if(SQL_UPDATE.deleteAggregate(tblRowSelectionListener.getAggregatSelected())){
+					if(SQL_UPDATE.deleteSICD(tblRowSelectionListener.getAggregatSelected())){
 						sicdTblModel.sicds.remove(tblRowSelectionListener.getAggregatSelected());
 						sicdTblModel.fireTableDataChanged();
 					}

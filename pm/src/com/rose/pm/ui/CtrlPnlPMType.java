@@ -74,17 +74,23 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	
 	public CtrlPnlPMType() {
 		createPanel();
+		
 		pmType = new PM_Kind[]{PM_Kind.Single_Chamber, PM_Kind.Double_Chamber, PM_Kind.CRT};
-		setStandardModels();		
+		setStandardModels();	
+		
 		setModel();
+		System.out.println(((PnlPMType)panel).table.getColumnClass(0));
 		setRenderer();
 		setStandardListener();
+		
 		//setListener();
 		((PnlPMType)panel).setManufacturerIndex(-1);
 		((PnlPMType)panel).setRVSelection(true);
 		rv = true;
 		((PnlPMType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 		setComponentText();
+		
 	}
 	
 	protected void createPanel() {

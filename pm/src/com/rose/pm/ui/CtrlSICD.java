@@ -49,7 +49,7 @@ public class CtrlSICD {
 	}
 	
 class CreateSICDTypeListener implements ActionListener{
-		AggregateType type;
+		SICDType type;
 		
 		protected void initializeAggregateTypes() {
 			type = new SICDType(ctrlPnlSICDType.getNotationListener().getNotation());
@@ -103,7 +103,7 @@ class CreateSICDTypeListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(ctrlPnlSICDType.getTblRowSelectionListener().getRecorderTypeSelected() instanceof SICDType) {
-				AggregateType type = ctrlPnlSICDType.getTblRowSelectionListener().getRecorderTypeSelected();
+				SICDType type = ctrlPnlSICDType.getTblRowSelectionListener().getRecorderTypeSelected();
 				if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
 					try {
 						SQL_UPDATE.deleteSICDType(type);
