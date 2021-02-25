@@ -24,7 +24,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.db.SQL_SELECT;
-import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.ui.Listener.NotationListener;
@@ -33,7 +32,7 @@ import com.rose.pm.ui.Listener.NotationListener;
 
 
 public class CtrlPnlSICDType extends CtrlPnlBase{
-	//PnlSICDType pnlSICDType;
+
 	SICDTypeTblModel tblModel; 
 	ComboBoxModel<Manufacturer> manufacturerModel;
 	ManufacturerRenderer manufacturerRenderer;
