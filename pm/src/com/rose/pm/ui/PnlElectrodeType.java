@@ -25,21 +25,15 @@ import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import net.miginfocom.swing.MigLayout;
 
-public class PnlElectrodeType extends PnlBase {
+public class PnlElectrodeType extends PnlAggregateTypeBase {
 
 	
-	JFormattedTextField ftxtPrice;
+	
 	JSpinner spinLength;
-	JComboBox<Manufacturer> cbxManufacturer;
-	JLabel lblManufacturer, lblMRI, lblLength, lblFix, lblPrice;
+	JLabel lblMRI, lblLength, lblFix;
 	JCheckBox checkMRI;
 	JToggleButton tglFix;
 	
-	NumberFormat paymentFormat;
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 113685124454489212L;
 
 	/**
@@ -47,9 +41,6 @@ public class PnlElectrodeType extends PnlBase {
 	 */
 	public PnlElectrodeType() {
 		
-		paymentFormat = DecimalFormat.getInstance();
-		paymentFormat.setMinimumFractionDigits(2);
-		paymentFormat.setMaximumFractionDigits(2);
 		pnlInput.setLayout(new MigLayout("", "[][][][][][][][][][][][][grow][][][]", "[]"));
 		
 		pnlInput.add(lblNotation, "cell 0 0,alignx trailing");
@@ -62,12 +53,8 @@ public class PnlElectrodeType extends PnlBase {
 		jSep.setForeground(Color.BLACK);
 		pnlInput.add(jSep, "cell 2 0");
 		
-		lblManufacturer = new JLabel("lblManufacturer");
-		lblManufacturer.setFont(font);
 		pnlInput.add(lblManufacturer, "cell 3 0,alignx trailing");
 		
-		cbxManufacturer = new JComboBox<Manufacturer>();
-		cbxManufacturer.setFont(font);
 		pnlInput.add(cbxManufacturer, "cell 4 0");
 		
 		lblMRI = new JLabel("lblMRI");
@@ -100,13 +87,9 @@ public class PnlElectrodeType extends PnlBase {
 		pnlInput.add(txtNotice, "cell 12 0, growx");
 		
 		
-		lblPrice = new JLabel("lblPrice");
-		lblPrice.setFont(font);
+		
 		pnlInput.add(lblPrice, "cell 13 0");
 		
-		ftxtPrice = new JFormattedTextField(paymentFormat);
-		ftxtPrice.setFont(font);
-		ftxtPrice.setColumns(10);
 		pnlInput.add(ftxtPrice, "cell 14 0");		
 		
 		lblPrice.setLabelFor(ftxtPrice);
@@ -142,20 +125,7 @@ public class PnlElectrodeType extends PnlBase {
 		lblPrice.setText(txt);
 	}
 	
-	protected void setManufacturerModel(ComboBoxModel<Manufacturer> l) {
-		cbxManufacturer.setModel(l);
-	}
-
-	protected void setManufacturerRenderer(ListCellRenderer<Manufacturer> manufacturerRenderer) {
-		cbxManufacturer.setRenderer(manufacturerRenderer);
 		
-	}
-	
-	protected void addManufacturerListener(ItemListener l) {
-		cbxManufacturer.addItemListener(l);
-		
-	}
-	
 	protected void setManufacturerIndex(Integer index) {
 		cbxManufacturer.setSelectedIndex(index);
 	}
@@ -184,9 +154,9 @@ public class PnlElectrodeType extends PnlBase {
 		table.setDefaultRenderer(colclass, renderer);
 	}
 
-	protected void setTableIDRenderer(Class<ElectrodeType> idClass, TableCellRenderer renderer) {
-		table.setDefaultRenderer(idClass, renderer);
-	}
+//	protected void setTableElectrodeTypeIDRenderer(Class<ElectrodeType> idClass, TableCellRenderer renderer) {
+//		table.setDefaultRenderer(idClass, renderer);
+//	}
 	
 	protected void setTableBooleanRenderer(Class<Boolean> bolClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(bolClass, renderer);
@@ -204,9 +174,11 @@ public class PnlElectrodeType extends PnlBase {
 		table.setDefaultRenderer(dblClass, r);
 	}
 	
-	protected ElectrodeType getTableValueAt(int row, int column) {
-		return (ElectrodeType) table.getValueAt(row, column);
-	}
+//	protected ElectrodeType getTableElectrodeTypeValueAt(int row, int column) {
+//		return (ElectrodeType) table.getValueAt(row, column);
+//	}
+	
+	
 
 	
 	protected void addPriceChangeListener(PropertyChangeListener priceListener) {

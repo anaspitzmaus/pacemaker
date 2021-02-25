@@ -12,11 +12,11 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.MaterialType;
 /**
  * an abstract panel that inherits the PnlBase and adds components for 
  * aggregate type panels that is:
@@ -90,8 +90,8 @@ public abstract class PnlAggregateTypeBase extends PnlBase {
 		table.setDefaultRenderer(idClass, renderer);
 	}	
 	
-	protected AggregateType getTableValueAt(int row, int column) {
-		return (AggregateType) table.getValueAt(row, column);
+	protected MaterialType getTableValueAt(int row, int column) {
+		return (MaterialType) table.getValueAt(row, column);
 	}
 
 	protected void addTblRowSelectionListener(ListSelectionListener listener) {
