@@ -25,20 +25,15 @@ import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.AggregateType;
-import com.rose.pm.material.ERType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.SICDType;
-import com.rose.pm.ui.CtrlPnlERType.ERTypeTblModel;
-import com.rose.pm.ui.CtrlPnlERType.TableERTypeRenderer;
-import com.rose.pm.ui.CtrlPnlERType.TblERIDRenderer;
-import com.rose.pm.ui.CtrlPnlERType.TblRowSelectionListener;
 import com.rose.pm.ui.Listener.NotationListener;
 
 
 
 
 public class CtrlPnlSICDType extends CtrlPnlBase{
-	PnlSICDType pnlSICDType;
+	//PnlSICDType pnlSICDType;
 	SICDTypeTblModel tblModel; 
 	ComboBoxModel<Manufacturer> manufacturerModel;
 	ManufacturerRenderer manufacturerRenderer;
@@ -54,13 +49,11 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 	Renderer.TblDoubleRenderer tblDoubleRenderer;
 	
 	public CtrlPnlSICDType() {
-		panel = new PnlSICDType();
-		panel.setName("SICD-Model");
-		panel.setOpaque(false);
-		panel.setBackground(Color.BLUE);
-		setListener();
+		createPanel();
+		
 		setModel();
 		setRenderer();
+		setListener();
 		setComponentText();
 		((PnlSICDType)panel).setManufacturerIndex(-1);
 		((PnlSICDType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -68,15 +61,7 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 	
 	protected void createPanel() {
 		panel = new PnlSICDType();
-		panel.setName("SICD-Model");
-		panel.setOpaque(false);
-		panel.setBackground(Color.BLUE);
-		setListener();
-		setModel();
-		setRenderer();
-		setComponentText();
-		((PnlSICDType)panel).setManufacturerIndex(-1);
-		((PnlSICDType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		panel.setName("SICD-Model");		
 	}
 	
 	private void setListener() {
@@ -100,7 +85,7 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		((PnlSICDType)panel).setManufacturerRenderer(manufacturerRenderer);
 		
 		tblSICDTypeIDRenderer = new TblSICDTypeIDRenderer();
-		((PnlSICDType)panel).setTableIDRenderer(SICDType.class, tblSICDTypeIDRenderer);
+		((PnlSICDType)panel).setTableIDRenderer(AggregateType.class, tblSICDTypeIDRenderer);
 		
 		renderer = new Renderer();
 		tblStringRenderer = renderer.new TblStringRenderer();
@@ -145,9 +130,9 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		
 		private static final long serialVersionUID = -8444808544442905721L;			
 		protected ArrayList<String> columnNames;
-		ArrayList<? extends AggregateType> aggregateTypes;
+		ArrayList<SICDType> aggregateTypes;
 		
-		public SICDTypeTblModel(ArrayList<? extends AggregateType> aggregateTypes) {
+		public SICDTypeTblModel(ArrayList<SICDType> aggregateTypes) {
 			this.aggregateTypes = aggregateTypes;
 			columnNames = new ArrayList<String>();
 			columnNames.add("Id");
@@ -193,8 +178,8 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 	        return columnNames.get(column);
 	    }
 		
-		protected void setAggregateTypes(ArrayList<? extends AggregateType> aggreagteTypes) {
-			this.aggregateTypes = aggreagteTypes;		
+		protected void setAggregateTypes(ArrayList<SICDType> aggregateTypes) {
+			this.aggregateTypes = aggregateTypes;		
 		}
 	}
 	
@@ -346,15 +331,15 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 	}
 	
 	class TblRowSelectionListener implements ListSelectionListener{
-		AggregateType aggregateType;
+		SICDType aggregateType;
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
 			if (((PnlSICDType)panel).getSelectedTblRow() > -1) {			
 				int row = ((PnlSICDType)panel).getSelectedTblRow();
-	            aggregateType = (AggregateType) ((PnlSICDType)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
+	            aggregateType = (SICDType) ((PnlSICDType)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
 	        }			
 		}
-		protected AggregateType getRecorderTypeSelected() {
+		protected SICDType getRecorderTypeSelected() {
 			return aggregateType;
 		}
 			

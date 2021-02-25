@@ -12,7 +12,7 @@ import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
-import com.rose.pm.material.ERType;
+
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.SICDType;
 
@@ -24,11 +24,11 @@ public class CtrlSICD {
 	DeleteSICDTypeListener deleteSICDTypeListener;
 	
 	
-	protected CtrlPnlSICDType getCtrlPnlAggregatesType() {
+	protected CtrlPnlSICDType getCtrlPnlSICDType() {
 		return this.ctrlPnlSICDType;
 	}
 	
-	protected CtrlPnlSICD getCtrlPnlAggregates() {
+	protected CtrlPnlSICD getCtrlPnlSICD() {
 		return this.ctrlPnlSICD;
 	}
 	

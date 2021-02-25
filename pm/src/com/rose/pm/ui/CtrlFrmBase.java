@@ -42,8 +42,8 @@ public class CtrlFrmBase {
 		frame.getTabbedPane().add(ctrlICD.getCtrlPnlAggregates().getPanel().getName(), ctrlICD.getCtrlPnlAggregates().getPanel());
 		frame.getTabbedPane().add(ctrlER.getCtrlPnlERType().getPanel().getName(), ctrlER.getCtrlPnlERType().getPanel());
 		frame.getTabbedPane().add(ctrlER.getCtrlPnlER().getPanel().getName(), ctrlER.getCtrlPnlER().getPanel());
-		frame.getTabbedPane().add(ctrlSICD.getCtrlPnlAggregatesType().getPanel().getName(), ctrlSICD.getCtrlPnlAggregatesType().getPanel());
-		frame.getTabbedPane().add(ctrlSICD.getCtrlPnlAggregates().getPanel().getName(), ctrlSICD.getCtrlPnlAggregates().getPanel());
+		frame.getTabbedPane().add(ctrlSICD.getCtrlPnlSICDType().getPanel().getName(), ctrlSICD.getCtrlPnlSICDType().getPanel());
+		frame.getTabbedPane().add(ctrlSICD.getCtrlPnlSICD().getPanel().getName(), ctrlSICD.getCtrlPnlSICD().getPanel());
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
 		frame.insertToolBar(ctrlTbrIsynet.getToolBar());
 		setListener();

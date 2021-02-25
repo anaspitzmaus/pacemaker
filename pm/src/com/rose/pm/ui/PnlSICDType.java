@@ -1,9 +1,5 @@
 package com.rose.pm.ui;
 
-
-
-
-
 import net.miginfocom.swing.MigLayout;
 
 

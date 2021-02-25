@@ -938,7 +938,7 @@ public class SQL_SELECT {
 		if(rs.isBeforeFirst()){
 			while(rs.next()) {
 				SICDType sicdType = new SICDType(rs.getString("sicdNotation"));
-				sicdType.setId(rs.getInt("idsicd_type"));					
+				sicdType.setId(rs.getInt("idsicdtype"));					
 				if(rs.getString("notice") != null) {
 					sicdType.setNotice(rs.getString("notice"));
 				}else {
@@ -947,7 +947,7 @@ public class SQL_SELECT {
 				sicdType.setPrice(rs.getDouble("price"));
 				
 				Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
-				manufacturer.setId(rs.getInt("id_manufacturer"));
+				manufacturer.setId(rs.getInt("idmanufacturer"));
 				sicdType.setManufacturer(manufacturer);
 				sicdTypes.add(sicdType);
 			}
@@ -964,17 +964,17 @@ public class SQL_SELECT {
 			if(type instanceof SICDType) {//select sicds of a selected model
 				if(type.getId() != null) {
 					rs = stmt.executeQuery(
-						 "SELECT sicd.idsicd, sicd.idexam, icd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided "
+						 "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided "
 						+ "FROM sm.sicd "
 						+ "INNER JOIN sm.sicd_type "
-						+ "ON sm.sicd.sicd_type = sm.sicd_type.idsicdtype "
+						+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype "
 						+ "WHERE sm.sicd.id_sicd_type = " + type.getId() + "");
 				}else {//select all sicds
 					rs = stmt.executeQuery(
-						 "SELECT sicd.idsicd, sicd.idexam, icd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided "
+						 "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided "
 						+ "FROM sm.sicd "
 						+ "INNER JOIN sm.sicd_type "
-						+ "ON sm.sicd.sicd_type = sm.sicd_type.idsicdtype");
+						+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype");
 						
 				}
 				

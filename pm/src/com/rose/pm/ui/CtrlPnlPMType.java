@@ -43,7 +43,7 @@ import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 public class CtrlPnlPMType extends CtrlPnlBase{
 
-	PnlPMType pnlPMType;
+	//PnlPMType pnlPMType;
 	PMTypeTblModel tblModel; 
 	ComboBoxModel<Manufacturer> manufacturerModel;
 	ManufacturerRenderer manufacturerRenderer;
@@ -129,11 +129,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		tblDoubleRenderer = renderer.new TblDoubleRenderer();
 		((PnlPMType)panel).setTblDoubleRenderer(Double.class, tblDoubleRenderer);
 	}
-	
-//	protected void setListener() {
-//		createListener = new CreateListener();
-//		((PnlPMType)panel).addCreateListener(createListener);
-//	}
+
 	
 	protected void setStandardListener() {
 		listener = new Listener();
