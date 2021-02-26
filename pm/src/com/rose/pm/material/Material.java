@@ -8,7 +8,7 @@ public abstract class Material {
 	String notation;
 	String notice;
 	Double price;
-	Patient patient; //the patient, the material is provided for
+	Patient patient; //the patient, the material is provided or implanted
 	Status status; //the status of the material
 	MaterialType materialType;// the type of material, the material belongs to
 	Integer id;

@@ -290,7 +290,7 @@ public class CtrlPnlER extends CtrlPnlBase{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			((PnlPM)panel).setAggregateTypeSelectionIndex(-1);
+			((PnlER)panel).setERTypeSelectionIndex(-1);
 			update();
 		}
 		

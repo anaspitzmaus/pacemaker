@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.swing.ComboBoxModel;
@@ -24,8 +25,11 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.material.ER;
+import com.rose.pm.material.ERType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.SICDType;
+import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
 
 
@@ -134,6 +138,9 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		private static final long serialVersionUID = -8444808544442905721L;			
 		protected ArrayList<String> columnNames;
 		ArrayList<SICDType> aggregateTypes;
+		private final Class[] columnClass = new Class[] {
+				 SICDType.class, String.class, String.class, String.class, Double.class
+			};
 		
 		public SICDTypeTblModel(ArrayList<SICDType> aggregateTypes) {
 			this.aggregateTypes = aggregateTypes;
@@ -148,8 +155,8 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-						
-				switch(columnIndex) {
+				
+			switch(columnIndex) {
 				case 0: return aggregateTypes.get(rowIndex);
 				
 				case 1: return aggregateTypes.get(rowIndex).getNotation();
@@ -161,9 +168,8 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 				case 4: return aggregateTypes.get(rowIndex).getPrice();
 				
 				default: return null;
-				
-				}	
 			
+			}				
 		}
 
 		@Override
@@ -183,7 +189,7 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		
 		@Override
 		public Class getColumnClass(int col) {
-			return getValueAt(0, col).getClass();
+			return columnClass[col];
 			
 			
 		}

@@ -299,7 +299,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 				sicd.setNotice(noticeListener.getNotation());
 				sicd.setStatus(Status.Lager);
 				updateDBAndTblModel();
-				((PnlPM)panel).clearComponents();
+				((PnlSICD)panel).clearComponents();
 				serialNrListener.notation = "";
 			}
 		}

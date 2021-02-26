@@ -26,8 +26,9 @@ public class PopupMenu extends JPopupMenu {
 
 	private static final long serialVersionUID = -2826141447212609880L;
 
-	JMenuItem itemProvide;
+	JMenuItem itemProvide, itemImplanted;
 	ProvideListener provideListener;
+	ImplantedListener implantedListener;
 	Patient patient;
 	Material material;
 	AbstractTableModel model;
@@ -38,12 +39,27 @@ public class PopupMenu extends JPopupMenu {
     	this.patient = patient;
     	this.material = material;
     	this.model = model;
-    	if(material.getPatient() instanceof Patient) {
-    		itemProvide = new JMenuItem("Bereitstellung lösen");
-    	}else {
-    		itemProvide = new JMenuItem("bereitstellen");
-    	}
-        add(itemProvide);
+    	switch (material.getStatus()) {
+		case Lager:
+			itemProvide = new JMenuItem("bereitgestellt");
+    		itemImplanted = new JMenuItem("implantiert");
+    		add(itemProvide);
+    		add(itemImplanted);
+			break;
+		case Bereitgestellt:
+			itemProvide = new JMenuItem("Bereitstellung lösen");
+			add(itemProvide);
+			break;
+			
+		case Implantiert:
+			itemImplanted = new JMenuItem("Implantation lösen");
+			add(itemImplanted);
+			break;
+		default:
+			break;
+		}
+    	
+        
         setListener();
         
     }
@@ -51,8 +67,14 @@ public class PopupMenu extends JPopupMenu {
    
     
     private void setListener() {
-    	provideListener = new ProvideListener();
-    	itemProvide.addActionListener(provideListener);
+    	if(itemProvide instanceof JMenuItem) {
+	    	provideListener = new ProvideListener();
+	    	itemProvide.addActionListener(provideListener);
+    	}
+    	if(itemImplanted instanceof JMenuItem) {
+    		implantedListener = new ImplantedListener();
+    		itemImplanted.addActionListener(implantedListener);
+    	}
     }
     
     class ProvideListener implements ActionListener{
@@ -61,10 +83,10 @@ public class PopupMenu extends JPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(material instanceof Material) {
-				if(material.getPatient() instanceof Patient) {
+				if(material.getStatus().equals(Status.Bereitgestellt)) {
 					//delete the provided status
 					deleteProvided();
-				}else if(patient instanceof Patient) {
+				}else if(material.getStatus().equals(Status.Lager) && patient instanceof Patient) {
 					//set the material provided to the patient
 					provideMaterial();
 				}
@@ -84,36 +106,98 @@ public class PopupMenu extends JPopupMenu {
 		}
 		
 		 private void provideMaterial() {
-		    	//insert patient to database if not already exists
-				try {
-					Integer patId = SQL_INSERT.patient(patient);
-					if(patId instanceof Integer) {
-						material.setPatient(patient);
-						material.setStatus(Status.Bereitgestellt);
-						model.fireTableDataChanged();
-						
-						//update database that material is provided for a patient
-					}
-				} catch (SQLIntegrityConstraintViolationException e1) {
+	    	//insert patient to database if not already exists
+			try {
+				Integer patId = SQL_INSERT.patient(patient);
+				if(patId instanceof Integer) {
+					material.setPatient(patient);
+					material.setStatus(Status.Bereitgestellt);
+					model.fireTableDataChanged();
 					
-					//Patient always exists at database
-					//get the id of the patient and set the id to the patient
-					try {
-						patient = SQL_SELECT.patient(patient.getNumber());
-						material.setPatient(patient);
-						material.setStatus(Status.Bereitgestellt);
-						model.fireTableDataChanged();
-					} catch (SQLException e2) {
-						// TODO Auto-generated catch block
-						e2.printStackTrace();
-					}
-					
-					
-				} catch (SQLException e2) {
-					System.out.println(e2.getMessage());
+					//update database that material is provided for a patient
 				}
+			} catch (SQLIntegrityConstraintViolationException e1) {
+				
+				//Patient always exists at database
+				//get the id of the patient and set the id to the patient
+				try {
+					patient = SQL_SELECT.patient(patient.getNumber());
+					material.setPatient(patient);
+					material.setStatus(Status.Bereitgestellt);
+					model.fireTableDataChanged();
+				} catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				
+				
+			} catch (SQLException e2) {
+				System.out.println(e2.getMessage());
+			}
 										
-		    }
+	    }
+    	
+    }
+    
+    class ImplantedListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(material instanceof Material) {
+				if(material.getStatus().equals(Status.Implantiert)) {
+					//delete the provided status
+					deleteImplanted();
+				}else if(material.getStatus().equals(Status.Lager) && patient instanceof Patient) {
+					//set the material provided to the patient
+					implantMaterial();
+				}
+				try {
+					SQL_UPDATE.setPatProvided(material);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}			
+			
+		}
+		
+		private void deleteImplanted() {
+			material.setPatient(null);
+			material.setStatus(Status.Lager);
+			model.fireTableDataChanged();			
+		}
+		
+		private void implantMaterial() {
+	    	//insert patient to database if not already exists
+			try {
+				Integer patId = SQL_INSERT.patient(patient);
+				if(patId instanceof Integer) {
+					material.setPatient(patient);
+					material.setStatus(Status.Implantiert);
+					model.fireTableDataChanged();
+					
+					//update database that material is implanted to a patient
+				}
+			} catch (SQLIntegrityConstraintViolationException e1) {
+				
+				//Patient always exists at database
+				//get the id of the patient and set the id to the patient
+				try {
+					patient = SQL_SELECT.patient(patient.getNumber());
+					material.setPatient(patient);
+					material.setStatus(Status.Implantiert);
+					model.fireTableDataChanged();
+				} catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				
+				
+			} catch (SQLException e2) {
+				System.out.println(e2.getMessage());
+			}
+										
+	    }
     	
     }
     
