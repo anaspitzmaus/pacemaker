@@ -14,10 +14,13 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+
+import com.rose.person.Patient;
 import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.Renderer.TblPatientRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -105,9 +108,7 @@ public class PnlSICD extends PnlBase {
 	
 	protected void setAggregateTypeSelectionIndex(Integer index) {
 		cbxSICDType.setSelectedIndex(index);		
-	}
-	
-	
+	}	
 	
 	protected void setAggregateTblModel(AbstractTableModel aggregateTblModel) {
 		table.setModel(aggregateTblModel);		
@@ -152,5 +153,11 @@ public class PnlSICD extends PnlBase {
 	protected void clearComponents() {
 		txtNotation.setText("");
 		txtNotice.setText("");
+	}
+
+
+	protected void setTblPatientRenderer(Class<Patient> patientClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(patientClass, renderer);
+		
 	}
 }

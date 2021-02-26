@@ -969,18 +969,42 @@ public class SQL_SELECT {
 						+ "INNER JOIN sm.sicd_type "
 						+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype "
 						+ "WHERE sm.sicd.id_sicd_type = " + type.getId() + "");
-				}else {//select all sicds
-					rs = stmt.executeQuery(
-						 "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided "
-						+ "FROM sm.sicd "
-						+ "INNER JOIN sm.sicd_type "
-						+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype");
-						
+					
+					if(rs.isBeforeFirst()){
+						Integer patProv;
+						while(rs.next()) {
+							SICD sicd = new SICD(type);
+							sicd.setId(rs.getInt("idsicd"));
+							sicd.setSerialNr(rs.getString("serialnr"));					
+							sicd.setExpireDate(rs.getDate("expiry").toLocalDate());
+							sicd.setNotice(rs.getString("notice"));
+							sicd.setStatus(Status.valueOf(rs.getString("status")));
+							patProv = rs.getInt("idpat_provided");
+							
+							if(patProv == 0) {
+								sicd.setPatient(null);
+							}else{
+								Patient patient = new Patient("Test", "Test");
+								patient.setId(patProv);
+								patient.setNumber(rs.getInt("patNr"));
+								sicd.setPatient(patient);
+							}					
+							sicds.add(sicd);
+						}					
+					}			
 				}
+			}else {//select all sicds
+				rs = stmt.executeQuery(
+					 "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, sicd_type.notation AS typeNotation "
+					+ "FROM sm.sicd "
+					+ "INNER JOIN sm.sicd_type "
+					+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype");
 				
 				if(rs.isBeforeFirst()){
 					Integer patProv;
 					while(rs.next()) {
+						type = new SICDType(rs.getString("typeNotation"));
+						type.setId(rs.getInt("id_sicd_type"));
 						SICD sicd = new SICD(type);
 						sicd.setId(rs.getInt("idsicd"));
 						sicd.setSerialNr(rs.getString("serialnr"));					
@@ -1000,7 +1024,11 @@ public class SQL_SELECT {
 						sicds.add(sicd);
 					}					
 				}			
-			}	
+					
+			}
+				
+				
+				
 		return sicds;
 	}
 	

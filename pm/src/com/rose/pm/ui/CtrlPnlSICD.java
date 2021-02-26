@@ -37,6 +37,7 @@ import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Renderer.TblPatientRenderer;
 import com.rose.pm.ui.Renderer.TblStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
 
@@ -59,6 +60,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
+	TblPatientRenderer tblPatientRenderer;
 	
 	public CtrlPnlSICD() {
 		createPanel();
@@ -151,6 +153,9 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 			((PnlSICD)panel).setTblAggregateTypeRenderer(SICDType.class, tblAggregateTypeRenderer);
 			tblStatusRenderer = renderer.new TblStatusRenderer();
 			((PnlSICD)panel).setStatusRenderer(Status.class, tblStatusRenderer);
+			tblPatientRenderer = renderer.new TblPatientRenderer();
+			((PnlSICD)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
+			 
 		}
 	
 	class SICDTblModel extends AbstractTableModel{
