@@ -1,6 +1,7 @@
 package com.rose.pm.material;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import com.rose.person.Patient;
 
@@ -13,8 +14,16 @@ public abstract class Material {
 	MaterialType materialType;// the type of material, the material belongs to
 	Integer id;
 	LocalDate expireDate;
+	Date implantDate;
 	
-	
+	public Date getDateOfImplantation() {
+		return implantDate;
+	}
+
+
+	public void setDateOfImplantation(Date implantDate) {
+		this.implantDate = implantDate;
+	}
 	
 	public MaterialType getMaterialType() {
 		return materialType;

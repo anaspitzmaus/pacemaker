@@ -9,8 +9,11 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
@@ -33,7 +36,6 @@ import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
-import com.rose.pm.material.Material;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblDateRenderer;
@@ -63,6 +65,9 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	DeleteListener deleteListener; 
 	TblPatientRenderer tblPatientRenderer;
 	TblStatusRenderer tblStatusRenderer;
+	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
+	Editor editor;
+	Editor.DateCellEditor dateCellEditor;
 	
 	public CtrlPnlElectrode() {
 		createPanel();
@@ -76,7 +81,9 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		panel = new PnlElectrode();
 		panel.setName("Elektroden");
 		setListener();
-		setModel();
+		setModel();	
+		setEditor();
+		
 		setRenderer();
 		((PnlElectrode)panel).setElectrodeTypeSelectionIndex(-1);
 		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -127,6 +134,12 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 ((PnlElectrode)panel).addDeleteListener(deleteListener);
 	 }
 	 
+	 private void setEditor() {
+		 editor = new Editor();
+		 dateCellEditor = editor.new DateCellEditor();
+		 ((PnlElectrode)panel).setDateCellEditor(dateCellEditor);
+	 }
+	 
 	 private void setRenderer() {
 		 electrodeTypeRenderer = new ElectrodeTypeRenderer();
 		 ((PnlElectrode)panel).setElectrodeTypeRenderer(electrodeTypeRenderer);
@@ -143,7 +156,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 ((PnlElectrode)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
 		 tblStatusRenderer = renderer.new TblStatusRenderer();
 		 ((PnlElectrode)panel).setTblStatusRenderer(Status.class, tblStatusRenderer);
-		 
+		 tblImplantDateRenderer = renderer.new TblImplantDateRenderer();
+		 ((PnlElectrode)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
 	 }
 	 
 	 private Boolean isElectrodeProvided(Electrode electrode) {		
@@ -163,7 +177,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends Electrode> electrodes;
-		
+		@SuppressWarnings("rawtypes")
+		Class[] classes = {Electrode.class, ElectrodeType.class, String.class, LocalDate.class, String.class, Status.class, Patient.class, Date.class};
 		
 		public ElectrodeTblModel(ArrayList<? extends Electrode> electrodes) {
 			this.electrodes = electrodes;
@@ -175,6 +190,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 			columnNames.add("Bemerkung");
 			columnNames.add("Status");
 			columnNames.add("Patient");
+			columnNames.add("Implantationsdatum");
 		}
 		
 		@Override
@@ -196,13 +212,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		
 		@Override
 		public Class getColumnClass(int col) {
-			switch (col) {
-			case 6://as patient can be null
-				return Patient.class;
-			default:
-				return getValueAt(0, col).getClass();				
-			}
-			
+			return classes[col];			
 		}
 
 		@Override
@@ -221,13 +231,35 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 			
 			case 6: return electrodes.get(rowIndex).getPatient();
 			
+			case 7: return electrodes.get(rowIndex).getDateOfImplantation();
+			
 			default: return null;
 			
-			}	
-			
-		}	
+			}			
+		}
+		
+		@Override
+		public void setValueAt(Object value, int row, int col) {
+            electrodes.get(row).setDateOfImplantation((Date)value);
+            try {
+				SQL_UPDATE.dateOfImplant(electrodes.get(row));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            //change value at database;
+		}
 		
 		
+		@Override
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			if(columnIndex == 7) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+
 		protected void setElectrodes(ArrayList<? extends Electrode> el) {
 			this.electrodes = el;		
 		}
@@ -287,9 +319,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 public TblElectrodeTypeRenderer() {
 			 super.setOpaque(true);
 		 }
-		/**
-		 * 
-		 */
+		
 		private static final long serialVersionUID = -7162535661899399897L;
 
 		@Override
@@ -310,9 +340,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	 class TblElectrodeIDRenderer extends JLabel implements TableCellRenderer{
 		 
 			
-		/**
-		 * 
-		 */
+		
 		private static final long serialVersionUID = -7687161924946698926L;
 
 		public TblElectrodeIDRenderer() {
@@ -437,6 +465,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	}
 	
 	
+	
+
 	
 	
 	

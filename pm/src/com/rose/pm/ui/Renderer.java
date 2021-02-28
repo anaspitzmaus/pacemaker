@@ -3,7 +3,9 @@ package com.rose.pm.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -135,6 +137,34 @@ public class Renderer {
 				setBackground(row%2==0 ? Color.white : Color.lightGray);  
 			}
 			return this;
+		}
+		
+	}
+	
+	class TblImplantDateRenderer extends JLabel implements TableCellRenderer{
+
+		private static final long serialVersionUID = 2063936186512998098L;
+		SimpleDateFormat f;
+		public TblImplantDateRenderer() {
+			setOpaque(true);
+			f = new SimpleDateFormat("dd.MM.yyyy");
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			 if( value instanceof Date) {
+		            value = f.format(value);
+		            setText((String) value);
+		        }else {
+		        	setText("");
+		        }
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			 return this;
 		}
 		
 	}

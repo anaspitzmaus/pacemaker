@@ -2,11 +2,11 @@ package com.rose.pm.material;
 
 public class ElectrodeType extends MaterialType{
 
-	Integer id;
+	
 	Integer length;
 	Boolean mri;
 	String fixMode;
-	String notice;
+	
 	
 	
 	
@@ -18,18 +18,6 @@ public class ElectrodeType extends MaterialType{
 
 	public void setFixMode(String fixMode) {
 		this.fixMode = fixMode;
-	}
-
-
-
-	public Integer getId() {
-		return id;
-	}
-
-
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 

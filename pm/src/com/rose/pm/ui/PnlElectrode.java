@@ -2,19 +2,17 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseListener;
 import java.time.LocalDate;
+import java.util.Date;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.person.Patient;
@@ -22,8 +20,6 @@ import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.Renderer.TblPatientRenderer;
-import com.rose.pm.ui.Renderer.TblStatusRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -147,6 +143,16 @@ public class PnlElectrode extends PnlBase {
 	protected void setTblStatusRenderer(Class<Status> statusClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(statusClass, renderer);			
 	}
+
+	protected void setTblImplantDateRenderer(Class<Date> dateClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(dateClass, renderer);		
+	}
+
+	protected void setDateCellEditor(DefaultCellEditor editor) {
+		 table.getColumnModel().getColumn(7).setCellEditor(editor);		
+	}
+
+	
 
 
 }

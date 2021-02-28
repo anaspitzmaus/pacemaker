@@ -436,23 +436,29 @@ public class SQL_UPDATE {
 	 */
 	public static void setPatProvided(Material material) throws SQLException{
 		String table = "";
+		String id = "";
 		
 		//select the appropriate table
 		if(material instanceof Electrode) {
 			table = "electrode";
+			id = "idelectrode";
 		}else if(material instanceof ICD) {
 			table = "icd";
+			id = "id_icd";
 		}else if(material instanceof PM) {
 			table = "pm_implant";
+			id = "id_pm_implant";
 		}else if(material instanceof ER) {
 			table = "eventrec";
+			id = "ideventrec";
 		}else if(material instanceof SICD) {
 			table = "sicd";
+			id = "idsicd";
 		}
 		
 		//do the statement
-		if(table != "") {
-			String update = "UPDATE sm." + table + " SET status = ?, idpat_provided = ? WHERE idelectrode = ?";
+		if(table != "" && id != "") {
+			String update = "UPDATE sm." + table + " SET status = ?, idpat_provided = ? WHERE " + id + " = ?";
 			Connection con = DB.getConnection();
 			DB.getConnection().setAutoCommit(true);
 			PreparedStatement ps = con.prepareStatement(update, Statement.RETURN_GENERATED_KEYS);
@@ -462,7 +468,7 @@ public class SQL_UPDATE {
 			}else {//if the provided material has to be removed from the patient
 				ps.setNull(2, Types.INTEGER);
 			}
-			ps.setInt(3, ((Electrode)material).getId());	
+			ps.setInt(3, material.getId());	
 			
 			ps.executeUpdate();
 			ps.close();
@@ -476,6 +482,49 @@ public class SQL_UPDATE {
 			stmt.executeUpdate("DELETE FROM sm.sicd_type WHERE idsicdtype = " + type.getId() + " LIMIT 1");					
 		}
 		
+	}
+	
+	public static void dateOfImplant(Material material) throws SQLException{
+		String table = "";
+		String id = "";
+		
+		//select the appropriate table
+		if(material instanceof Electrode) {
+			table = "electrode";
+			id = "idelectrode";
+		}else if(material instanceof ICD) {
+			table = "icd";
+			id = "id_icd";
+		}else if(material instanceof PM) {
+			table = "pm_implant";
+			id = "id_pm_implant";
+		}else if(material instanceof ER) {
+			table = "eventrec";
+			id = "ideventrec";
+		}else if(material instanceof SICD) {
+			table = "sicd";
+			id = "idsicd";
+		}
+		
+		if(table != "" && id != "") {
+			String update = "UPDATE sm." + table + " SET implant = ? WHERE " + id + " = ?";
+			Connection con = DB.getConnection();
+			DB.getConnection().setAutoCommit(true);
+			PreparedStatement ps = con.prepareStatement(update, Statement.RETURN_GENERATED_KEYS);
+			
+			if(material.getDateOfImplantation() instanceof java.util.Date) {//if date of implantation is given
+				java.util.Date d = material.getDateOfImplantation();
+				java.sql.Date sd = new java.sql.Date(d.getTime());
+				ps.setDate(1, sd);
+			}else {//if the date of implantation is not given
+				ps.setNull(1, Types.DATE);
+			}
+			ps.setInt(2, material.getId());	
+			
+			ps.executeUpdate();
+			ps.close();
+		}
+	
 	}
 	
 	
