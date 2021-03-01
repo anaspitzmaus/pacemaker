@@ -4,7 +4,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
+import java.util.Date;
+
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -14,6 +17,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+
+import com.rose.person.Patient;
 import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.PM;
@@ -150,7 +155,17 @@ public class PnlPM extends PnlBase{
 	protected void setStatusRenderer(Class<Status> statusClass, TableCellRenderer tblStatusRenderer) {
 		table.setDefaultRenderer(statusClass, tblStatusRenderer);		
 	}
-
 	
+	protected void setTblPatientRenderer(Class<Patient> patientClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(patientClass, renderer);		
+	}
+
+	protected void setDateCellEditor(DefaultCellEditor editor) {
+		 table.getColumnModel().getColumn(7).setCellEditor(editor);		
+	}
+	
+	protected void setTblImplantDateRenderer(Class<Date> dateClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(dateClass, renderer);		
+	}
 
 }

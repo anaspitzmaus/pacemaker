@@ -39,7 +39,7 @@ public class Isynet{
 		path = Paths.get( patInfoPath);
 		if(patInfoPath != "") {
 			
-			File file = new File(patInfoPath, "Patinf02.tmp");
+			File file = new File(patInfoPath);
 			reader = new BufferedReader(new FileReader(file));
 			String line = reader.readLine();
 			while(line!= null) {//for each line in the file

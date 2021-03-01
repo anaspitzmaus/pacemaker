@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
@@ -21,19 +22,26 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import com.rose.Isynet;
+import com.rose.person.Patient;
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.ER;
 import com.rose.pm.material.ERType;
+import com.rose.pm.material.PM;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Renderer.TblImplantDateRenderer;
+import com.rose.pm.ui.Renderer.TblPatientRenderer;
 
 public class CtrlPnlER extends CtrlPnlBase{
 	Ctrl_PnlSetDate ctrlPnlSetDate;
@@ -54,6 +62,10 @@ public class CtrlPnlER extends CtrlPnlBase{
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
+	Editor editor;
+	Editor.DateCellEditor dateCellEditor;
+	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
+	TblPatientRenderer tblPatientRenderer;
 	
 	public CtrlPnlER() {
 		createPanel();
@@ -65,6 +77,7 @@ public class CtrlPnlER extends CtrlPnlBase{
 		setStandardListener();
 		setListener();
 		setModel();
+		setEditor();
 		setRenderer();
 		((PnlER)panel).setERTypeSelectionIndex(-1);
 		((PnlER)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -111,6 +124,12 @@ public class CtrlPnlER extends CtrlPnlBase{
 		((PnlER)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
+	 protected void setEditor() {
+		 editor = new Editor();
+		 dateCellEditor = editor.new DateCellEditor();
+		 ((PnlER)panel).setDateCellEditor(dateCellEditor);
+	 }
+	
 	 void setModel() {
 		 //set Model for the comboBox that displays the types of eventRecorders
 		ArrayList<ERType> erTypes;
@@ -152,6 +171,10 @@ public class CtrlPnlER extends CtrlPnlBase{
 		((PnlER)panel).setTblERTypeRenderer(ERType.class, tblERTypeRenderer);
 		tblStatusRenderer = new TblStatusRenderer();
 		((PnlER)panel).setStatusRenderer(Status.class, tblStatusRenderer);
+		 tblPatientRenderer = renderer.new TblPatientRenderer();
+		 ((PnlER)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
+		 tblImplantDateRenderer = renderer.new TblImplantDateRenderer();
+		 ((PnlER)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
 	}
 	
 	class ERTypeRenderer extends JLabel implements ListCellRenderer<ERType>{
@@ -217,7 +240,7 @@ public class CtrlPnlER extends CtrlPnlBase{
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends ER> recorders;
 		private final Class[] columnClass = new Class[] {
-			 ER.class, ERType.class, String.class, LocalDate.class, Status.class, String.class
+			 ER.class, ERType.class, String.class, LocalDate.class, Status.class, String.class, Patient.class, Date.class
 		};
 		
 		public ERTblModel(ArrayList<? extends ER> recorders) {
@@ -229,6 +252,8 @@ public class CtrlPnlER extends CtrlPnlBase{
 			columnNames.add("Ablaufdatum");
 			columnNames.add("Status");
 			columnNames.add("Bemerkung");
+			columnNames.add("Patient");
+			columnNames.add("Implantationsdatum");
 		}
 		
 		@Override
@@ -271,13 +296,36 @@ public class CtrlPnlER extends CtrlPnlBase{
 			
 			case 5: return recorders.get(rowIndex).getNotice();
 			
+			case 6: return recorders.get(rowIndex).getPatient();
+			
+			case 7: return recorders.get(rowIndex).getDateOfImplantation();
+			
 			default: return null;
 			
 			}	
 			
 		}
 		
-
+		@Override
+		public void setValueAt(Object value, int row, int col) {
+            recorders.get(row).setDateOfImplantation((Date)value);
+            try {
+				SQL_UPDATE.dateOfImplant(recorders.get(row));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            //change value at database;
+		}
+		
+		@Override
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			if(columnIndex == 7) {
+				return true;
+			}else {
+				return false;
+			}
+		}
 		
 		
 		protected void setRecorders(ArrayList<? extends ER> er) {
@@ -484,6 +532,7 @@ public class CtrlPnlER extends CtrlPnlBase{
 	
 	class TblMouseAdaptor extends MouseAdapter{
 		int row;
+		JTable table;
 		 @Override
 	    public void mouseClicked(MouseEvent mouseEvent){
 	        if(mouseEvent.getClickCount()==2){
@@ -493,6 +542,16 @@ public class CtrlPnlER extends CtrlPnlBase{
 	             if (table.getSelectedRow() != -1 && row >= 0) {
 	                initiateDialog();
 	             }
+	        }else if(SwingUtilities.isRightMouseButton(mouseEvent) == true){
+	        	table =(JTable) mouseEvent.getSource();
+	        	Point point = mouseEvent.getPoint();
+	        	int row = table.rowAtPoint(point);
+	        	if(table.getSelectedRow() == row) {
+	        		Isynet isynet = new Isynet();
+	        		Patient patient = isynet.getPatient();
+	        		PopupMenu menu = new PopupMenu(patient, (ER) erTblModel.getValueAt(row, 0), erTblModel);
+	                menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+	        	}
 	        }
 	    }
 		 

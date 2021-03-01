@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
@@ -22,21 +23,26 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import com.rose.Isynet;
 import com.rose.person.Patient;
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.MaterialType;
+import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Renderer.TblImplantDateRenderer;
 import com.rose.pm.ui.Renderer.TblPatientRenderer;
 import com.rose.pm.ui.Renderer.TblStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
@@ -61,6 +67,10 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
 	TblPatientRenderer tblPatientRenderer;
+	Editor editor;
+	Editor.DateCellEditor dateCellEditor;
+	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
+	
 	
 	public CtrlPnlSICD() {
 		createPanel();
@@ -72,6 +82,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		setStandardListener();
 		setListener();
 		setModel();
+		setEditor();
 		setRenderer();
 		((PnlSICD)panel).setAggregateTypeSelectionIndex(-1);
 		((PnlSICD)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -118,6 +129,12 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		((PnlSICD)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
+	 protected void setEditor() {
+		 editor = new Editor();
+		 dateCellEditor = editor.new DateCellEditor();
+		 ((PnlSICD)panel).setDateCellEditor(dateCellEditor);
+	 }
+	
 	 protected void setModel() {
 		 ArrayList<? extends MaterialType> aggregateTypes;
 		try {
@@ -155,7 +172,8 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 			((PnlSICD)panel).setStatusRenderer(Status.class, tblStatusRenderer);
 			tblPatientRenderer = renderer.new TblPatientRenderer();
 			((PnlSICD)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
-			 
+			tblImplantDateRenderer = renderer.new TblImplantDateRenderer();
+			((PnlSICD)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer); 
 		}
 	
 	class SICDTblModel extends AbstractTableModel{
@@ -168,7 +186,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends SICD> sicds;
 		private final Class[] columnClass = new Class[] {
-			 SICD.class, SICDType.class, String.class, LocalDate.class, String.class, Status.class, Patient.class
+			 SICD.class, SICDType.class, String.class, LocalDate.class, String.class, Status.class, Patient.class, Date.class
 		};
 		
 		public SICDTblModel(ArrayList<? extends SICD> sicds) {
@@ -181,6 +199,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 			columnNames.add("Bemerkung");
 			columnNames.add("Status");
 			columnNames.add("Patient");
+			columnNames.add("Implantationsdatum");
 		}
 		
 		@Override
@@ -225,11 +244,34 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 			
 			case 6: return sicds.get(rowIndex).getPatient();
 			
+			case 7: return sicds.get(rowIndex).getDateOfImplantation();
+			
 			default: return null;
 			
 			}	
 			
-		}		
+		}	
+		
+		@Override
+		public void setValueAt(Object value, int row, int col) {
+            sicds.get(row).setDateOfImplantation((Date)value);
+            try {
+				SQL_UPDATE.dateOfImplant(sicds.get(row));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            //change value at database;
+		}
+		
+		@Override
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			if(columnIndex == 7) {
+				return true;
+			}else {
+				return false;
+			}
+		}
 		
 		protected void setSICDs(ArrayList<? extends SICD> sicds) {
 			this.sicds = sicds;		
@@ -436,6 +478,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	
 	class TblMouseAdaptor extends MouseAdapter{
 		int row;
+		JTable table;
 		 @Override
 	    public void mouseClicked(MouseEvent mouseEvent){
 	        if(mouseEvent.getClickCount()==2){
@@ -445,6 +488,16 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	             if (table.getSelectedRow() != -1 && row >= 0) {
 	                initiateDialog();
 	             }
+	        }else if(SwingUtilities.isRightMouseButton(mouseEvent) == true){
+	        	table =(JTable) mouseEvent.getSource();
+	        	Point point = mouseEvent.getPoint();
+	        	int row = table.rowAtPoint(point);
+	        	if(table.getSelectedRow() == row) {
+	        		Isynet isynet = new Isynet();
+	        		Patient patient = isynet.getPatient();
+	        		PopupMenu menu = new PopupMenu(patient, (SICD) sicdTblModel.getValueAt(row, 0), sicdTblModel);
+	                menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+	        	}
 	        }
 	    }
 		 

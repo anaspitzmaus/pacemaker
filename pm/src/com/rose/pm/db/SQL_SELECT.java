@@ -564,13 +564,16 @@ public class SQL_SELECT {
 		stmt = DB.getStatement();
 		ArrayList<PM> pms;
 		pms = new ArrayList<PM>();
+		Integer patProv;
 		try {
 			if(pmModel instanceof AggregateType && pmModel.getId() != null) {//select pacemakers of a selected model
 				rs = stmt.executeQuery(
-					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, pm_implant.notice, pm_implant.status "
+					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, idpat_provided, pm_implant.notice, pm_implant.status, patnr, implant "
 					+ "FROM sm.pm_implant "
 					+ "INNER JOIN sm.pm_type "
 					+ "ON sm.pm_implant.pm_type = sm.pm_type.idpm_type "
+					+ "LEFT OUTER JOIN human.patient "
+					+ "ON sm.pm_implant.idpat_provided = human.patient.idpatient "
 					+ "WHERE sm.pm_implant.pm_type = " + pmModel.getId() + "");
 				
 				if(rs.isBeforeFirst()){
@@ -581,6 +584,19 @@ public class SQL_SELECT {
 						pm.setExpireDate(rs.getDate("expiry").toLocalDate());
 						pm.setNotice(rs.getString("notice"));
 						pm.setStatus(Status.valueOf(rs.getString("status")));
+						
+						patProv = rs.getInt("idpat_provided");
+						
+						if(patProv == 0) {
+							pm.setPatient(null);
+						}else{
+							Patient patient = new Patient("Test", "Test");
+							patient.setId(patProv);
+							patient.setNumber(rs.getInt("patNr"));
+							pm.setPatient(patient);
+						}	
+						
+						pm.setDateOfImplantation(rs.getDate("implant"));
 						
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
@@ -594,10 +610,12 @@ public class SQL_SELECT {
 				}
 			}else {//select all pacemakers
 				rs = stmt.executeQuery(
-						 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation, expiry, serialNr, pm_implant.notice, pm_implant.status "
+						 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation, expiry, serialNr, idpat_provided, pm_implant.notice, pm_implant.status, patnr, implant "
 						+ "FROM sm.pm_implant "
 						+ "INNER JOIN sm.pm_type "
-						+ "ON sm.pm_implant.pm_type = sm.pm_type.idpm_type");
+						+ "ON sm.pm_implant.pm_type = sm.pm_type.idpm_type "
+						+ "LEFT OUTER JOIN human.patient "
+						+ "ON sm.pm_implant.idpat_provided = human.patient.idpatient");
 				
 				if(rs.isBeforeFirst()){
 					while(rs.next()) {
@@ -610,6 +628,18 @@ public class SQL_SELECT {
 						pm.setNotice(rs.getString("notice"));
 						pm.setStatus(Status.valueOf(rs.getString("status")));
 						
+						patProv = rs.getInt("idpat_provided");
+						
+						if(patProv == 0) {
+							pm.setPatient(null);
+						}else{
+							Patient patient = new Patient("Test", "Test");
+							patient.setId(patProv);
+							patient.setNumber(rs.getInt("patNr"));
+							pm.setPatient(patient);
+						}	
+						
+						pm.setDateOfImplantation(rs.getDate("implant"));
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
 //							PM_Implant exam = new PM_Implant();
@@ -639,13 +669,16 @@ public class SQL_SELECT {
 		stmt = DB.getStatement();
 		ArrayList<ICD> icds;
 		icds = new ArrayList<ICD>();
+		Integer patProv;
 		try {
 			if(type instanceof ICD_Type && type.getId() != null) {//select icds of a selected model
 				rs = stmt.executeQuery(
-					 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, icd.notice, icd.status "
+					 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, icd.notice, icd.status, idpat_provided, patnr, implant "
 					+ "FROM sm.icd "
 					+ "INNER JOIN sm.icd_type "
 					+ "ON sm.icd.icd_type = sm.icd_type.idicd_type "
+					+ "LEFT OUTER JOIN human.patient "
+					+ "ON sm.icd.idpat_provided = human.patient.idpatient "
 					+ "WHERE sm.icd.icd_type = " + type.getId() + "");
 				
 				if(rs.isBeforeFirst()){
@@ -656,6 +689,19 @@ public class SQL_SELECT {
 						icd.setExpireDate(rs.getDate("expiry").toLocalDate());
 						icd.setNotice(rs.getString("notice"));
 						icd.setStatus(Status.valueOf(rs.getString("status")));
+						
+						patProv = rs.getInt("idpat_provided");
+						
+						if(patProv == 0) {
+							icd.setPatient(null);
+						}else{
+							Patient patient = new Patient("Test", "Test");
+							patient.setId(patProv);
+							patient.setNumber(rs.getInt("patNr"));
+							icd.setPatient(patient);
+						}	
+						
+						icd.setDateOfImplantation(rs.getDate("implant"));
 						
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
@@ -671,10 +717,12 @@ public class SQL_SELECT {
 				
 			}else {//select all icds
 				rs = stmt.executeQuery(
-						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation, expiry, serialNr, icd.notice, icd.status "
+						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation, expiry, serialNr, icd.notice, icd.status, idpat_provided, patnr, implant "
 						+ "FROM sm.icd "
 						+ "INNER JOIN sm.icd_type "
-						+ "ON sm.icd.icd_type = sm.icd_type.idicd_type");
+						+ "ON sm.icd.icd_type = sm.icd_type.idicd_type "
+						+ "LEFT OUTER JOIN human.patient "
+						+ "ON sm.icd.idpat_provided = human.patient.idpatient ");
 				
 				if(rs.isBeforeFirst()){
 					while(rs.next()) {
@@ -687,6 +735,18 @@ public class SQL_SELECT {
 						icd.setNotice(rs.getString("notice"));
 						icd.setStatus(Status.valueOf(rs.getString("status")));
 						
+						patProv = rs.getInt("idpat_provided");
+						
+						if(patProv == 0) {
+							icd.setPatient(null);
+						}else{
+							Patient patient = new Patient("Test", "Test");
+							patient.setId(patProv);
+							patient.setNumber(rs.getInt("patNr"));
+							icd.setPatient(patient);
+						}	
+						
+						icd.setDateOfImplantation(rs.getDate("implant"));
 						//create and add an examination
 //						if(rs.getObject("id_exam") != null) {
 //							PM_Implant exam = new PM_Implant();
@@ -853,12 +913,15 @@ public class SQL_SELECT {
 	public static ArrayList<? extends ER> eventRecorder(ERType type) throws SQLException{
 		stmt = DB.getStatement();
 		ArrayList<ER> recorders = new ArrayList<ER>();
+		Integer patProv;
 		if(type == null) {
 			rs = stmt.executeQuery(
-				"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status, eventrec_type.notation AS typeNotation "
+				"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status, eventrec_type.notation AS typeNotation, idpat_provided, patnr, implant "
 				+ "FROM sm.eventrec "
 				+ "INNER JOIN sm.eventrec_type "
-				+ "ON sm.eventrec.idType = sm.eventrec_type.ideventrec_type");
+				+ "ON sm.eventrec.idType = sm.eventrec_type.ideventrec_type "
+				+ "LEFT OUTER JOIN human.patient "
+				+ "ON sm.eventrec.idpat_provided = human.patient.idpatient");
 		
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
@@ -870,15 +933,30 @@ public class SQL_SELECT {
 					recorder.setExpireDate(rs.getDate("expire").toLocalDate());
 					recorder.setSerialNr(rs.getString("serialnr"));
 					recorder.setStatus(Status.valueOf(rs.getString("status")));
+					
+					patProv = rs.getInt("idpat_provided");
+					
+					if(patProv == 0) {
+						recorder.setPatient(null);
+					}else{
+						Patient patient = new Patient("Test", "Test");
+						patient.setId(patProv);
+						patient.setNumber(rs.getInt("patNr"));
+						recorder.setPatient(patient);
+					}	
+					
+					recorder.setDateOfImplantation(rs.getDate("implant"));
 					recorders.add(recorder);
 				}
 			}
 		}else if (type.getId() instanceof Integer) {//if type of eventrecorder is know
 			rs = stmt.executeQuery(
-					"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status "
+					"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status, idpat_provided, patnr, implant "
 					+ "FROM sm.eventrec "
 					+ "INNER JOIN sm.eventrec_type "
 					+ "ON sm.eventrec.idType = sm.eventrec_type.ideventrec_type "
+					+ "LEFT OUTER JOIN human.patient "
+					+ "ON sm.eventrec.idpat_provided = human.patient.idpatient "
 					+ "WHERE sm.eventrec_type.ideventrec_type = " + type.getId() + "");
 			
 			if(rs.isBeforeFirst()){
@@ -889,6 +967,20 @@ public class SQL_SELECT {
 					recorder.setExpireDate(rs.getDate("expire").toLocalDate());
 					recorder.setSerialNr(rs.getString("serialnr"));
 					recorder.setStatus(Status.valueOf(rs.getString("status")));
+					
+					patProv = rs.getInt("idpat_provided");
+					
+					if(patProv == 0) {
+						recorder.setPatient(null);
+					}else{
+						Patient patient = new Patient("Test", "Test");
+						patient.setId(patProv);
+						patient.setNumber(rs.getInt("patNr"));
+						recorder.setPatient(patient);
+					}	
+					
+					recorder.setDateOfImplantation(rs.getDate("implant"));
+					
 					recorders.add(recorder);
 				}
 			}
@@ -970,10 +1062,12 @@ public class SQL_SELECT {
 			if(type instanceof SICDType) {//select sicds of a selected model
 				if(type.getId() != null) {
 					rs = stmt.executeQuery(
-						 "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided "
+						 "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, patnr, implant "
 						+ "FROM sm.sicd "
 						+ "INNER JOIN sm.sicd_type "
 						+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype "
+						+ "LEFT OUTER JOIN human.patient "
+						+ "ON sm.sicd.idpat_provided = human.patient.idpatient "
 						+ "WHERE sm.sicd.id_sicd_type = " + type.getId() + "");
 					
 					if(rs.isBeforeFirst()){
@@ -985,6 +1079,7 @@ public class SQL_SELECT {
 							sicd.setExpireDate(rs.getDate("expiry").toLocalDate());
 							sicd.setNotice(rs.getString("notice"));
 							sicd.setStatus(Status.valueOf(rs.getString("status")));
+							
 							patProv = rs.getInt("idpat_provided");
 							
 							if(patProv == 0) {
@@ -994,17 +1089,22 @@ public class SQL_SELECT {
 								patient.setId(patProv);
 								patient.setNumber(rs.getInt("patNr"));
 								sicd.setPatient(patient);
-							}					
+							}	
+							
+							sicd.setDateOfImplantation(rs.getDate("implant"));
+							
 							sicds.add(sicd);
 						}					
 					}			
 				}
 			}else {//select all sicds
 				rs = stmt.executeQuery(
-					 "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, sicd_type.notation AS typeNotation "
+					 "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, sicd_type.notation AS typeNotation, patnr, implant "
 					+ "FROM sm.sicd "
 					+ "INNER JOIN sm.sicd_type "
-					+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype");
+					+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype "
+					+ "LEFT OUTER JOIN human.patient "
+					+ "ON sm.sicd.idpat_provided = human.patient.idpatient");
 				
 				if(rs.isBeforeFirst()){
 					Integer patProv;
@@ -1026,7 +1126,10 @@ public class SQL_SELECT {
 							patient.setId(patProv);
 							patient.setNumber(rs.getInt("patNr"));
 							sicd.setPatient(patient);
-						}					
+						}
+						
+						sicd.setDateOfImplantation(rs.getDate("implant"));
+						
 						sicds.add(sicd);
 					}					
 				}			

@@ -10,30 +10,38 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import com.rose.Isynet;
+import com.rose.person.Patient;
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.Electrode;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Renderer.TblImplantDateRenderer;
+import com.rose.pm.ui.Renderer.TblPatientRenderer;
 
 public class CtrlPnlPM extends CtrlPnlBase{
 
@@ -51,11 +59,14 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	TblStringRenderer tblStringRenderer;
 	TblAggregateTypeRenderer tblAggregateTypeRenderer;
 	TblStatusRenderer tblStatusRenderer;
+	TblPatientRenderer tblPatientRenderer;
 	com.rose.pm.ui.Renderer.TblDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
-	
+	Editor editor;
+	Editor.DateCellEditor dateCellEditor;
+	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
 	
 	
 	public CtrlPnlPM() {
@@ -68,6 +79,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		setStandardListener();
 		setListener();
 		setModel();
+		setEditor();
 		setRenderer();
 		((PnlPM)panel).setAggregateTypeSelectionIndex(-1);
 		((PnlPM)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -114,6 +126,12 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		((PnlPM)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
+	 protected void setEditor() {
+		 editor = new Editor();
+		 dateCellEditor = editor.new DateCellEditor();
+		 ((PnlPM)panel).setDateCellEditor(dateCellEditor);
+	 }
+	
 	 void setModel() {
 		ArrayList<AggregateType> aggregateTypes = SQL_SELECT.pacemakerKinds();
 		AggregateType[] arr = new AggregateType[aggregateTypes.size()]; 		  
@@ -142,6 +160,10 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		((PnlPM)panel).setTblAggregateTypeRenderer(AggregateType.class, tblAggregateTypeRenderer);
 		tblStatusRenderer = new TblStatusRenderer();
 		((PnlPM)panel).setStatusRenderer(Status.class, tblStatusRenderer);
+		 tblPatientRenderer = renderer.new TblPatientRenderer();
+		 ((PnlPM)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
+		 tblImplantDateRenderer = renderer.new TblImplantDateRenderer();
+		 ((PnlPM)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
 	}
 	
 	class AggregateTypeListener implements ItemListener{
@@ -233,7 +255,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends PM> aggregates;
 		private final Class[] columnClass = new Class[] {
-			 PM.class, AggregateType.class, String.class, LocalDate.class, Status.class, String.class
+			 PM.class, AggregateType.class, String.class, LocalDate.class, Status.class, String.class, Patient.class, Date.class
 		};
 		
 		public AggregateTblModel(ArrayList<? extends PM> paceMakers) {
@@ -245,6 +267,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			columnNames.add("Ablaufdatum");
 			columnNames.add("Status");
 			columnNames.add("Bemerkung");
+			columnNames.add("Patient");
+			columnNames.add("Implantationsdatum");
 		}
 		
 		@Override
@@ -287,14 +311,36 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			
 			case 5: return aggregates.get(rowIndex).getNotice();
 			
+			case 6: return aggregates.get(rowIndex).getPatient();
+			
+			case 7: return aggregates.get(rowIndex).getDateOfImplantation();
+			
 			default: return null;
 			
 			}	
 			
 		}
 		
-
+		@Override
+		public void setValueAt(Object value, int row, int col) {
+            aggregates.get(row).setDateOfImplantation((Date)value);
+            try {
+				SQL_UPDATE.dateOfImplant(aggregates.get(row));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            //change value at database;
+		}
 		
+		@Override
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			if(columnIndex == 7) {
+				return true;
+			}else {
+				return false;
+			}
+		}
 		
 		protected void setAggregats(ArrayList<? extends PM> pm) {
 			this.aggregates = pm;		
@@ -465,6 +511,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	
 	class TblMouseAdaptor extends MouseAdapter{
 		int row;
+		JTable table;
 		 @Override
 	    public void mouseClicked(MouseEvent mouseEvent){
 	        if(mouseEvent.getClickCount()==2){
@@ -474,6 +521,16 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	             if (table.getSelectedRow() != -1 && row >= 0) {
 	                initiateDialog();
 	             }
+	        } else if(SwingUtilities.isRightMouseButton(mouseEvent) == true){
+	        	table =(JTable) mouseEvent.getSource();
+	        	Point point = mouseEvent.getPoint();
+	        	int row = table.rowAtPoint(point);
+	        	if(table.getSelectedRow() == row) {
+	        		Isynet isynet = new Isynet();
+	        		Patient patient = isynet.getPatient();
+	        		PopupMenu menu = new PopupMenu(patient, (PM) aggregateTblModel.getValueAt(row, 0), aggregateTblModel);
+	                menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+	        	}
 	        }
 	    }
 		 

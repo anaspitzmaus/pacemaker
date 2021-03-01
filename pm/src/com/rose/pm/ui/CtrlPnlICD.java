@@ -1,20 +1,19 @@
 package com.rose.pm.ui;
 
 
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTable;
+
 
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
-import com.rose.pm.material.PM;
+import com.rose.pm.ui.Editor.DateCellEditor;
+
 
 
 
@@ -72,6 +71,13 @@ public class CtrlPnlICD extends CtrlPnlPM {
 		((PnlICD)panel).addTblMouseAdaptor(tblMouseAdaptor);
 		
 	}
+	
+	@Override
+	protected void setEditor() {
+		 editor = new Editor();
+		 dateCellEditor = editor.new DateCellEditor();
+		 ((PnlICD)panel).setDateCellEditor(dateCellEditor);
+	 }
 	
 	class AggregateTypeListener extends CtrlPnlPM.AggregateTypeListener{
 		
