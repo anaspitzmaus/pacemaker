@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 
 import com.rose.Isynet;
 import com.rose.person.Patient;
+import com.rose.pm.MyImages;
 
 public class CtrlTbrIsynet {
 
@@ -24,6 +25,7 @@ public class CtrlTbrIsynet {
 	HashMap<Integer, String> patData;
 	Patient patient;
 	UpdateListener updateListener;
+	MyImages myImages;
 	
 	protected TbrIsynet getToolBar() {
 		return tbrIsynet;
@@ -31,6 +33,7 @@ public class CtrlTbrIsynet {
 
 
 	public CtrlTbrIsynet() {
+		myImages = new MyImages();
 		isynet = new Isynet();
 		tbrIsynet = new TbrIsynet();
 		setListener();		
@@ -42,7 +45,7 @@ public class CtrlTbrIsynet {
 			}
 		}
 		
-		ImageIcon iconRefresh = new ImageIcon(getImage("images/refresh_16.png"));
+		ImageIcon iconRefresh = new ImageIcon(myImages.getImage("images/refresh_16.png"));
 		iconRefresh.getImage();
 		tbrIsynet.setBtnRefreshIcon(iconRefresh);
 		tbrIsynet.setBtnRefreshText("");
@@ -115,10 +118,7 @@ public class CtrlTbrIsynet {
 		
 	}
 	
-	public static Image getImage(final String pathAndFileName) {
-	    final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
-	    return Toolkit.getDefaultToolkit().getImage(url);
-	}
+
 	
 	/**
 	 * listener for refreshing the active patient as set in isynet

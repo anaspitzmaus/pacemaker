@@ -25,6 +25,7 @@ public class Pnl_SetDate extends JPanel {
 	private JLabel lblCalendar;
 	private JLabel lblDate;
 	protected LocalDate date;
+	MyImages myImages;
 
 	
 	public JFormattedTextField getFtxtCalendar() {
@@ -52,6 +53,7 @@ public class Pnl_SetDate extends JPanel {
 	 * Create the panel.
 		 */
 	public Pnl_SetDate(String dateFormat, LocalDate ld, LocalDate minDate) {
+		myImages = new MyImages();
 		lblDate = new JLabel("Start:");
 		lblDate.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		add(lblDate);
@@ -69,7 +71,7 @@ public class Pnl_SetDate extends JPanel {
 		add(ftxtCalendar);
 	
 	
-		ImageIcon icon = new ImageIcon(getImage("images/calendar_green_01.png"));
+		ImageIcon icon = new ImageIcon(myImages.getImage("images/calendar_green_01.png"));
 		icon.getImage();
 		lblCalendar = new JLabel(icon);
 		//lblCalendar = new JLabel("Kalebder");
@@ -79,6 +81,7 @@ public class Pnl_SetDate extends JPanel {
 	}
 	
 	public Pnl_SetDate(DefaultFormatterFactory factory, LocalDate ld){
+		myImages = new MyImages();
 		lblDate = new JLabel("Start:");
 		lblDate.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		add(lblDate);	
@@ -90,7 +93,7 @@ public class Pnl_SetDate extends JPanel {
 		add(ftxtCalendar);
 	
 	
-		ImageIcon icon = new ImageIcon(getImage("images/calendar_green_01.png"));
+		ImageIcon icon = new ImageIcon(myImages.getImage("images/calendar_green_01.png"));
 		icon.getImage();
 		lblCalendar = new JLabel(icon);
 		//lblCalendar = new JLabel("Kalebder");
@@ -99,6 +102,7 @@ public class Pnl_SetDate extends JPanel {
 	}
 	
 	public Pnl_SetDate() {
+		myImages = new MyImages();
 		lblDate = new JLabel("Start:");
 		lblDate.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		add(lblDate);
@@ -110,7 +114,7 @@ public class Pnl_SetDate extends JPanel {
 		
 		
 		//ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/calendar_green_01.png"));
-		ImageIcon icon = new ImageIcon(getImage("images/calendar_green_01.png"));
+		ImageIcon icon = new ImageIcon(myImages.getImage("images/calendar_green_01.png"));
 		icon.getImage();
 		lblCalendar = new JLabel(icon);
 		lblCalendar.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -127,9 +131,9 @@ public class Pnl_SetDate extends JPanel {
 		ftxtCalendar.addPropertyChangeListener(l);
 	}
 	
-	public static Image getImage(final String pathAndFileName) {
-	    final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
-	    return Toolkit.getDefaultToolkit().getImage(url);
-	}
+//	public static Image getImage(final String pathAndFileName) {
+//	    final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+//	    return Toolkit.getDefaultToolkit().getImage(url);
+//	}
 
 }

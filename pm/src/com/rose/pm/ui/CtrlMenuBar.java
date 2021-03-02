@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.rose.Isynet;
+import com.rose.pm.MyImages;
 import com.rose.pm.ui.settings.DlgPath;
 
 
@@ -21,16 +22,17 @@ public class CtrlMenuBar {
 	FrmMenuBar menuBar;
 	ManufacturerListener manufacturerListener;
 	SettingsListener settingsListener;
-	
+	MyImages myImages;
 	
 	protected FrmMenuBar getMenuBar() {
 		return this.menuBar;
 	}
 	
 	public CtrlMenuBar() {
+		myImages = new MyImages();
 		menuBar = new FrmMenuBar();
 		menuBar.setBtnManufacturerText("Hersteller");
-		ImageIcon icon = new ImageIcon(getImage("images/settings.png"));
+		ImageIcon icon = new ImageIcon(myImages.getImage("images/settings.png"));
 		icon.getImage();
 		menuBar.setBtnSettingsIcon(icon);
 		menuBar.setBtnSettingsText("");
