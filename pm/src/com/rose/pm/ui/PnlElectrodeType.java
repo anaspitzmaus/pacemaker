@@ -46,8 +46,7 @@ public class PnlElectrodeType extends PnlAggregateTypeBase {
 		pnlInput.add(lblNotation, "cell 0 0,alignx trailing");
 		
 		pnlInput.add(txtNotation, "cell 1 0");
-		
-		
+				
 		JSeparator jSep = new JSeparator(SwingConstants.VERTICAL);
 		jSep.setFont(font);
 		jSep.setForeground(Color.BLACK);
@@ -84,9 +83,7 @@ public class PnlElectrodeType extends PnlAggregateTypeBase {
 		
 		pnlInput.add(lblNotice, "cell 11 0");
 		
-		pnlInput.add(txtNotice, "cell 12 0, growx");
-		
-		
+		pnlInput.add(txtNotice, "cell 12 0, growx");		
 		
 		pnlInput.add(lblPrice, "cell 13 0");
 		
@@ -99,10 +96,6 @@ public class PnlElectrodeType extends PnlAggregateTypeBase {
 		btnDelete.setHorizontalAlignment(SwingConstants.RIGHT);
 		pnlSouth.add(btnDelete);
 		
-	}
-	
-	protected void setLblManufacturerText(String txt) {
-		lblManufacturer.setText(txt);
 	}
 	
 	protected void setLblMRIText(String txt) {
@@ -123,41 +116,29 @@ public class PnlElectrodeType extends PnlAggregateTypeBase {
 	
 	protected void setLblPriceText(String txt) {
 		lblPrice.setText(txt);
-	}
+	}	
 	
-		
-	protected void setManufacturerIndex(Integer index) {
-		cbxManufacturer.setSelectedIndex(index);
-	}
 
 	protected void addFixModeListener(ActionListener fixModeListener) {
-		tglFix.addActionListener(fixModeListener);
-		
+		tglFix.addActionListener(fixModeListener);		
 	}
 
 	protected void addLengthListener(ChangeListener lengthListener) {
-		spinLength.addChangeListener(lengthListener);
-		
+		spinLength.addChangeListener(lengthListener);		
 	}
 	
 	protected Integer getLength() {
 		return (Integer) spinLength.getModel().getValue();
 	}
-
 	
 	protected void setTableEMTypeRenderer(Class<ElectrodeType> colclass, TableCellRenderer renderer) {
-		table.setDefaultRenderer(colclass, renderer);
-		
+		table.setDefaultRenderer(colclass, renderer);		
 	}
 	
 	protected void setTableStringRenderer(Class<String> colclass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(colclass, renderer);
 	}
 
-//	protected void setTableElectrodeTypeIDRenderer(Class<ElectrodeType> idClass, TableCellRenderer renderer) {
-//		table.setDefaultRenderer(idClass, renderer);
-//	}
-	
 	protected void setTableBooleanRenderer(Class<Boolean> bolClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(bolClass, renderer);
 	}	
@@ -173,13 +154,6 @@ public class PnlElectrodeType extends PnlAggregateTypeBase {
 	protected void setTblDoubleRenderer(Class<Double> dblClass, TableCellRenderer r) {
 		table.setDefaultRenderer(dblClass, r);
 	}
-	
-//	protected ElectrodeType getTableElectrodeTypeValueAt(int row, int column) {
-//		return (ElectrodeType) table.getValueAt(row, column);
-//	}
-	
-	
-
 	
 	protected void addPriceChangeListener(PropertyChangeListener priceListener) {
 		ftxtPrice.addPropertyChangeListener(priceListener);		

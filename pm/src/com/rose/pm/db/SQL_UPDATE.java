@@ -21,6 +21,7 @@ import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Material;
+import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
@@ -525,6 +526,18 @@ public class SQL_UPDATE {
 			ps.close();
 		}
 	
+	}
+
+	public static Integer deleteMonitorType(MonitorType monitorType) throws SQLException{
+		Integer i;
+		String delete = "DELETE FROM sm.monitor_type WHERE idmonitor_type = ? LIMIT 1";
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		PreparedStatement ps = con.prepareStatement(delete, Statement.RETURN_GENERATED_KEYS);
+		ps.setInt(1, monitorType.getId());
+		i = ps.executeUpdate();
+		ps.close();
+		return i;		
 	}
 	
 	

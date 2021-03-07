@@ -1,7 +1,6 @@
 package com.rose.pm.db;
 
 import java.io.File;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,6 +18,7 @@ import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
@@ -1134,12 +1134,46 @@ public class SQL_SELECT {
 					}					
 				}			
 					
-			}
-				
-				
+			}				
 				
 		return sicds;
 	}
 	
+	/**
+	 * select all types of monitors
+	 * @return an array list with the selected monitors
+	 * @throws SQLException
+	 */
+	public static ArrayList<MonitorType> monitorTypes() throws SQLException{
+		stmt = DB.getStatement();
+		ArrayList<MonitorType> monitorTypes;
+		monitorTypes = new ArrayList<MonitorType>();
+		
+		rs = stmt.executeQuery(
+				 "SELECT idmonitor_type, monitor_type.notation AS monitorNotation, monitor_type.idmanufacturer, manufacturer.notation AS manufacturerNotation, notice, price "
+				+ "FROM sm.monitor_type "
+				+ "INNER JOIN sm.manufacturer "
+				+ "ON sm.monitor_type.idmanufacturer = sm.manufacturer.idmanufacturer");
+		
+		if(rs.isBeforeFirst()){
+			while(rs.next()) {
+				MonitorType monitorType = new MonitorType(rs.getString("monitorNotation"));
+				monitorType.setId(rs.getInt("idmonitor_type"));					
+				if(rs.getString("notice") != null) {
+					monitorType.setNotice(rs.getString("notice"));
+				}else {
+					monitorType.setNotice("");
+				}
+				monitorType.setPrice(rs.getDouble("price"));
+				
+				Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
+				manufacturer.setId(rs.getInt("idmanufacturer"));
+				monitorType.setManufacturer(manufacturer);
+				monitorTypes.add(monitorType);
+			}
+		}
+		
+		return monitorTypes;
+	}
 	
 }

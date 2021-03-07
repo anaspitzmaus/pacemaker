@@ -5,9 +5,7 @@ public class ElectrodeType extends MaterialType{
 	
 	Integer length;
 	Boolean mri;
-	String fixMode;
-	
-	
+	String fixMode;	
 	
 	
 	public String getFixMode() {

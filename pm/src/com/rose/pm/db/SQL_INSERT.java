@@ -21,6 +21,7 @@ import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
@@ -761,6 +762,12 @@ public class SQL_INSERT {
 		
 	}
 
+	/**
+	 * insert a type of sicd
+	 * @param type
+	 * @return the generated key of the inserted sicd
+	 * @throws SQLException
+	 */
 	public static Integer sicdType(SICDType type) throws SQLException{
 		String insert = "INSERT INTO sicd_type (notation, idmanufacturer, notice, price) VALUES (?,?,?,?)";
 		Connection con = DB.getConnection();
@@ -791,6 +798,48 @@ public class SQL_INSERT {
             else {
             	JOptionPane.showMessageDialog(new JFrame(),
 					    "Class: SQL_INSERT sicdType(SICDType type) - kein Eintrag erfolgt!", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+            	return null;
+            }
+        }		
+	}
+	
+	/**
+	 * insert a type of monitor
+	 * @param type
+	 * @return the generated key of the inserted monitor
+	 * @throws SQLException
+	 */
+	public static Integer monitorType(MonitorType type) throws SQLException{
+		String insert = "INSERT INTO monitor_type (notation, idmanufacturer, notice, price) VALUES (?,?,?,?)";
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		PreparedStatement ps = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+		ps.setString(1, type.getNotation());
+		ps.setInt(2, type.getManufacturer().getId());
+		ps.setString(3, type.getNotice());
+		if (type.getPrice() != null) {
+			ps.setDouble(4, type.getPrice());
+		} else {
+			ps.setNull(4, Types.DOUBLE);
+		}
+		
+		
+		int row = ps.executeUpdate();
+		if (row == 0) {
+			JOptionPane.showMessageDialog(new JFrame(),
+				    "Class: SQL_INSERT monitorType(MonitorType type) - kein Eintrag erfolgt!", "SQL Exception warning",
+				    JOptionPane.WARNING_MESSAGE);
+        }
+
+        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+            	return (int) generatedKeys.getLong(1);
+                
+            }
+            else {
+            	JOptionPane.showMessageDialog(new JFrame(),
+					    "Class: SQL_INSERT monitorType(MonitorType type) - kein Eintrag erfolgt!", "SQL Exception warning",
 					    JOptionPane.WARNING_MESSAGE);
             	return null;
             }

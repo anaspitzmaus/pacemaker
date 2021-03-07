@@ -21,6 +21,8 @@ public class CtrlFrmBase {
 	CtrlPnlER ctrlPnlER;
 	CtrlER ctrlER;
 	CtrlSICD ctrlSICD;
+	CtrlPnlMonitorType ctrlPnlMonitorType;
+	CtrlMonitors ctrlMonitors;
 	TabChangeListener tabChangeListener;
 	//Isynet isynet;
 	CtrlTbrIsynet ctrlTbrIsynet;
@@ -44,6 +46,7 @@ public class CtrlFrmBase {
 		frame.getTabbedPane().add(ctrlER.getCtrlPnlER().getPanel().getName(), ctrlER.getCtrlPnlER().getPanel());
 		frame.getTabbedPane().add(ctrlSICD.getCtrlPnlSICDType().getPanel().getName(), ctrlSICD.getCtrlPnlSICDType().getPanel());
 		frame.getTabbedPane().add(ctrlSICD.getCtrlPnlSICD().getPanel().getName(), ctrlSICD.getCtrlPnlSICD().getPanel());
+		frame.getTabbedPane().add(ctrlMonitors.getCtrlPnlMonitorType().getPanel().getName(), ctrlMonitors.getCtrlPnlMonitorType().getPanel());
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
 		frame.insertToolBar(ctrlTbrIsynet.getToolBar());
 		setListener();
@@ -62,7 +65,7 @@ public class CtrlFrmBase {
 		ctrlICD = new CtrlICD();
 		ctrlER = new CtrlER();
 		ctrlSICD = new CtrlSICD();
-
+		ctrlMonitors = new CtrlMonitors();
 		ctrlMenuBar = new CtrlMenuBar();
 		ctrlTbrIsynet = new CtrlTbrIsynet();
 	}
