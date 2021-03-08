@@ -688,10 +688,10 @@ public class SQL_INSERT {
         }
 
         try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+        	 ps.close();
             if (generatedKeys.next()) {
             	patient.setId((int) generatedKeys.getLong(1)); //set the generated key (the id) to the patient and
-            	return patientExtended(patient);// insert the extended patient data
-                
+            	return patientExtended(patient);// insert the extended patient data            	
             }
             else {
             	JOptionPane.showMessageDialog(new JFrame(),
@@ -701,6 +701,7 @@ public class SQL_INSERT {
             	return null;
             }
         }
+       
 	}
 	
 	/**

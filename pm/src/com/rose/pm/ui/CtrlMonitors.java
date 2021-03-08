@@ -10,12 +10,17 @@ import javax.swing.JOptionPane;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.ElectrodeType;
+
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.MonitorType;
+import com.rose.pm.ui.CtrlElectrodes.CreateTypeListener;
+import com.rose.pm.ui.CtrlElectrodes.DeleteTypeListener;
 
 public class CtrlMonitors {
 	CtrlPnlMonitorType ctrlPnlMonitorType;
+	CtrlPnlMonitor ctrlPnlMonitor;
+	CreateTypeListener createTypeListener;
+	DeleteTypeListener deleteTypeListener;
 	
 	
 	
@@ -75,17 +80,22 @@ public class CtrlMonitors {
 			if(ctrlPnlMonitorType.getTblRowSelectionListener().getMonitorTypeSelected() instanceof MonitorType) {
 				MonitorType monitorType = ctrlPnlMonitorType.getTblRowSelectionListener().getMonitorTypeSelected();
 				if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
-					if(SQL_UPDATE.deleteMonitorType(monitorType) == 1){
-						ctrlPnlMonitorType.getTblModel().monitorTypes.remove(monitorType);
-						ctrlPnlMonitorType.getTblModel().fireTableDataChanged();
-						//for all types of electrodes
-						for(int i = 0; i< ctrlPnlMonitor.monitorTypeModel.getSize(); i++) {
-							//if notation of deleted electrode type is same as notation of electrode type in the ComboBoxModel
-							if(ctrlPnlMonitor.monitorTypeModel.getElementAt(i).getNotation().equals(monitorType.getNotation())) {
-								//remove type of electrode from the comboBoxModel
-								ctrlPnlMonitor.monitorTypeModel.removeElementAt(i);
+					try {
+						if(SQL_UPDATE.deleteMonitorType(monitorType) == 1){
+							ctrlPnlMonitorType.getTblModel().monitorTypes.remove(monitorType);
+							ctrlPnlMonitorType.getTblModel().fireTableDataChanged();
+							//for all types of electrodes
+							for(int i = 0; i< ctrlPnlMonitor.monitorTypeModel.getSize(); i++) {
+								//if notation of deleted electrode type is same as notation of electrode type in the ComboBoxModel
+								if(ctrlPnlMonitor.monitorTypeModel.getElementAt(i).getNotation().equals(monitorType.getNotation())) {
+									//remove type of electrode from the comboBoxModel
+									ctrlPnlMonitor.monitorTypeModel.removeElementAt(i);
+								}
 							}
 						}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 				}
 			}			

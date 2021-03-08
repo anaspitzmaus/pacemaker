@@ -1,6 +1,8 @@
 package com.rose.pm.db;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -18,6 +20,7 @@ import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
@@ -1174,6 +1177,61 @@ public class SQL_SELECT {
 		}
 		
 		return monitorTypes;
+	}
+
+	public static ArrayList<Monitor> monitors(MonitorType monitorType) throws SQLException{
+		ArrayList<Monitor> monitors = new ArrayList<Monitor>();
+		PreparedStatement ps;
+		Integer patProv;
+		String select = "SELECT idmonitor, monitor.idmonitor_type, expire, serialNr, monitor.notice AS notice, status, monitor_type.notation AS typeNotation, idpat_provided, patnr, implant "
+				+ "FROM sm.monitor "
+				+ "INNER JOIN sm.monitor_type "
+				+ "ON sm.monitor.idmonitor_type = sm.monitor_type.idmonitor_type "
+				+ "LEFT OUTER JOIN human.patient "
+				+ "ON sm.monitor.idpat_provided = human.patient.idpatient";
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		if(monitorType instanceof MonitorType) {
+			select.concat(" WHERE sm.monitor_type.idmonitor_type = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, monitorType.getId());			
+		}else {
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+		}
+		
+		ResultSet rs = ps.executeQuery();
+		ps.close();
+		con.close();
+		if(rs.isBeforeFirst()){
+			while(rs.next()) {
+				if(!(monitorType instanceof MonitorType)) {
+					monitorType = new MonitorType(rs.getString("typeNotation"));
+					monitorType.setId(rs.getInt("idmonitor_type"));
+				}
+				Monitor monitor = new Monitor(monitorType);
+				monitor.setId(rs.getInt("idmonitor"));
+				monitor.setSerialNr(rs.getString("serialNr"));					
+				monitor.setExpireDate(rs.getDate("expire").toLocalDate());
+				monitor.setNotice(rs.getString("notice"));
+				monitor.setStatus(Status.valueOf(rs.getString("status")));
+				patProv = rs.getInt("idpat_provided");
+				
+				if(patProv == 0) {
+					monitor.setPatient(null);
+				}else{
+					Patient patient = new Patient("Test", "Test");
+					patient.setId(patProv);
+					patient.setNumber(rs.getInt("patNr"));
+					monitor.setPatient(patient);
+				}
+				
+				monitor.setDateOfImplantation(rs.getDate("implant"));
+				
+				monitors.add(monitor);
+			}
+		}
+		
+		return monitors;
 	}
 	
 }

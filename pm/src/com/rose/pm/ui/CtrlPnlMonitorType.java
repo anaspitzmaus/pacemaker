@@ -27,6 +27,7 @@ import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodeModelIDRenderer;
 import com.rose.pm.ui.CtrlPnlElectrodeType.TblRowSelectionListener;
 import com.rose.pm.ui.Listener.ManufacturerListener;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Listener.PriceListener;
 
 public class CtrlPnlMonitorType extends CtrlPnlBase{
 
@@ -40,6 +41,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	TblMonitorTypeModel tblMonitorTypeModel;
 	CustomTableCellEditor customTableCellEditor;
 	TblRowSelectionListener tblRowSelectionListener;
+	PriceListener priceListener;
 	
 	
 	protected NotationListener getNotationListener() {
@@ -59,6 +61,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		panel.setName("Monitormodel");
 		panel.setOpaque(false);
 		panel.setBackground(Color.BLUE);
+		setListener();
 		setModel();
 		setRenderer();
 		customTableCellEditor = new CustomTableCellEditor();
@@ -75,6 +78,11 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		manufacturerRenderer = new ListManufacturerRenderer();
 		((PnlMonitorType)panel).setManufacturerRenderer(manufacturerRenderer);
 		
+	}
+	
+	private void setListener() {
+		priceListener = listener.new PriceListener();
+		((PnlMonitorType)panel).addPriceChangeListener(priceListener);
 	}
 	
 	/**
@@ -292,5 +300,9 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 
 	protected TblRowSelectionListener getTblRowSelectionListener() {
 		return this.tblRowSelectionListener;		
+	}
+	
+	protected PriceListener getPriceListener() {		
+		return this.priceListener;
 	}
 }

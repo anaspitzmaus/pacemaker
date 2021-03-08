@@ -170,9 +170,6 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 
 	 class ElectrodeTblModel extends AbstractTableModel{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -8444808544442905721L;
 
 		protected ArrayList<String> columnNames;
@@ -195,7 +192,6 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		
 		@Override
 		public int getColumnCount() {
-			// TODO Auto-generated method stub
 			return columnNames.size();
 		}
 		
@@ -206,7 +202,6 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 
 		@Override
 		public int getRowCount() {
-			// TODO Auto-generated method stub
 			return this.electrodes.size();
 		}
 		
