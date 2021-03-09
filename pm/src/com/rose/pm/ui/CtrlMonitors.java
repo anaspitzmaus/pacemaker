@@ -32,6 +32,15 @@ public class CtrlMonitors {
 
 	public CtrlMonitors() {
 		ctrlPnlMonitorType = new CtrlPnlMonitorType();
+		ctrlPnlMonitor = new CtrlPnlMonitor();
+		setListener();
+	}
+	
+	private void setListener() {
+		createTypeListener = new CreateTypeListener();
+		ctrlPnlMonitorType.addCreateListener(createTypeListener);
+		deleteTypeListener = new DeleteTypeListener();
+		ctrlPnlMonitorType.addDeleteListener(deleteTypeListener);
 	}
 	
 	/**

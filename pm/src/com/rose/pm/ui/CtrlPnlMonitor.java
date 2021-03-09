@@ -8,28 +8,69 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
 import com.rose.person.Patient;
+import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.CtrlPnlElectrode.ElectrodeTblModel;
+import com.rose.pm.ui.CtrlPnlElectrode.ElectrodeTypeListener;
+import com.rose.pm.ui.CtrlPnlElectrode.TblMouseAdaptor;
 
 
 public class CtrlPnlMonitor extends CtrlPnlBase {
+	Ctrl_PnlSetDate ctrlPnlSetDate;
 	DefaultComboBoxModel<MonitorType> monitorTypeModel;
 	MonitorTblModel monitorTblModel;
 	MonitorTypeListener monitorTypeListener;
-	 void setModel() {
+	Listener listener;
+	
+	public CtrlPnlMonitor() {
+		createPanel();
+		setComponentLabeling();
+		ctrlPnlSetDate = new Ctrl_PnlSetDate("dd.MM.yyyy", LocalDate.now(), LocalDate.now());
+		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
+		((PnlMonitor)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
+	}
+	
+	protected void createPanel() {
+		panel = new PnlMonitor();
+		panel.setName("Monitore");
+		setListener();
+		setModel();	
+		
+		//setEditor();
+		
+//		setRenderer();
+//		((PnlElectrode)panel).setElectrodeTypeSelectionIndex(-1);
+//		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//		tblMouseAdaptor = new TblMouseAdaptor();
+//		((PnlElectrode)panel).addTblMouseAdaptor(tblMouseAdaptor);
+	}
+	
+	protected void setComponentLabeling() {
+		((PnlMonitor)panel).setLblMonitorTypeText("Monitormodel:");
+		((PnlMonitor)panel).setLblNotationText("Seriennummer:");
+		((PnlMonitor)panel).setLblNoticeText("Bemerkung:");
+		((PnlMonitor)panel).setBtnCreateText("Einfügen");
+		((PnlMonitor)panel).setBtnDeleteText("Löschen");
+		((PnlMonitor)panel).setBtnShowAllText("Alle Modelle");
+	}
+	
+	
+	void setModel() {
 			ArrayList<MonitorType> monitorTypes;
 			try {
 				monitorTypes = SQL_SELECT.monitorTypes();
 				MonitorType[] arr = new MonitorType[monitorTypes.size()]; 	
 				monitorTypeModel = new DefaultComboBoxModel<MonitorType>();
-				((PnlMonitor)panel).setMonitorTypeModel(monitorTypeModel);
+				
 		        // ArrayList to Array Conversion 
 		        for (int i = 0; i < monitorTypes.size(); i++) {
 		            arr[i] = monitorTypes.get(i);		
@@ -39,6 +80,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
+			((PnlMonitor)panel).setMonitorTypeModel(monitorTypeModel);
 			
 			try {
 				monitorTblModel = new MonitorTblModel(SQL_SELECT.monitors(monitorTypeListener.monitorType));
@@ -51,8 +93,16 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			
 		}
 	
+	void setListener() {
+		 monitorTypeListener = new MonitorTypeListener();
+		 ((PnlMonitor)panel).addMonitorTypeListener(monitorTypeListener);	
+		 listener = new Listener();
+	}
+	
 	class MonitorTblModel extends AbstractTableModel{
 
+		private static final long serialVersionUID = -1833403504107519409L;
+		
 		protected ArrayList<String> columnNames;
 		ArrayList<Monitor> monitors;
 		@SuppressWarnings("rawtypes")

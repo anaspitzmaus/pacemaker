@@ -1192,7 +1192,7 @@ public class SQL_SELECT {
 		Connection con = DB.getConnection();
 		DB.getConnection().setAutoCommit(true);
 		if(monitorType instanceof MonitorType) {
-			select.concat(" WHERE sm.monitor_type.idmonitor_type = ?");
+			select = select.concat(" WHERE sm.monitor_type.idmonitor_type = ?");
 			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, monitorType.getId());			
 		}else {
@@ -1200,8 +1200,7 @@ public class SQL_SELECT {
 		}
 		
 		ResultSet rs = ps.executeQuery();
-		ps.close();
-		con.close();
+		
 		if(rs.isBeforeFirst()){
 			while(rs.next()) {
 				if(!(monitorType instanceof MonitorType)) {
@@ -1230,7 +1229,8 @@ public class SQL_SELECT {
 				monitors.add(monitor);
 			}
 		}
-		
+		ps.close();
+		con.close();
 		return monitors;
 	}
 	

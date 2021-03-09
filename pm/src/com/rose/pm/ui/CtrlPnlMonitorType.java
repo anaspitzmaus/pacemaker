@@ -2,11 +2,14 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -17,14 +20,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableModel;
 
 import com.rose.pm.db.SQL_SELECT;
-import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.MonitorType;
-import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodeModelIDRenderer;
-import com.rose.pm.ui.CtrlPnlElectrodeType.TblRowSelectionListener;
+import com.rose.pm.ui.CtrlMonitors.DeleteTypeListener;
 import com.rose.pm.ui.Listener.ManufacturerListener;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Listener.PriceListener;
@@ -66,12 +66,28 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		setRenderer();
 		customTableCellEditor = new CustomTableCellEditor();
 		((PnlMonitorType)panel).setManufacturerCellEditor(customTableCellEditor);
-		
+		((PnlMonitorType)panel).setFirstRowHeight(40);
 	}
 	
 	private void setModel() {
-		tblMonitorTypeModel = new TblMonitorTypeModel();
-		panel.setTblModel(tblMonitorTypeModel);
+		ArrayList<Manufacturer> manufacturers = SQL_SELECT.manufacturers();
+		Manufacturer[] arr = new Manufacturer[manufacturers.size()]; 		  
+        // ArrayList to Array Conversion 
+        for (int i = 0; i < manufacturers.size(); i++) 
+            arr[i] = manufacturers.get(i);		
+		
+		manufacturerModel = new DefaultComboBoxModel<Manufacturer>(arr);
+	
+		((PnlMonitorType)panel).setManufacturerModel(manufacturerModel);
+		
+		try {
+			tblMonitorTypeModel = new TblMonitorTypeModel(SQL_SELECT.monitorTypes());
+			panel.setTblModel(tblMonitorTypeModel);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	private void setRenderer() {
@@ -81,8 +97,17 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	}
 	
 	private void setListener() {
+		listener = new Listener();
+		notationListener = listener.new NotationListener();	
+		panel.addNotationListener(notationListener);
+		noticeListener = listener.new NotationListener();
+		panel.addNoticeListener(noticeListener);
+		manufacturerListener = listener.new ManufacturerListener();
+		((PnlMonitorType)panel).addManufacturerListener(manufacturerListener);
 		priceListener = listener.new PriceListener();
 		((PnlMonitorType)panel).addPriceChangeListener(priceListener);
+		tblRowSelectionListener = new TblRowSelectionListener();
+		((PnlMonitorType)panel).addTblRowSelectionListener(tblRowSelectionListener);
 	}
 	
 	/**
@@ -184,7 +209,8 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		protected ArrayList<MonitorType> monitorTypes;
 		private Class[] classes = {Integer.class, String.class, Manufacturer.class, String.class, Double.class};
 		
-		public TblMonitorTypeModel() {
+		public TblMonitorTypeModel(ArrayList<MonitorType> monitorTypes) {
+			this.monitorTypes = monitorTypes;
 			columnNames = new ArrayList<String>();
 			columnNames.add("Id");
 			columnNames.add("Bezeichnung");
@@ -237,7 +263,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			if(rowIndex == 0) {
+			if(rowIndex == 0 && columnIndex == 2) {
 				return true;
 			}else {
 				return false;
@@ -304,5 +330,13 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	
 	protected PriceListener getPriceListener() {		
 		return this.priceListener;
+	}
+
+	protected void addCreateListener(ActionListener listener) {
+		((PnlMonitorType)panel).addCreateListener(listener);		
+	}
+
+	protected void addDeleteListener(ActionListener listener) {
+		((PnlMonitorType)panel).addDeleteListener(listener);		
 	}
 }
