@@ -7,6 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
+import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.ui.CtrlPnlMonitor.MonitorTypeListener;
 
@@ -64,6 +66,10 @@ public class PnlMonitor extends PnlBase {
 	protected void addMonitorTypeListener(ItemListener l) {
 		cbxMonitorType.addItemListener(l);
 		
+	}
+
+	protected void integratePnlDate(Pnl_SetDate pnlDate) {
+		pnlInput.add(pnlDate, "cell 4 1");
 	}
 	
 

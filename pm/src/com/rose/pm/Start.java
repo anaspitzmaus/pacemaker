@@ -1,15 +1,10 @@
 package com.rose.pm;
 
-import java.awt.Color;
-import java.awt.EventQueue;
 
+import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
-
 import com.rose.pm.db.DB;
 import com.rose.pm.db.Dlg_DBSettings;
 import com.rose.pm.db.SQL_INSERT;
