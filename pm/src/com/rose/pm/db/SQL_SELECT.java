@@ -1230,7 +1230,7 @@ public class SQL_SELECT {
 			}
 		}
 		ps.close();
-		con.close();
+		//con.close();
 		return monitors;
 	}
 	

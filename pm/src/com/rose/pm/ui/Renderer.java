@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.person.Patient;
+import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Status;
 
 public class Renderer {
@@ -165,6 +166,40 @@ public class Renderer {
 				setBackground(row%2==0 ? Color.white : Color.lightGray);   
 			}
 			 return this;
+		}
+		
+	}
+	
+	class TblCellManufacturerRenderer extends JLabel implements TableCellRenderer{
+
+		private static final long serialVersionUID = 7681759060984296813L;
+
+		public TblCellManufacturerRenderer() {
+			setOpaque(true);
+	        setHorizontalAlignment(CENTER);
+	        setVerticalAlignment(CENTER);
+		}
+	
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			if(row>0) {
+				if(value instanceof Manufacturer) {
+					setText(((Manufacturer) value).getNotation());				
+				}else {
+					setText("");
+				}
+				if(isSelected) {
+					setBackground(Color.ORANGE);
+				}else {
+					setBackground(row%2==0 ? Color.white : Color.lightGray);   
+				}
+				
+			}else {//if first row				
+				setBackground(Color.white);				
+			}
+			return this;
+			
 		}
 		
 	}

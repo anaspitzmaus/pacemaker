@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,22 +21,26 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
-
+import javax.swing.table.TableCellRenderer;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.MonitorType;
-import com.rose.pm.ui.CtrlMonitors.DeleteTypeListener;
 import com.rose.pm.ui.Listener.ManufacturerListener;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Listener.PriceListener;
+import com.rose.pm.ui.Renderer.TblCellManufacturerRenderer;
+
 
 public class CtrlPnlMonitorType extends CtrlPnlBase{
 
 
 	ComboBoxModel<Manufacturer> manufacturerModel;
-	ListManufacturerRenderer manufacturerRenderer;
+	ListManufacturerRenderer listManufacturerRenderer;
+	MonitorTypeIdRenderer monitorTypeIdRenderer;
 	Listener listener;
 	Renderer renderer;
+	TblCellManufacturerRenderer tblCellManufacturerRenderer;
+	TblStringRenderer notationRenderer;
 	ManufacturerListener manufacturerListener;
 	NotationListener notationListener, noticeListener;
 	TblMonitorTypeModel tblMonitorTypeModel;
@@ -91,8 +96,15 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	}
 	
 	private void setRenderer() {
-		manufacturerRenderer = new ListManufacturerRenderer();
-		((PnlMonitorType)panel).setManufacturerRenderer(manufacturerRenderer);
+		listManufacturerRenderer = new ListManufacturerRenderer();
+		((PnlMonitorType)panel).setManufacturerRenderer(listManufacturerRenderer);
+		renderer = new Renderer();
+		tblCellManufacturerRenderer = renderer.new TblCellManufacturerRenderer();
+		((PnlMonitorType)panel).setTblCellManufacturerRenderer(tblCellManufacturerRenderer);
+		monitorTypeIdRenderer = new MonitorTypeIdRenderer();
+		((PnlMonitorType)panel).setMonitorTypeIdRenderer(monitorTypeIdRenderer);
+		notationRenderer = new TblStringRenderer();
+		((PnlMonitorType)panel).setNotationRenderer(notationRenderer);
 		
 	}
 	
@@ -191,7 +203,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 				boolean isSelected, boolean cellHasFocus) {
 			if(value instanceof Manufacturer) {
 				setText(((Manufacturer) value).getNotation());
-				
+				setFont(new Font("Tahoma", Font.ITALIC, 14));
 			}else {
 				setText("");
 			}
@@ -201,13 +213,17 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	}
 	
 	class TblMonitorTypeModel extends AbstractTableModel{
-
 		
 		private static final long serialVersionUID = 5589871039662094045L;
 		
 		protected ArrayList<String> columnNames;		
 		protected ArrayList<MonitorType> monitorTypes;
-		private Class[] classes = {Integer.class, String.class, Manufacturer.class, String.class, Double.class};
+		private Class[] classes = {MonitorType.class, String.class, Manufacturer.class, String.class, Double.class};
+		protected String notation = "notation";
+		protected String notice = "";
+		protected MonitorType mt = null;
+		protected Double price = 0.0;
+		protected Manufacturer manuf = null;
 		
 		public TblMonitorTypeModel(ArrayList<MonitorType> monitorTypes) {
 			this.monitorTypes = monitorTypes;
@@ -218,7 +234,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 			columnNames.add("Bemerkung");
 			columnNames.add("Preis");
 			
-			monitorTypes = new ArrayList<MonitorType>();
+			//monitorTypes = new ArrayList<MonitorType>();
 		}
 		
 		@Override
@@ -235,7 +251,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			if(rowIndex > 0) {
 				switch(columnIndex) {
-					case 0: return monitorTypes.get(rowIndex - 1).getId();
+					case 0: return monitorTypes.get(rowIndex - 1);
 					case 1: return monitorTypes.get(rowIndex - 1).getNotation();
 					case 2: return monitorTypes.get(rowIndex - 1).getManufacturer();
 					case 3: return monitorTypes.get(rowIndex - 1).getNotice();
@@ -243,10 +259,25 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 					default: return null;
 				}
 			}else{
-				return null;
+				switch (columnIndex) {
+					case 0: return mt;
+					case 1: return notation;
+					case 2: return manuf;
+					case 3: return notice;
+					case 4: return price;
+					default: return null;
+				}
 			}
 		}
 		
+		
+		
+		@Override
+		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+			// TODO Auto-generated method stub
+			super.setValueAt(aValue, rowIndex, columnIndex);
+		}
+
 		@Override
 		public Class getColumnClass(int col) {
 			return classes[col];
@@ -296,20 +327,84 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            if (column == 2) {
+            if (column == 2 && row == 0) {
                 editor = new DefaultCellEditor(cbxManufacturer);
             } 
 
             return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
         }
+        
+        
+        
+        
     }
+	 
+	class MonitorTypeIdRenderer  extends JLabel implements TableCellRenderer{
+		
+		private static final long serialVersionUID = -3432983718798402753L;
+
+		public MonitorTypeIdRenderer() {
+			setOpaque(true);
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			if(row>0) {
+				if(value instanceof MonitorType) {
+					setText(String.valueOf(((MonitorType) value).getId()));			
+				}else {
+					setText("");
+				}
+				if(isSelected) {
+					setBackground(Color.ORANGE);
+				}else {
+					setBackground(row%2==0 ? Color.white : Color.lightGray);   
+				}
+			}else {
+				setBackground(Color.white);
+			}
+			return this;
+		}
+		
+	}
+	
+	class TblStringRenderer extends JLabel implements TableCellRenderer{
+		
+		
+		private static final long serialVersionUID = 6835433470340104756L;
+
+
+		public TblStringRenderer() {
+			super.setOpaque(true);
+		}		
+	
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+			setText(value.toString());
+			if(row>0) {				
+				if(isSelected) {
+					setBackground(Color.ORANGE);
+				}else {
+					setBackground(row%2==0 ? Color.white : Color.lightGray);   
+				}				
+			}else {
+				setBackground(Color.white);				
+				
+			}
+			return this;
+			
+		}
+		
+	}
 	 
 	 
 	class TblRowSelectionListener implements ListSelectionListener{
 		MonitorType monitorType;
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
-			if (((PnlMonitorType)panel).getSelectedTblRow() > -1) {			
+			if (((PnlMonitorType)panel).getSelectedTblRow() > 0) {			
 				int row = ((PnlMonitorType)panel).getSelectedTblRow() - 1;
 		        monitorType = (MonitorType) ((PnlMonitorType)panel).getTableValueAt(row, 0); //get the monitor from the first column		            
 		    }			

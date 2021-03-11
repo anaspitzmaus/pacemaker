@@ -13,8 +13,7 @@ import com.rose.pm.db.SQL_UPDATE;
 
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.MonitorType;
-import com.rose.pm.ui.CtrlElectrodes.CreateTypeListener;
-import com.rose.pm.ui.CtrlElectrodes.DeleteTypeListener;
+
 
 public class CtrlMonitors {
 	CtrlPnlMonitorType ctrlPnlMonitorType;

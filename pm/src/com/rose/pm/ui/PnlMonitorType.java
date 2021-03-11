@@ -5,6 +5,12 @@ import java.awt.Color;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+
+import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.MonitorType;
+import com.rose.pm.ui.CtrlPnlMonitorType.MonitorTypeIdRenderer;
+import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -51,7 +57,18 @@ public class PnlMonitorType extends PnlAggregateTypeBase {
 	}
 
 	protected void setFirstRowHeight(int height) {
-		table.setRowHeight(0, height);
-		
+		table.setRowHeight(0, height);		
+	}
+
+	protected void setTblCellManufacturerRenderer(TableCellRenderer renderer) {
+		table.setDefaultRenderer(Manufacturer.class, renderer);		
+	}
+
+	protected void setMonitorTypeIdRenderer(TableCellRenderer renderer) {
+		table.setDefaultRenderer(MonitorType.class, renderer);		
+	}
+
+	protected void setNotationRenderer(TableCellRenderer renderer) {
+		table.setDefaultRenderer(String.class, renderer);		
 	}
 }
