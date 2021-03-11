@@ -67,7 +67,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	void setModel() {
 			ArrayList<MonitorType> monitorTypes;
 			try {
-				monitorTypes = SQL_SELECT.monitorTypes();
+				monitorTypes = SQL_SELECT.monitorTypes(null);
 				MonitorType[] arr = new MonitorType[monitorTypes.size()]; 	
 				monitorTypeModel = new DefaultComboBoxModel<MonitorType>();
 				

@@ -61,9 +61,10 @@ public class CtrlMonitors {
 					Integer id = SQL_INSERT.monitorType(monitorType);
 					if(id != null) {
 						monitorType.setId(id);
-						ctrlPnlMonitorType.getTblModel().setMonitorTypes(SQL_SELECT.monitorTypes());
+						ctrlPnlMonitorType.getTblModel().setMonitorTypes(SQL_SELECT.monitorTypes(null));
 						ctrlPnlMonitorType.getTblModel().fireTableDataChanged();
 						ctrlPnlMonitor.monitorTypeModel.addElement(monitorType);
+						ctrlPnlMonitorType.setFirstRowHeight(40);
 					}
 				} catch (SQLException e) {
 					JOptionPane.showMessageDialog(new JFrame(),

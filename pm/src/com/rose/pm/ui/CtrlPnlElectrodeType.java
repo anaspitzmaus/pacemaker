@@ -115,6 +115,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		priceListener = listener.new PriceListener();
 		((PnlElectrodeType)panel).addPriceChangeListener(priceListener);
 		
+		
 	}
 	
 	private void setModel() {

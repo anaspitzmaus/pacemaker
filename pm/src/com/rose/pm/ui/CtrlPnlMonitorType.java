@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -15,6 +17,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
@@ -22,10 +25,10 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.MonitorType;
-import com.rose.pm.ui.Listener.ManufacturerListener;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Listener.PriceListener;
 import com.rose.pm.ui.Renderer.TblCellManufacturerRenderer;
@@ -41,7 +44,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	Renderer renderer;
 	TblCellManufacturerRenderer tblCellManufacturerRenderer;
 	TblStringRenderer notationRenderer;
-	ManufacturerListener manufacturerListener;
+	Listener.ManufacturerListener manufacturerListener;
 	NotationListener notationListener, noticeListener;
 	TblMonitorTypeModel tblMonitorTypeModel;
 	CustomTableCellEditor customTableCellEditor;
@@ -71,6 +74,8 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		setRenderer();
 		customTableCellEditor = new CustomTableCellEditor();
 		((PnlMonitorType)panel).setManufacturerCellEditor(customTableCellEditor);
+		JTextField textField = new JTextField("Text");
+		((PnlMonitorType)panel).setNotationCellEditor(new DefaultCellEditor(textField));
 		((PnlMonitorType)panel).setFirstRowHeight(40);
 	}
 	
@@ -86,7 +91,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		((PnlMonitorType)panel).setManufacturerModel(manufacturerModel);
 		
 		try {
-			tblMonitorTypeModel = new TblMonitorTypeModel(SQL_SELECT.monitorTypes());
+			tblMonitorTypeModel = new TblMonitorTypeModel(SQL_SELECT.monitorTypes(null));
 			panel.setTblModel(tblMonitorTypeModel);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -274,8 +279,11 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		
 		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-			// TODO Auto-generated method stub
-			super.setValueAt(aValue, rowIndex, columnIndex);
+			if(rowIndex == 0 && columnIndex == 2) {
+				manuf = (Manufacturer)aValue;
+			}else {
+				super.setValueAt(aValue, rowIndex, columnIndex);
+			}
 		}
 
 		@Override
@@ -294,7 +302,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			if(rowIndex == 0 && columnIndex == 2) {
+			if(rowIndex == 0 && (columnIndex == 2 || columnIndex ==1)) {
 				return true;
 			}else {
 				return false;
@@ -306,14 +314,24 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	      
 		private static final long serialVersionUID = 3283574841392539652L;
 		private TableCellEditor editor;
-		protected JComboBox<Manufacturer> cbxManufacturer;
+		private JComboBox<Manufacturer> cbxManufacturer;
+		SearchManufacturerListener searchManufacturerListener;
+		private ComboBoxModel<Manufacturer> cbxManufacturerModel;
 		
 		public CustomTableCellEditor() {
+			ArrayList<Manufacturer> manufacturers = SQL_SELECT.manufacturers();
+			Manufacturer[] arr = new Manufacturer[manufacturers.size() + 1]; 		  
+	        // ArrayList to Array Conversion 
+			arr[0] = new Manufacturer(" ");
+	        for (int i = 1; i < manufacturers.size() + 1; i++) {
+	            arr[i] = manufacturers.get(i - 1);		
+	        }
+			cbxManufacturerModel = new DefaultComboBoxModel<Manufacturer>(arr);
 			cbxManufacturer = new JComboBox<Manufacturer>();
-			 for(Manufacturer m: SQL_SELECT.manufacturers()) {
-				 cbxManufacturer.addItem(m);
-			 }	
-			 cbxManufacturer.setRenderer(new ListManufacturerRenderer());
+			cbxManufacturer.setModel(cbxManufacturerModel);
+			cbxManufacturer.setRenderer(new ListManufacturerRenderer());
+			searchManufacturerListener = new SearchManufacturerListener();
+			cbxManufacturer.addItemListener(searchManufacturerListener);
 		}
 		
         @Override
@@ -363,6 +381,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 				}
 			}else {
 				setBackground(Color.white);
+				setText("");
 			}
 			return this;
 		}
@@ -397,6 +416,42 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 			
 		}
 		
+	}
+	
+	class SearchManufacturerListener implements ItemListener{
+		Manufacturer manufacturer;
+				
+		/**
+		 * return the selected manufacturer
+		 * @return
+		 */
+		public Manufacturer getManufacturer() {
+			return manufacturer;
+		}
+
+		@Override
+		public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+				try {
+					manufacturer = (Manufacturer) event.getItem();	
+					if(manufacturer.getNotation() == " ") {
+						manufacturer = null;
+					}
+				} catch (ClassCastException e) {
+					manufacturer = null;				
+				}
+				
+				try {
+					tblMonitorTypeModel.setMonitorTypes(SQL_SELECT.monitorTypes(manufacturer));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				tblMonitorTypeModel.fireTableDataChanged();
+				((PnlMonitorType)panel).setFirstRowHeight(40);
+		       }
+			
+		}
 	}
 	 
 	 
@@ -433,5 +488,9 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 
 	protected void addDeleteListener(ActionListener listener) {
 		((PnlMonitorType)panel).addDeleteListener(listener);		
+	}
+	
+	protected void setFirstRowHeight(int height) {
+		((PnlMonitorType)panel).setFirstRowHeight(height);
 	}
 }

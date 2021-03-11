@@ -196,7 +196,13 @@ public class Renderer {
 				}
 				
 			}else {//if first row				
-				setBackground(Color.white);				
+				setBackground(Color.white);	
+				if(value instanceof Manufacturer) {
+					setText(((Manufacturer) value).getNotation());
+				}else {
+					setText("");
+					
+				}
 			}
 			return this;
 			

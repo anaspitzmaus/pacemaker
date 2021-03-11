@@ -47,13 +47,16 @@ public class PnlMonitorType extends PnlAggregateTypeBase {
 		pnlInput.add(btnCreate, "cell 9 0");
 		
 		btnDelete.setHorizontalAlignment(SwingConstants.RIGHT);
-		pnlSouth.add(btnDelete);
-		
+		pnlSouth.add(btnDelete);		
 		
 	}
 
 	public void setManufacturerCellEditor(TableCellEditor editor) {
 		table.getColumnModel().getColumn(2).setCellEditor(editor);		
+	}
+	
+	protected void setNotationCellEditor(TableCellEditor editor) {
+		table.getColumnModel().getColumn(1).setCellEditor(editor);
 	}
 
 	protected void setFirstRowHeight(int height) {

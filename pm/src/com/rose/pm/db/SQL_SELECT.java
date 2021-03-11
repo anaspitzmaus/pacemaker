@@ -1147,16 +1147,19 @@ public class SQL_SELECT {
 	 * @return an array list with the selected monitors
 	 * @throws SQLException
 	 */
-	public static ArrayList<MonitorType> monitorTypes() throws SQLException{
+	public static ArrayList<MonitorType> monitorTypes(Manufacturer manufacturer) throws SQLException{
 		stmt = DB.getStatement();
 		ArrayList<MonitorType> monitorTypes;
 		monitorTypes = new ArrayList<MonitorType>();
-		
-		rs = stmt.executeQuery(
-				 "SELECT idmonitor_type, monitor_type.notation AS monitorNotation, monitor_type.idmanufacturer, manufacturer.notation AS manufacturerNotation, notice, price "
+		String select = "SELECT idmonitor_type, monitor_type.notation AS monitorNotation, monitor_type.idmanufacturer, manufacturer.notation AS manufacturerNotation, notice, price "
 				+ "FROM sm.monitor_type "
 				+ "INNER JOIN sm.manufacturer "
-				+ "ON sm.monitor_type.idmanufacturer = sm.manufacturer.idmanufacturer");
+				+ "ON sm.monitor_type.idmanufacturer = sm.manufacturer.idmanufacturer";
+		if(manufacturer instanceof Manufacturer) {
+			select = select.concat(" WHERE sm.manufacturer.idmanufacturer = " + manufacturer.getId() + "");
+		}
+		rs = stmt.executeQuery(select);
+				
 		
 		if(rs.isBeforeFirst()){
 			while(rs.next()) {
@@ -1169,9 +1172,13 @@ public class SQL_SELECT {
 				}
 				monitorType.setPrice(rs.getDouble("price"));
 				
-				Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
-				manufacturer.setId(rs.getInt("idmanufacturer"));
-				monitorType.setManufacturer(manufacturer);
+				if(!(manufacturer instanceof Manufacturer)) {					
+					Manufacturer manuf = new Manufacturer(rs.getString("manufacturerNotation"));
+					manuf.setId(rs.getInt("idmanufacturer"));
+					monitorType.setManufacturer(manuf);
+				}else {				
+					monitorType.setManufacturer(manufacturer);
+				}
 				monitorTypes.add(monitorType);
 			}
 		}
@@ -1233,5 +1240,7 @@ public class SQL_SELECT {
 		//con.close();
 		return monitors;
 	}
+
+	
 	
 }
