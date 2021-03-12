@@ -19,12 +19,15 @@ import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.BadLocationException;
 
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.Manufacturer;
@@ -50,6 +53,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	CustomTableCellEditor customTableCellEditor;
 	TblRowSelectionListener tblRowSelectionListener;
 	PriceListener priceListener;
+	protected String searchNotation = "notation";
 	
 	
 	protected NotationListener getNotationListener() {
@@ -75,6 +79,8 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		customTableCellEditor = new CustomTableCellEditor();
 		((PnlMonitorType)panel).setManufacturerCellEditor(customTableCellEditor);
 		JTextField textField = new JTextField("Text");
+		SearchNotationListener searchNotationListener = new SearchNotationListener();
+		textField.getDocument().addDocumentListener(searchNotationListener);
 		((PnlMonitorType)panel).setNotationCellEditor(new DefaultCellEditor(textField));
 		((PnlMonitorType)panel).setFirstRowHeight(40);
 	}
@@ -224,7 +230,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		protected ArrayList<String> columnNames;		
 		protected ArrayList<MonitorType> monitorTypes;
 		private Class[] classes = {MonitorType.class, String.class, Manufacturer.class, String.class, Double.class};
-		protected String notation = "notation";
+		
 		protected String notice = "";
 		protected MonitorType mt = null;
 		protected Double price = 0.0;
@@ -266,7 +272,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 			}else{
 				switch (columnIndex) {
 					case 0: return mt;
-					case 1: return notation;
+					case 1: return searchNotation;
 					case 2: return manuf;
 					case 3: return notice;
 					case 4: return price;
@@ -452,6 +458,38 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		       }
 			
 		}
+	}
+	
+	class SearchNotationListener implements DocumentListener{
+		
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			setNotation(e);			
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			setNotation(e);				
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			setNotation(e);				
+		}
+		
+		private void setNotation(DocumentEvent e) {
+			try {
+				searchNotation = e.getDocument().getText(0, e.getDocument().getLength());
+				System.out.println(searchNotation);
+			} catch (BadLocationException e1) {
+				searchNotation = "";
+			}
+		}
+		
+		protected String getNotation() {
+			return searchNotation;
+		}
+		
 	}
 	 
 	 
