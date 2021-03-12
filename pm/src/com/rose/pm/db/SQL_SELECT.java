@@ -1147,16 +1147,17 @@ public class SQL_SELECT {
 	 * @return an array list with the selected monitors
 	 * @throws SQLException
 	 */
-	public static ArrayList<MonitorType> monitorTypes(Manufacturer manufacturer) throws SQLException{
+	public static ArrayList<MonitorType> monitorTypes(Manufacturer manufacturer, String notation) throws SQLException{
 		stmt = DB.getStatement();
 		ArrayList<MonitorType> monitorTypes;
 		monitorTypes = new ArrayList<MonitorType>();
 		String select = "SELECT idmonitor_type, monitor_type.notation AS monitorNotation, monitor_type.idmanufacturer, manufacturer.notation AS manufacturerNotation, notice, price "
 				+ "FROM sm.monitor_type "
 				+ "INNER JOIN sm.manufacturer "
-				+ "ON sm.monitor_type.idmanufacturer = sm.manufacturer.idmanufacturer";
+				+ "ON sm.monitor_type.idmanufacturer = sm.manufacturer.idmanufacturer "
+				+ "WHERE monitor_type.notation LIKE '" + notation + "%'";
 		if(manufacturer instanceof Manufacturer) {
-			select = select.concat(" WHERE sm.manufacturer.idmanufacturer = " + manufacturer.getId() + "");
+			select = select.concat(" AND sm.manufacturer.idmanufacturer = " + manufacturer.getId() + "");
 		}
 		rs = stmt.executeQuery(select);
 				

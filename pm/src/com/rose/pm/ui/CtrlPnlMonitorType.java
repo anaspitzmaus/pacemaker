@@ -53,7 +53,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	CustomTableCellEditor customTableCellEditor;
 	TblRowSelectionListener tblRowSelectionListener;
 	PriceListener priceListener;
-	protected String searchNotation = "notation";
+	
 	
 	
 	protected NotationListener getNotationListener() {
@@ -97,7 +97,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		((PnlMonitorType)panel).setManufacturerModel(manufacturerModel);
 		
 		try {
-			tblMonitorTypeModel = new TblMonitorTypeModel(SQL_SELECT.monitorTypes(null));
+			tblMonitorTypeModel = new TblMonitorTypeModel(SQL_SELECT.monitorTypes(null, ""));
 			panel.setTblModel(tblMonitorTypeModel);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -235,6 +235,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		protected MonitorType mt = null;
 		protected Double price = 0.0;
 		protected Manufacturer manuf = null;
+		protected String searchNotation = "";
 		
 		public TblMonitorTypeModel(ArrayList<MonitorType> monitorTypes) {
 			this.monitorTypes = monitorTypes;
@@ -287,6 +288,8 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			if(rowIndex == 0 && columnIndex == 2) {
 				manuf = (Manufacturer)aValue;
+			}else if (rowIndex == 0 && columnIndex == 1){
+				searchNotation = (String)aValue;
 			}else {
 				super.setValueAt(aValue, rowIndex, columnIndex);
 			}
@@ -448,7 +451,8 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 				}
 				
 				try {
-					tblMonitorTypeModel.setMonitorTypes(SQL_SELECT.monitorTypes(manufacturer));
+					tblMonitorTypeModel.setValueAt(manufacturer, 0, 2);
+					tblMonitorTypeModel.setMonitorTypes(SQL_SELECT.monitorTypes((Manufacturer) tblMonitorTypeModel.getValueAt(0, 2), (String) tblMonitorTypeModel.getValueAt(0, 1)));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -461,7 +465,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	}
 	
 	class SearchNotationListener implements DocumentListener{
-		
+		String txt;
 		@Override
 		public void insertUpdate(DocumentEvent e) {
 			setNotation(e);			
@@ -479,17 +483,21 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		
 		private void setNotation(DocumentEvent e) {
 			try {
-				searchNotation = e.getDocument().getText(0, e.getDocument().getLength());
-				System.out.println(searchNotation);
+				txt = e.getDocument().getText(0, e.getDocument().getLength());
+				
 			} catch (BadLocationException e1) {
-				searchNotation = "";
+				txt = "";
 			}
-		}
-		
-		protected String getNotation() {
-			return searchNotation;
-		}
-		
+			tblMonitorTypeModel.setValueAt(txt, 0, 1);
+			try {
+				tblMonitorTypeModel.setMonitorTypes(SQL_SELECT.monitorTypes((Manufacturer) tblMonitorTypeModel.getValueAt(0, 2), (String) tblMonitorTypeModel.getValueAt(0, 1)));
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			tblMonitorTypeModel.fireTableDataChanged();
+			((PnlMonitorType)panel).setFirstRowHeight(40);
+		}	
 	}
 	 
 	 
