@@ -60,7 +60,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	TblAggregateTypeRenderer tblAggregateTypeRenderer;
 	TblStatusRenderer tblStatusRenderer;
 	TblPatientRenderer tblPatientRenderer;
-	com.rose.pm.ui.Renderer.TblDateRenderer tblDateRenderer;
+	com.rose.pm.ui.Renderer.TblLocalDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
@@ -154,7 +154,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		((PnlPM)panel).setPMIDRenderer(PM.class, tblPMIDRenderer);
 		tblStringRenderer = new TblStringRenderer();
 		((PnlPM)panel).setStringRenderer(String.class, tblStringRenderer);
-		tblDateRenderer = renderer.new TblDateRenderer();
+		tblDateRenderer = renderer.new TblLocalDateRenderer();
 		((PnlPM)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 		tblAggregateTypeRenderer = new TblAggregateTypeRenderer();
 		((PnlPM)panel).setTblAggregateTypeRenderer(AggregateType.class, tblAggregateTypeRenderer);

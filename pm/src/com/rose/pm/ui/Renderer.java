@@ -21,14 +21,11 @@ import com.rose.pm.material.Status;
 
 public class Renderer {
 
-	class TblDateRenderer extends JLabel implements TableCellRenderer{
+	class TblLocalDateRenderer extends JLabel implements TableCellRenderer{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 5861989547138095236L;
 
-		public TblDateRenderer() {
+		public TblLocalDateRenderer() {
 			super.setOpaque(true);
 		}
 		

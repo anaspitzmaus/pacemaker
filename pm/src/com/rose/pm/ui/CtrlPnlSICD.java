@@ -62,7 +62,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	TblStringRenderer tblStringRenderer;
 	TblAggregateTypeRenderer tblAggregateTypeRenderer;
 	TblStatusRenderer tblStatusRenderer;
-	com.rose.pm.ui.Renderer.TblDateRenderer tblDateRenderer;
+	com.rose.pm.ui.Renderer.TblLocalDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
@@ -164,7 +164,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 			((PnlSICD)panel).setAggregateIDRenderer(SICD.class, tblSICDIDRenderer);
 			tblStringRenderer = renderer.new TblStringRenderer();
 			((PnlSICD)panel).setStringRenderer(String.class, tblStringRenderer);
-			tblDateRenderer = renderer.new TblDateRenderer();
+			tblDateRenderer = renderer.new TblLocalDateRenderer();
 			((PnlSICD)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 			tblAggregateTypeRenderer = new TblAggregateTypeRenderer();
 			((PnlSICD)panel).setTblAggregateTypeRenderer(SICDType.class, tblAggregateTypeRenderer);

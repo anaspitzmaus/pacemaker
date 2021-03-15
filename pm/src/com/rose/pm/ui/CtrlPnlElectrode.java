@@ -38,7 +38,7 @@ import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
-import com.rose.pm.ui.Renderer.TblDateRenderer;
+import com.rose.pm.ui.Renderer.TblLocalDateRenderer;
 import com.rose.pm.ui.Renderer.TblPatientRenderer;
 import com.rose.pm.ui.Renderer.TblStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
@@ -55,7 +55,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	Listener listener;
 	Renderer renderer;
 	NotationListener serialNrListener, noticeListener;
-	TblDateRenderer tblDateRenderer;
+	TblLocalDateRenderer tblDateRenderer;
 	TblStringRenderer tblStringRenderer;
 	TblElectrodeIDRenderer electrodeRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
@@ -144,7 +144,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 electrodeTypeRenderer = new ElectrodeTypeRenderer();
 		 ((PnlElectrode)panel).setElectrodeTypeRenderer(electrodeTypeRenderer);
 		 renderer = new Renderer();
-		 tblDateRenderer = renderer.new TblDateRenderer();
+		 tblDateRenderer = renderer.new TblLocalDateRenderer();
 		 ((PnlElectrode)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 		 tblStringRenderer = renderer.new TblStringRenderer();
 		 ((PnlElectrode)panel).setStringRenderer(String.class, tblStringRenderer);

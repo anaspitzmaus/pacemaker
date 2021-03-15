@@ -58,7 +58,7 @@ public class CtrlPnlER extends CtrlPnlBase{
 	TblStringRenderer tblStringRenderer;
 	TblERTypeRenderer tblERTypeRenderer;
 	TblStatusRenderer tblStatusRenderer;
-	com.rose.pm.ui.Renderer.TblDateRenderer tblDateRenderer;
+	com.rose.pm.ui.Renderer.TblLocalDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
@@ -165,7 +165,7 @@ public class CtrlPnlER extends CtrlPnlBase{
 		((PnlER)panel).setERIDRenderer(ER.class, tblERIDRenderer);
 		tblStringRenderer = new TblStringRenderer();
 		((PnlER)panel).setStringRenderer(String.class, tblStringRenderer);
-		tblDateRenderer = renderer.new TblDateRenderer();
+		tblDateRenderer = renderer.new TblLocalDateRenderer();
 		((PnlER)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 		tblERTypeRenderer = new TblERTypeRenderer();
 		((PnlER)panel).setTblERTypeRenderer(ERType.class, tblERTypeRenderer);

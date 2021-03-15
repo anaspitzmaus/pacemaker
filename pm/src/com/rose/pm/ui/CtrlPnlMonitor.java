@@ -1,5 +1,6 @@
 package com.rose.pm.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -24,6 +25,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import com.rose.Isynet;
 import com.rose.person.Patient;
@@ -31,10 +33,17 @@ import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
+import com.rose.pm.material.Electrode;
+import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Renderer.TblLocalDateRenderer;
+import com.rose.pm.ui.Renderer.TblImplantDateRenderer;
+import com.rose.pm.ui.Renderer.TblPatientRenderer;
+import com.rose.pm.ui.Renderer.TblStatusRenderer;
+import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 
 
@@ -52,6 +61,13 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	CreateListener createListener;
 	TblMouseAdaptor tblMouseAdaptor;
 	DeleteListener deleteListener; 
+	TblMonitorIDRenderer tblMonitorIDRenderer;
+	TblMonitorTypeRenderer tblMonitorTypeRenderer;
+	Renderer.TblStringRenderer tblStringRenderer;
+	Renderer.TblPatientRenderer tblPatientRenderer;
+	Renderer.TblStatusRenderer tblStatusRenderer;
+	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
+	Renderer.TblLocalDateRenderer tblLocalDateRenderer;
 	
 	public CtrlPnlMonitor() {
 		createPanel();
@@ -140,7 +156,20 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		renderer = new Renderer();
 		monitorTypeListCellRenderer = new MonitorTypeListCellRenderer();
 		((PnlMonitor)panel).setMonitorTypeRenderer(monitorTypeListCellRenderer);
-		
+		tblMonitorIDRenderer = new TblMonitorIDRenderer();
+		((PnlMonitor)panel).setTblMonitorIDRenderer(Monitor.class, tblMonitorIDRenderer);
+		tblMonitorTypeRenderer = new TblMonitorTypeRenderer();
+		((PnlMonitor)panel).setTblMonitorTypeRenderer(MonitorType.class, tblMonitorTypeRenderer);
+		tblStringRenderer = renderer.new TblStringRenderer();
+		((PnlMonitor)panel).setTblStringRenderer(String.class, tblStringRenderer);
+		 tblPatientRenderer = renderer.new TblPatientRenderer();
+		 ((PnlMonitor)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
+		 tblStatusRenderer = renderer.new TblStatusRenderer();
+		 ((PnlMonitor)panel).setTblStatusRenderer(Status.class, tblStatusRenderer);
+		 tblImplantDateRenderer = renderer.new TblImplantDateRenderer();
+		 ((PnlMonitor)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
+		 tblLocalDateRenderer = renderer.new TblLocalDateRenderer();
+		 ((PnlMonitor)panel).setLocalDateRenderer(LocalDate.class, tblLocalDateRenderer);
 	}
 	
 	class MonitorTblModel extends AbstractTableModel{
@@ -183,7 +212,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			switch(columnIndex) {
 				case 0: return monitors.get(rowIndex);
-				case 1: return monitors.get(rowIndex).getId();
+				case 1: return monitors.get(rowIndex).getMaterialType();
 				case 2: return monitors.get(rowIndex).getSerialNr();
 				
 				case 3: return monitors.get(rowIndex).getExpireDate();
@@ -272,6 +301,52 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		}
 			
 	} 
+	 
+	 class TblMonitorIDRenderer extends JLabel implements TableCellRenderer{
+
+		private static final long serialVersionUID = 8727963414643594470L;
+
+		public TblMonitorIDRenderer() {
+			setOpaque(true);
+		 }
+		 
+		 @Override
+		 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			Integer id = ((Monitor)value).getId();
+			setText(id.toString());
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+		 }
+		 
+	 }
+	 
+	 class TblMonitorTypeRenderer extends JLabel implements TableCellRenderer{
+
+		private static final long serialVersionUID = 324810444790377934L;
+		
+		public TblMonitorTypeRenderer() {
+			setOpaque(true);
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			String notation = ((MonitorType)value).getNotation();
+			setText(notation);
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+		}
+		 
+	 }
 	 
 	
 	 

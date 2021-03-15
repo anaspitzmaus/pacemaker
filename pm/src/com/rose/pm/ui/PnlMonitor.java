@@ -2,6 +2,8 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.time.LocalDate;
+import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -10,10 +12,19 @@ import javax.swing.JLabel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableCellRenderer;
 
+import com.rose.person.Patient;
 import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
+import com.rose.pm.material.Status;
+import com.rose.pm.ui.CtrlPnlMonitor.TblMonitorTypeRenderer;
+import com.rose.pm.ui.Renderer.TblLocalDateRenderer;
+import com.rose.pm.ui.Renderer.TblImplantDateRenderer;
+import com.rose.pm.ui.Renderer.TblPatientRenderer;
+import com.rose.pm.ui.Renderer.TblStatusRenderer;
+import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -66,8 +77,7 @@ public class PnlMonitor extends PnlBase {
 	}
 
 	protected void addMonitorTypeListener(ItemListener l) {
-		cbxMonitorType.addItemListener(l);
-		
+		cbxMonitorType.addItemListener(l);		
 	}
 
 	protected void integratePnlDate(Pnl_SetDate pnlDate) {
@@ -93,6 +103,36 @@ public class PnlMonitor extends PnlBase {
 	protected void setMonitorTypeSelectionIndex(Integer index) {
 		cbxMonitorType.setSelectedIndex(index);		
 	}
+
+	protected void setTblMonitorIDRenderer(Class<Monitor> monitorClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(monitorClass, renderer);		
+	}
+
+	protected void setTblMonitorTypeRenderer(Class<MonitorType> monitorTypeClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(monitorTypeClass, renderer);		
+	}
+
+	protected void setTblStringRenderer(Class<String> stringClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(stringClass, renderer);
+	}
+
+	protected void setTblPatientRenderer(Class<Patient> patientClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(patientClass, renderer);
+	}
+
+	protected void setTblStatusRenderer(Class<Status> statusClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(statusClass, renderer);
+	}
+
+	protected void setTblImplantDateRenderer(Class<Date> dateClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(dateClass, renderer);
+	}
+
+	protected void setLocalDateRenderer(Class<LocalDate> localDateClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(localDateClass, renderer);
+	}
+	
+	
 
 	
 
