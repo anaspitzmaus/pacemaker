@@ -307,8 +307,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 			}
 			return this;
 		}
-		
-	}
+	 }
+	 
 	 class TblElectrodeTypeRenderer extends JLabel implements TableCellRenderer{
 		 
 		 public TblElectrodeTypeRenderer() {
@@ -420,8 +420,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		}
 		
 		protected void initiateElectrode() {
-			electrode = new Electrode((ElectrodeType) electrodeTypeModel.getSelectedItem());
-			System.out.println(electrode.getElectrodeType());
+			electrode = new Electrode((ElectrodeType) electrodeTypeModel.getSelectedItem());			
 		}
 		
 		protected void updateDBAndTblModel() {

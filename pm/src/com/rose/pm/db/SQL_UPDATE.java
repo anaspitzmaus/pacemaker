@@ -21,6 +21,7 @@ import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Material;
+import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
@@ -528,6 +529,12 @@ public class SQL_UPDATE {
 	
 	}
 
+	/**
+	 * deletes a type of monitor
+	 * @param monitorType the instance of MonitorType
+	 * @return the generated key of the prepared statement
+	 * @throws SQLException
+	 */
 	public static Integer deleteMonitorType(MonitorType monitorType) throws SQLException{
 		Integer i;
 		String delete = "DELETE FROM sm.monitor_type WHERE idmonitor_type = ? LIMIT 1";
@@ -538,6 +545,18 @@ public class SQL_UPDATE {
 		i = ps.executeUpdate();
 		ps.close();
 		return i;		
+	}
+
+	/**
+	 * deletes a monitor
+	 * @param monitor an instance of Monitor
+	 * @throws SQLException
+	 */
+	public static void deleteMonitor(Monitor monitor) throws SQLException{
+		stmt = DB.getStatement();
+		if(monitor instanceof Monitor && monitor.getId() != null) {							
+			stmt.executeUpdate("DELETE FROM sm.monitor WHERE idmonitor = " + monitor.getId() + " LIMIT 1");					
+		}
 	}
 	
 	

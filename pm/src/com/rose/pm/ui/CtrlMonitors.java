@@ -28,6 +28,9 @@ public class CtrlMonitors {
 	}
 
 
+	protected CtrlPnlMonitor getCtrlPnlMonitor() {
+		return this.ctrlPnlMonitor;
+	}
 
 	public CtrlMonitors() {
 		ctrlPnlMonitorType = new CtrlPnlMonitorType();

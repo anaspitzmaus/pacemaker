@@ -63,15 +63,15 @@ public class PnlMonitorType extends PnlAggregateTypeBase {
 		table.setRowHeight(0, height);		
 	}
 
-	protected void setTblCellManufacturerRenderer(TableCellRenderer renderer) {
-		table.setDefaultRenderer(Manufacturer.class, renderer);		
+	protected void setTblCellManufacturerRenderer(Class<Manufacturer> manufacturerClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(manufacturerClass, renderer);		
 	}
 
-	protected void setMonitorTypeIdRenderer(TableCellRenderer renderer) {
-		table.setDefaultRenderer(MonitorType.class, renderer);		
+	protected void setMonitorTypeIdRenderer(Class<MonitorType> monitorTypeClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(monitorTypeClass, renderer);		
 	}
 
-	protected void setNotationRenderer(TableCellRenderer renderer) {
-		table.setDefaultRenderer(String.class, renderer);		
+	protected void setNotationRenderer(Class<String> strClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(strClass, renderer);		
 	}
 }

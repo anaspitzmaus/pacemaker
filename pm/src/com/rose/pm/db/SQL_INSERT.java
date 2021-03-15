@@ -21,6 +21,7 @@ import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
@@ -841,6 +842,43 @@ public class SQL_INSERT {
             else {
             	JOptionPane.showMessageDialog(new JFrame(),
 					    "Class: SQL_INSERT monitorType(MonitorType type) - kein Eintrag erfolgt!", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+            	return null;
+            }
+        }		
+	}
+
+	/**
+	 * inserts a monitor
+	 * @param monitor
+	 * @return the generated key of the inserted monitor or null if monitor could not be inserted
+	 * @throws SQLException
+	 */
+	public static Integer monitor(Monitor monitor) throws SQLException{
+		String insert = "INSERT INTO monitor(idmonitor_type, serialNr, notice, expire) VALUES (?,?,?,?)";
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		PreparedStatement ps = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+		ps.setInt(1,  monitor.getMaterialType().getId());
+		ps.setString(2, monitor.getSerialNr());
+		ps.setString(3, monitor.getNotice());
+		ps.setDate(4, Date.valueOf(monitor.getExpireDate()));
+		
+
+		int row = ps.executeUpdate();
+		if (row == 0) {
+			JOptionPane.showMessageDialog(new JFrame(),
+				    "Class: SQL_INSERT monitor(Monitor monitor) - kein Eintrag erfolgt!", "SQL Exception warning",
+				    JOptionPane.WARNING_MESSAGE);
+        }
+
+        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+            	return (int) generatedKeys.getLong(1);                
+            }
+            else {
+            	JOptionPane.showMessageDialog(new JFrame(),
+					    "Class: SQL_INSERT monitor(Monitor monitor) - kein Eintrag erfolgt!", "SQL Exception warning",
 					    JOptionPane.WARNING_MESSAGE);
             	return null;
             }

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.swing.AbstractCellEditor;
@@ -19,6 +20,7 @@ import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataListener;
@@ -53,6 +55,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	CustomTableCellEditor customTableCellEditor;
 	TblRowSelectionListener tblRowSelectionListener;
 	PriceListener priceListener;
+	TblSearchPriceRenderer priceRenderer;
 	
 	
 	
@@ -76,6 +79,9 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		setListener();
 		setModel();
 		setRenderer();
+		setComponentText();
+		((PnlMonitorType)panel).setManufacturerIndex(-1);
+		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		customTableCellEditor = new CustomTableCellEditor();
 		((PnlMonitorType)panel).setManufacturerCellEditor(customTableCellEditor);
 		JTextField textField = new JTextField("Text");
@@ -111,11 +117,13 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		((PnlMonitorType)panel).setManufacturerRenderer(listManufacturerRenderer);
 		renderer = new Renderer();
 		tblCellManufacturerRenderer = renderer.new TblCellManufacturerRenderer();
-		((PnlMonitorType)panel).setTblCellManufacturerRenderer(tblCellManufacturerRenderer);
+		((PnlMonitorType)panel).setTblCellManufacturerRenderer(Manufacturer.class, tblCellManufacturerRenderer);
 		monitorTypeIdRenderer = new MonitorTypeIdRenderer();
-		((PnlMonitorType)panel).setMonitorTypeIdRenderer(monitorTypeIdRenderer);
+		((PnlMonitorType)panel).setMonitorTypeIdRenderer(MonitorType.class, monitorTypeIdRenderer);
 		notationRenderer = new TblStringRenderer();
-		((PnlMonitorType)panel).setNotationRenderer(notationRenderer);
+		((PnlMonitorType)panel).setNotationRenderer(String.class, notationRenderer);
+		priceRenderer = new TblSearchPriceRenderer();
+		panel.setDoubleRenderer(Double.class, priceRenderer);
 		
 	}
 	
@@ -131,6 +139,15 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		((PnlMonitorType)panel).addPriceChangeListener(priceListener);
 		tblRowSelectionListener = new TblRowSelectionListener();
 		((PnlMonitorType)panel).addTblRowSelectionListener(tblRowSelectionListener);
+	}
+	
+	protected void setComponentText() {
+		((PnlMonitorType)panel).setLblNotationText("Bezeichnung:");
+		((PnlMonitorType)panel).setLblManufacturerText("Hersteller:");
+		((PnlMonitorType)panel).setLblNoticeText("Bemerkung:");
+		((PnlMonitorType)panel).setBtnCreateText("Eintragen");
+		((PnlMonitorType)panel).setBtnDeleteText("Löschen");
+		((PnlMonitorType)panel).setLblPriceText("Preis:");
 	}
 	
 	/**
@@ -427,6 +444,37 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		
 	}
 	
+	class TblSearchPriceRenderer extends Renderer.TblDoubleRenderer implements TableCellRenderer{
+
+		private static final long serialVersionUID = 4282300798910642941L;
+
+		
+		public TblSearchPriceRenderer() {
+			renderer.super();
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			
+			DecimalFormat df2 = new DecimalFormat("#.##");			
+			setText(df2.format(value) + " €");			
+			setHorizontalAlignment(JLabel.RIGHT);
+			if(row>0) {	
+				if(isSelected) {
+					setBackground(Color.ORANGE);
+				}else {
+					setBackground(row%2==0 ? Color.white : Color.lightGray);  
+				}
+			}else {
+				setBackground(Color.white);	
+			}
+			return this;
+		}
+		
+	}
+	
+	
 	class SearchManufacturerListener implements ItemListener{
 		Manufacturer manufacturer;
 				
@@ -459,10 +507,11 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 				}
 				tblMonitorTypeModel.fireTableDataChanged();
 				((PnlMonitorType)panel).setFirstRowHeight(40);
-		       }
+		    }
 			
 		}
 	}
+	
 	
 	class SearchNotationListener implements DocumentListener{
 		String txt;

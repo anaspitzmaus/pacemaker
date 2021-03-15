@@ -1,27 +1,41 @@
 package com.rose.pm.ui;
 
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ListSelectionModel;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
+import com.rose.Isynet;
 import com.rose.person.Patient;
 import com.rose.pm.Ctrl_PnlSetDate;
+import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
-import com.rose.pm.material.Electrode;
-import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.CtrlPnlElectrode.ElectrodeTblModel;
-import com.rose.pm.ui.CtrlPnlElectrode.ElectrodeTypeListener;
-import com.rose.pm.ui.CtrlPnlElectrode.TblMouseAdaptor;
+import com.rose.pm.ui.Listener.NotationListener;
+
 
 
 public class CtrlPnlMonitor extends CtrlPnlBase {
@@ -30,6 +44,14 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	MonitorTblModel monitorTblModel;
 	MonitorTypeListener monitorTypeListener;
 	Listener listener;
+	Renderer renderer;
+	MonitorTypeListCellRenderer monitorTypeListCellRenderer;
+	NotationListener serialNrListener, noticeListener;
+	TblRowSelectionListener tblRowSelectionListener;
+	ShowAllListener showAllListener;
+	CreateListener createListener;
+	TblMouseAdaptor tblMouseAdaptor;
+	DeleteListener deleteListener; 
 	
 	public CtrlPnlMonitor() {
 		createPanel();
@@ -47,7 +69,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		
 		//setEditor();
 		
-//		setRenderer();
+		setRenderer();
 //		((PnlElectrode)panel).setElectrodeTypeSelectionIndex(-1);
 //		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 //		tblMouseAdaptor = new TblMouseAdaptor();
@@ -65,38 +87,60 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	
 	
 	void setModel() {
-			ArrayList<MonitorType> monitorTypes;
-			try {
-				monitorTypes = SQL_SELECT.monitorTypes(null, "");
-				MonitorType[] arr = new MonitorType[monitorTypes.size()]; 	
-				monitorTypeModel = new DefaultComboBoxModel<MonitorType>();
-				
-		        // ArrayList to Array Conversion 
-		        for (int i = 0; i < monitorTypes.size(); i++) {
-		            arr[i] = monitorTypes.get(i);		
-		            monitorTypeModel.addElement(monitorTypes.get(i));
-			 	}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
-			((PnlMonitor)panel).setMonitorTypeModel(monitorTypeModel);
+		//ComboBoxModel for the types of Monitors
+		ArrayList<MonitorType> monitorTypes;
+		try {
+			monitorTypes = SQL_SELECT.monitorTypes(null, "");
+			MonitorType[] arr = new MonitorType[monitorTypes.size()]; 	
+			monitorTypeModel = new DefaultComboBoxModel<MonitorType>();
 			
-			try {
-				monitorTblModel = new MonitorTblModel(SQL_SELECT.monitors(monitorTypeListener.monitorType));
-				panel.setTblModel(monitorTblModel);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			
+	        // ArrayList to Array Conversion 
+	        for (int i = 0; i < monitorTypes.size(); i++) {
+	            arr[i] = monitorTypes.get(i);		
+	            monitorTypeModel.addElement(monitorTypes.get(i));
+		 	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		((PnlMonitor)panel).setMonitorTypeModel(monitorTypeModel);
+		
+		//table model for the monitors
+		try {
+			monitorTblModel = new MonitorTblModel(SQL_SELECT.monitors(monitorTypeListener.monitorType));
+
+			panel.setTblModel(monitorTblModel);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+		
+	}
 	
-	void setListener() {
+	private void setListener() {
 		 monitorTypeListener = new MonitorTypeListener();
 		 ((PnlMonitor)panel).addMonitorTypeListener(monitorTypeListener);	
 		 listener = new Listener();
+		 serialNrListener = listener.new NotationListener();
+		 ((PnlMonitor)panel).addSerialNrListener(serialNrListener);
+		 noticeListener = listener.new NotationListener();
+		 ((PnlMonitor)panel).addNoticeListener(noticeListener);
+		 tblRowSelectionListener = new TblRowSelectionListener();
+		 ((PnlMonitor)panel).addTblRowSelectionListener(tblRowSelectionListener);
+		 showAllListener = new ShowAllListener();
+		 ((PnlMonitor)panel).addShowAllListener(showAllListener);
+		 createListener = new CreateListener();
+		 ((PnlMonitor)panel).addCreateListener(createListener);
+		 deleteListener = new DeleteListener();
+		 ((PnlMonitor)panel).addDeleteListener(deleteListener);
+	}
+	
+	private void setRenderer() {
+		renderer = new Renderer();
+		monitorTypeListCellRenderer = new MonitorTypeListCellRenderer();
+		((PnlMonitor)panel).setMonitorTypeRenderer(monitorTypeListCellRenderer);
+		
 	}
 	
 	class MonitorTblModel extends AbstractTableModel{
@@ -122,7 +166,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		}
 		@Override
 		public int getRowCount() {
-			return columnNames.size();
+			return monitors.size();
 		}
 
 		@Override
@@ -138,22 +182,22 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			switch(columnIndex) {
-			case 0: return monitors.get(rowIndex);
-			case 1: return monitors.get(rowIndex).getId();
-			case 2: return monitors.get(rowIndex).getSerialNr();
-			
-			case 3: return monitors.get(rowIndex).getExpireDate();
-			
-			case 4: return monitors.get(rowIndex).getNotice();
-			
-			case 5: return monitors.get(rowIndex).getStatus();
-			
-			case 6: return monitors.get(rowIndex).getPatient();
-			
-			case 7: return monitors.get(rowIndex).getDateOfImplantation();
-			
-			default: return null;
-			
+				case 0: return monitors.get(rowIndex);
+				case 1: return monitors.get(rowIndex).getId();
+				case 2: return monitors.get(rowIndex).getSerialNr();
+				
+				case 3: return monitors.get(rowIndex).getExpireDate();
+				
+				case 4: return monitors.get(rowIndex).getNotice();
+				
+				case 5: return monitors.get(rowIndex).getStatus();
+				
+				case 6: return monitors.get(rowIndex).getPatient();
+				
+				case 7: return monitors.get(rowIndex).getDateOfImplantation();
+				
+				default: return null;
+				
 			}			
 		}
 		
@@ -178,31 +222,186 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	}
 	
 	 class MonitorTypeListener implements ItemListener{
-
-			MonitorType monitorType;
+	
+		MonitorType monitorType;
+		
+		@Override
+		public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+				try {
+					monitorType = (MonitorType) event.getItem();			        
+				} catch (ClassCastException e) {
+					monitorType = null;
+				}				
+		    }
+			updateTblModel();		
+		}
+		
+		protected void updateTblModel() {
+			try {
+				monitorTblModel.setMonitors(SQL_SELECT.monitors(monitorType));
+				monitorTblModel.fireTableDataChanged();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
 			
+		}		
+	}
+	 
+	 class MonitorTypeListCellRenderer extends JLabel implements ListCellRenderer<MonitorType>{
+
+		private static final long serialVersionUID = -1511554657041982786L;
+
+		public MonitorTypeListCellRenderer() {
+			setOpaque(true);
+	        setHorizontalAlignment(CENTER);
+	        setVerticalAlignment(CENTER);		
+		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends MonitorType> list, MonitorType value, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			if(value instanceof MonitorType) {
+				setText(((MonitorType) value).getNotation());
+				
+			}else {
+				setText("");
+			}
+			return this;
+		}
+			
+	} 
+	 
+	
+	 
+	class TblRowSelectionListener implements ListSelectionListener{
+		Monitor monitor;
+		@Override
+		public void valueChanged(ListSelectionEvent arg0) {
+			if (((PnlMonitor)panel).getSelectedTblRow() > -1) {			
+				int row = ((PnlMonitor)panel).getSelectedTblRow();
+	            monitor = (Monitor) ((PnlMonitor)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
+	        }			
+		}
+		
+		protected Monitor getMonitorSelected() {
+			return this.monitor;
+		}		
+	}
+			
+		class DeleteListener implements ActionListener{
+
 			@Override
-			public void itemStateChanged(ItemEvent event) {
-				if (event.getStateChange() == ItemEvent.SELECTED) {
-					try {
-						monitorType = (MonitorType) event.getItem();			        
-					} catch (ClassCastException e) {
-						monitorType = null;
-					}				
-			    }
-				updateTblModel();		
+			public void actionPerformed(ActionEvent e) {
+				if(tblRowSelectionListener.getMonitorSelected() instanceof Monitor) {
+					if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
+						try {
+							SQL_UPDATE.deleteMonitor(tblRowSelectionListener.getMonitorSelected());
+							monitorTblModel.monitors.remove(tblRowSelectionListener.getMonitorSelected());
+							monitorTblModel.fireTableDataChanged();
+						} catch (SQLException e1) {
+							if(e1.getErrorCode() == 1451) {
+								JOptionPane.showMessageDialog(null, "Dieser Monitor kann nicht gelöscht werden, da er bereits für eine Untersuchung verwendet wurde!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+							}else {
+								JOptionPane.showMessageDialog(new JFrame(),
+								"Message:\n" +  e1.getMessage() + "\n\nClass:\n" + SQL_UPDATE.class.getSimpleName() + "\n\nBoolean deleteMonitor(Monitor monitor)", "SQL Exception warning",
+							    JOptionPane.WARNING_MESSAGE);
+							}
+						}
+							
+						
+					}
+				
+				}
+			
+			}
+		}
+		
+		class ShowAllListener implements ActionListener{
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((PnlMonitor)panel).setMonitorTypeSelectionIndex(-1);
+				update();
 			}
 			
-			protected void updateTblModel() {
+			protected void update() {
 				try {
-					monitorTblModel.setMonitors(SQL_SELECT.monitors(monitorType));
-					monitorTblModel.fireTableDataChanged();
+					monitorTblModel.setMonitors(SQL_SELECT.monitors(null));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}			
-				
-			}		
+				monitorTblModel.fireTableDataChanged();
+			}
+			
+		}
+		
+		class CreateListener implements ActionListener{
+			Monitor monitor;
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(serialNrListener.getNotation() != "" && monitorTypeModel.getSelectedItem() instanceof MonitorType) {
+					initiateMonitor();
+					monitor.setExpireDate(ctrlPnlSetDate.getDate());
+					monitor.setSerialNr(serialNrListener.getNotation());
+					monitor.setNotice(noticeListener.getNotation());
+					updateDBAndTblModel();
+					
+				}
+			}
+			
+			protected void initiateMonitor() {
+				monitor = new Monitor((MonitorType) monitorTypeModel.getSelectedItem());			
+			}
+			
+			protected void updateDBAndTblModel() {
+				Integer key = null;;
+				try {
+					key = SQL_INSERT.monitor(monitor);					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+				if(key != null) {//if insertion was successful
+					try {
+						monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType) monitorTypeModel.getSelectedItem()));
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				monitorTblModel.fireTableDataChanged();
+			}
+			
+		}
+		
+		class TblMouseAdaptor extends MouseAdapter{
+			 JTable table;
+			 @Override
+		    public void mouseClicked(MouseEvent mouseEvent){
+		        if(mouseEvent.getClickCount()==2){
+		        	 table =(JTable) mouseEvent.getSource();
+		             Point point = mouseEvent.getPoint();
+		             int row = table.rowAtPoint(point);
+		             if (table.getSelectedRow() != -1 && row >= 0) {
+		                CtrlDlgChangeMonitor ctrlDlgChangeMonitor = new CtrlDlgChangeMonitor((Monitor) monitorTblModel.getValueAt(row, 0), monitorTblModel);
+		                ctrlDlgChangeMonitor.getDialog().setVisible(true);
+		             }
+		        }else if(SwingUtilities.isRightMouseButton(mouseEvent) == true){
+		        	table =(JTable) mouseEvent.getSource();
+		        	Point point = mouseEvent.getPoint();
+		        	int row = table.rowAtPoint(point);
+		        	if(table.getSelectedRow() == row) {
+		        		Isynet isynet = new Isynet();
+		        		Patient patient = isynet.getPatient();
+		        		PopupMenu menu = new PopupMenu(patient, (Monitor) monitorTblModel.getValueAt(row, 0), monitorTblModel);
+		                menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+		        	}
+		        }
+		        		
+		    }
 		}
 
 }

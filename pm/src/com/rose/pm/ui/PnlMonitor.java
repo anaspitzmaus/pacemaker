@@ -1,16 +1,19 @@
 package com.rose.pm.ui;
 
+import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentListener;
 
 import com.rose.pm.Pnl_SetDate;
+import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
-import com.rose.pm.ui.CtrlPnlMonitor.MonitorTypeListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -22,8 +25,7 @@ public class PnlMonitor extends PnlBase {
 	JButton btnShowAll;
 
 	protected void setMonitorTypeModel(DefaultComboBoxModel<MonitorType> monitorTypeModel) {
-		cbxMonitorType.setModel(monitorTypeModel);
-		
+		cbxMonitorType.setModel(monitorTypeModel);		
 	}
 
 	protected void setLblMonitorTypeText(String text) {
@@ -71,6 +73,27 @@ public class PnlMonitor extends PnlBase {
 	protected void integratePnlDate(Pnl_SetDate pnlDate) {
 		pnlInput.add(pnlDate, "cell 4 1");
 	}
+
+	protected void setMonitorTypeRenderer(ListCellRenderer<MonitorType> renderer) {
+		cbxMonitorType.setRenderer(renderer);
+	}
+	
+	protected void addSerialNrListener(DocumentListener listener) {
+		super.addNotationListener(listener);				
+	}
+	
+	protected Monitor getTableValueAt(int row, int column) {
+		return (Monitor) table.getValueAt(row, column);
+	}
+	
+	protected void addShowAllListener(ActionListener l) {
+		btnShowAll.addActionListener(l);
+	}
+	
+	protected void setMonitorTypeSelectionIndex(Integer index) {
+		cbxMonitorType.setSelectedIndex(index);		
+	}
+
 	
 
 }

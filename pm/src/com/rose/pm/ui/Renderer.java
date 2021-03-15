@@ -8,11 +8,15 @@ import java.time.LocalDate;
 import java.util.Date;
 
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JTable;
+import javax.swing.ListCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.person.Patient;
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.MaterialType;
+import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
 
 public class Renderer {
@@ -67,16 +71,20 @@ public class Renderer {
 		
 	}
 	
+	/**
+	 * a tablecellrenderer for double values
+	 * 
+	 * @author Ekki
+	 *
+	 */
 	class TblDoubleRenderer extends JLabel implements TableCellRenderer{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -9100269051584681144L;
 
 		public TblDoubleRenderer() {
 			setOpaque(true);
 		}
+		
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
@@ -209,4 +217,27 @@ public class Renderer {
 		}
 		
 	}
+	
+	class MaterialTypeListRenderer extends JLabel implements ListCellRenderer<MaterialType>{
+
+		private static final long serialVersionUID = 2174496440997500464L;
+
+		public MaterialTypeListRenderer() {
+			setOpaque(true);
+	        setHorizontalAlignment(CENTER);
+	        setVerticalAlignment(CENTER);
+		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends MaterialType> list, MaterialType value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			if(value instanceof MaterialType) {
+				setText(((MaterialType) value).getNotation());
+				
+			}else {
+				setText("");
+			}
+			return this;
+		}		
+	} 
 }

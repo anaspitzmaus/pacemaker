@@ -1,5 +1,6 @@
 package com.rose.pm.ui;
 
+import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -47,9 +48,11 @@ public class CtrlFrmBase {
 		frame.getTabbedPane().add(ctrlSICD.getCtrlPnlSICDType().getPanel().getName(), ctrlSICD.getCtrlPnlSICDType().getPanel());
 		frame.getTabbedPane().add(ctrlSICD.getCtrlPnlSICD().getPanel().getName(), ctrlSICD.getCtrlPnlSICD().getPanel());
 		frame.getTabbedPane().add(ctrlMonitors.getCtrlPnlMonitorType().getPanel().getName(), ctrlMonitors.getCtrlPnlMonitorType().getPanel());
+		frame.getTabbedPane().add(ctrlMonitors.getCtrlPnlMonitor().getPanel().getName(), ctrlMonitors.getCtrlPnlMonitor().getPanel());
 		frame.setJMenuBar(ctrlMenuBar.getMenuBar());
 		frame.insertToolBar(ctrlTbrIsynet.getToolBar());
 		setListener();
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 	}
 	

@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * abstract JPanel that builds a primitive JPanel with a panel at north and a panel at south
@@ -137,6 +138,10 @@ public abstract class PnlBase extends JPanel {
 	
 	protected void addTblMouseAdaptor(MouseListener mouseAdaptor) {
 		table.addMouseListener(mouseAdaptor);		
+	}
+	
+	protected void setDoubleRenderer(Class<Double> dblClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(dblClass, renderer);
 	}
 	
 	
