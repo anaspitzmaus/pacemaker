@@ -456,6 +456,10 @@ public class SQL_UPDATE {
 		}else if(material instanceof SICD) {
 			table = "sicd";
 			id = "idsicd";
+		}else if(material instanceof Monitor) {
+			table = "monitor";
+			id = "idmonitor";
+			
 		}
 		
 		//do the statement
@@ -506,6 +510,9 @@ public class SQL_UPDATE {
 		}else if(material instanceof SICD) {
 			table = "sicd";
 			id = "idsicd";
+		}else if(material instanceof Monitor) {
+			table = "monitor";
+			id = "idmonitor";
 		}
 		
 		if(table != "" && id != "") {

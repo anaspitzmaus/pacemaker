@@ -21,6 +21,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -33,17 +34,12 @@ import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.Electrode;
-import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
-import com.rose.pm.ui.Renderer.TblLocalDateRenderer;
-import com.rose.pm.ui.Renderer.TblImplantDateRenderer;
-import com.rose.pm.ui.Renderer.TblPatientRenderer;
-import com.rose.pm.ui.Renderer.TblStatusRenderer;
-import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 
 
@@ -68,6 +64,8 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	Renderer.TblStatusRenderer tblStatusRenderer;
 	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
 	Renderer.TblLocalDateRenderer tblLocalDateRenderer;
+	Editor editor;
+	Editor.DateCellEditor dateCellEditor;
 	
 	public CtrlPnlMonitor() {
 		createPanel();
@@ -81,15 +79,13 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		panel = new PnlMonitor();
 		panel.setName("Monitore");
 		setListener();
-		setModel();	
-		
-		//setEditor();
-		
+		setModel();			
+		setEditor();		
 		setRenderer();
-//		((PnlElectrode)panel).setElectrodeTypeSelectionIndex(-1);
-//		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//		tblMouseAdaptor = new TblMouseAdaptor();
-//		((PnlElectrode)panel).addTblMouseAdaptor(tblMouseAdaptor);
+		((PnlMonitor)panel).setMonitorTypeSelectionIndex(-1);
+		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tblMouseAdaptor = new TblMouseAdaptor();
+		((PnlMonitor)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
 	protected void setComponentLabeling() {
@@ -101,6 +97,11 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		((PnlMonitor)panel).setBtnShowAllText("Alle Modelle");
 	}
 	
+	private void setEditor() {
+		 editor = new Editor();
+		 dateCellEditor = editor.new DateCellEditor();
+		 ((PnlMonitor)panel).setDateCellEditor(dateCellEditor);
+	}
 	
 	void setModel() {
 		//ComboBoxModel for the types of Monitors
@@ -181,6 +182,17 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		@SuppressWarnings("rawtypes")
 		Class[] classes = {Monitor.class, MonitorType.class, String.class, LocalDate.class, String.class, Status.class, Patient.class, Date.class};
 		
+		protected Monitor searchMonitor = null;
+		protected MonitorType searchMonitorType = null;
+		protected String searchNotation = "";
+		protected LocalDate searchLocalDate = null;
+		protected String searchNotice = "";
+		protected Status searchStatus = Status.Lager;
+		protected Patient searchPatient = null;
+		protected Date searchDate = null;
+		
+		
+		
 		public MonitorTblModel(ArrayList<Monitor> monitors) {
 			this.monitors = monitors;
 			columnNames = new ArrayList<String>();
@@ -195,7 +207,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		}
 		@Override
 		public int getRowCount() {
-			return monitors.size();
+			return monitors.size() + 1;
 		}
 
 		@Override
@@ -210,24 +222,50 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			switch(columnIndex) {
-				case 0: return monitors.get(rowIndex);
-				case 1: return monitors.get(rowIndex).getMaterialType();
-				case 2: return monitors.get(rowIndex).getSerialNr();
-				
-				case 3: return monitors.get(rowIndex).getExpireDate();
-				
-				case 4: return monitors.get(rowIndex).getNotice();
-				
-				case 5: return monitors.get(rowIndex).getStatus();
-				
-				case 6: return monitors.get(rowIndex).getPatient();
-				
-				case 7: return monitors.get(rowIndex).getDateOfImplantation();
-				
+			if(rowIndex > 0) {
+				switch(columnIndex) {
+					case 0: return monitors.get(rowIndex - 1);
+					case 1: return monitors.get(rowIndex - 1).getMaterialType();
+					case 2: return monitors.get(rowIndex - 1).getSerialNr();
+					
+					case 3: return monitors.get(rowIndex - 1).getExpireDate();
+					
+					case 4: return monitors.get(rowIndex - 1).getNotice();
+					
+					case 5: return monitors.get(rowIndex - 1).getStatus();
+					
+					case 6: return monitors.get(rowIndex - 1).getPatient();
+					
+					case 7: return monitors.get(rowIndex - 1).getDateOfImplantation();
+					
+					default: return null;
+					
+				}	
+			}else {
+				switch (columnIndex) {
+				case 0: return searchMonitor;
+				case 1: return searchMonitorType;
+				case 2: return searchNotation;
+				case 3: return searchLocalDate;
+				case 4: return searchNotice;
+				case 5: return searchStatus;
+				case 6: return searchPatient;
+				case 7: return searchDate;
 				default: return null;
-				
-			}			
+			}
+			}
+		}
+		
+		@Override
+		public void setValueAt(Object value, int row, int col) {
+            monitors.get(row).setDateOfImplantation((Date)value);
+            try {
+				SQL_UPDATE.dateOfImplant(monitors.get(row));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            //change value at database;
 		}
 		
 		@Override
@@ -313,14 +351,16 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		 @Override
 		 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-			Integer id = ((Monitor)value).getId();
-			setText(id.toString());
-			if(isSelected) {
-				setBackground(Color.ORANGE);
-			}else {
-				setBackground(row%2==0 ? Color.white : Color.lightGray);   
-			}
-			return this;
+			 	if(value instanceof Monitor) {
+					Integer id = ((Monitor)value).getId();
+					setText(id.toString());			 	
+					if(isSelected) {
+						setBackground(Color.ORANGE);
+					}else {
+						setBackground(row%2==0 ? Color.white : Color.lightGray);   
+					}
+			 	}
+					return this;
 		 }
 		 
 	 }
@@ -336,12 +376,14 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-			String notation = ((MonitorType)value).getNotation();
-			setText(notation);
-			if(isSelected) {
-				setBackground(Color.ORANGE);
-			}else {
-				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			if(value instanceof MonitorType) {
+				String notation = ((MonitorType)value).getNotation();
+				setText(notation);
+				if(isSelected) {
+					setBackground(Color.ORANGE);
+				}else {
+					setBackground(row%2==0 ? Color.white : Color.lightGray);   
+				}
 			}
 			return this;
 		}

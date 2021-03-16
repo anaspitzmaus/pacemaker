@@ -285,9 +285,6 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	 
 	 class ElectrodeTypeRenderer extends JLabel implements ListCellRenderer<ElectrodeType>{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -7934129282290942751L;
 		
 		public ElectrodeTypeRenderer() {

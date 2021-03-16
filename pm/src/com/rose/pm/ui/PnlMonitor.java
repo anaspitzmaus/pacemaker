@@ -5,6 +5,7 @@ import java.awt.event.ItemListener;
 import java.time.LocalDate;
 import java.util.Date;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,12 +20,7 @@ import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.CtrlPnlMonitor.TblMonitorTypeRenderer;
-import com.rose.pm.ui.Renderer.TblLocalDateRenderer;
-import com.rose.pm.ui.Renderer.TblImplantDateRenderer;
-import com.rose.pm.ui.Renderer.TblPatientRenderer;
-import com.rose.pm.ui.Renderer.TblStatusRenderer;
-import com.rose.pm.ui.Renderer.TblStringRenderer;
+
 
 import net.miginfocom.swing.MigLayout;
 
@@ -130,6 +126,10 @@ public class PnlMonitor extends PnlBase {
 
 	protected void setLocalDateRenderer(Class<LocalDate> localDateClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(localDateClass, renderer);
+	}
+	
+	protected void setDateCellEditor(DefaultCellEditor editor) {
+		 table.getColumnModel().getColumn(7).setCellEditor(editor);		
 	}
 	
 	
