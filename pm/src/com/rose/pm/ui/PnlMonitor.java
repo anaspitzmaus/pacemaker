@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.person.Patient;
@@ -132,7 +133,13 @@ public class PnlMonitor extends PnlBase {
 		 table.getColumnModel().getColumn(7).setCellEditor(editor);		
 	}
 	
+	protected void setNotationCellEditor(TableCellEditor editor) {
+		table.getColumnModel().getColumn(2).setCellEditor(editor);
+	}
 	
+	protected void setFirstRowHeight(int height) {
+		table.setRowHeight(0, height);		
+	}
 
 	
 

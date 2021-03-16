@@ -438,10 +438,8 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 				setBackground(Color.white);				
 				
 			}
-			return this;
-			
-		}
-		
+			return this;			
+		}		
 	}
 	
 	class TblSearchPriceRenderer extends Renderer.TblDoubleRenderer implements TableCellRenderer{

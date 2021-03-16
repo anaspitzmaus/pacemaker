@@ -14,19 +14,24 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.BadLocationException;
 
 import com.rose.Isynet;
 import com.rose.person.Patient;
@@ -38,6 +43,8 @@ import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.CtrlPnlMonitorType.SearchNotationListener;
+import com.rose.pm.ui.CtrlPnlMonitorType.TblStringRenderer;
 import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
 
@@ -63,7 +70,8 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	Renderer.TblPatientRenderer tblPatientRenderer;
 	Renderer.TblStatusRenderer tblStatusRenderer;
 	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
-	Renderer.TblLocalDateRenderer tblLocalDateRenderer;
+	TblLocalDateRenderer tblLocalDateRenderer;
+	TblStringRenderer notationRenderer;
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
 	
@@ -73,6 +81,11 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		ctrlPnlSetDate = new Ctrl_PnlSetDate("dd.MM.yyyy", LocalDate.now(), LocalDate.now());
 		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
 		((PnlMonitor)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
+		JTextField textField = new JTextField("Text");
+		SearchNotationListener searchNotationListener = new SearchNotationListener();
+		textField.getDocument().addDocumentListener(searchNotationListener);
+		((PnlMonitor)panel).setNotationCellEditor(new DefaultCellEditor(textField));
+		((PnlMonitor)panel).setFirstRowHeight(40);
 	}
 	
 	protected void createPanel() {
@@ -161,15 +174,15 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		((PnlMonitor)panel).setTblMonitorIDRenderer(Monitor.class, tblMonitorIDRenderer);
 		tblMonitorTypeRenderer = new TblMonitorTypeRenderer();
 		((PnlMonitor)panel).setTblMonitorTypeRenderer(MonitorType.class, tblMonitorTypeRenderer);
-		tblStringRenderer = renderer.new TblStringRenderer();
-		((PnlMonitor)panel).setTblStringRenderer(String.class, tblStringRenderer);
+		notationRenderer = new TblStringRenderer();
+		((PnlMonitor)panel).setTblStringRenderer(String.class, notationRenderer);
 		 tblPatientRenderer = renderer.new TblPatientRenderer();
 		 ((PnlMonitor)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
 		 tblStatusRenderer = renderer.new TblStatusRenderer();
 		 ((PnlMonitor)panel).setTblStatusRenderer(Status.class, tblStatusRenderer);
 		 tblImplantDateRenderer = renderer.new TblImplantDateRenderer();
 		 ((PnlMonitor)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
-		 tblLocalDateRenderer = renderer.new TblLocalDateRenderer();
+		 tblLocalDateRenderer = new TblLocalDateRenderer();
 		 ((PnlMonitor)panel).setLocalDateRenderer(LocalDate.class, tblLocalDateRenderer);
 	}
 	
@@ -351,16 +364,23 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		 @Override
 		 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-			 	if(value instanceof Monitor) {
-					Integer id = ((Monitor)value).getId();
-					setText(id.toString());			 	
-					if(isSelected) {
-						setBackground(Color.ORANGE);
-					}else {
-						setBackground(row%2==0 ? Color.white : Color.lightGray);   
-					}
-			 	}
-					return this;
+			 if(row>0) {
+				if(value instanceof Monitor) {
+					setText(String.valueOf(((Monitor) value).getId()));			
+				}else {
+					setText("");
+				}
+				if(isSelected) {
+					setBackground(Color.ORANGE);
+				}else {
+					setBackground(row%2==0 ? Color.white : Color.lightGray);   
+				}
+			}else {
+				setBackground(Color.white);
+				setText("");
+			}
+			return this;
+				
 		 }
 		 
 	 }
@@ -376,28 +396,63 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-			if(value instanceof MonitorType) {
-				String notation = ((MonitorType)value).getNotation();
-				setText(notation);
-				if(isSelected) {
-					setBackground(Color.ORANGE);
-				}else {
-					setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			if(row>0) {
+				if(value instanceof MonitorType) {				
+					String notation = ((MonitorType)value).getNotation();
+					setText(notation);
+					if(isSelected) {
+						setBackground(Color.ORANGE);
+					}else {
+						setBackground(row%2==0 ? Color.white : Color.lightGray);   
+					}
 				}
+					
+			}else {
+				setBackground(Color.white);
+				return null;
 			}
 			return this;
 		}
 		 
 	 }
 	 
-	
+	 class TblLocalDateRenderer extends JLabel implements TableCellRenderer{
+			
+		private static final long serialVersionUID = 2717295573009886572L;
+
+		public TblLocalDateRenderer() {
+			super.setOpaque(true);
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			if(row > 0) {
+				if(value instanceof LocalDate) {
+					LocalDate date = (LocalDate) value;			
+					setText(date.getDayOfMonth() + "." + date.getMonthValue() + "." + date.getYear());
+					if(isSelected) {
+						setBackground(Color.ORANGE);
+					}else {
+						setBackground(row%2==0 ? Color.white : Color.lightGray);   
+					}
+				}
+				return this;	
+			}else {
+				setBackground(Color.white);
+				return null;
+			}
+				
+		}		
+		
+	}
 	 
 	class TblRowSelectionListener implements ListSelectionListener{
 		Monitor monitor;
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
-			if (((PnlMonitor)panel).getSelectedTblRow() > -1) {			
-				int row = ((PnlMonitor)panel).getSelectedTblRow();
+			if (((PnlMonitor)panel).getSelectedTblRow() > 0) {			
+				int row = ((PnlMonitor)panel).getSelectedTblRow() - 1;
 	            monitor = (Monitor) ((PnlMonitor)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
 	        }			
 		}
@@ -490,6 +545,70 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 					}
 				}
 				monitorTblModel.fireTableDataChanged();
+			}
+			
+		}
+		
+		class SearchNotationListener implements DocumentListener{
+			String txt;
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				setNotation(e);			
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				setNotation(e);				
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				setNotation(e);				
+			}
+			
+			private void setNotation(DocumentEvent e) {
+				try {
+					txt = e.getDocument().getText(0, e.getDocument().getLength());
+					
+				} catch (BadLocationException e1) {
+					txt = "";
+				}
+				monitorTblModel.setValueAt(txt, 0, 1);
+//				try {
+//					monitorTblModel.setMonitors(SQL_SELECT.monitors((Manufacturer) tblMonitorTypeModel.getValueAt(0, 2), (String) tblMonitorTypeModel.getValueAt(0, 1)));
+//				} catch (SQLException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+				monitorTblModel.fireTableDataChanged();
+				((PnlMonitorType)panel).setFirstRowHeight(40);
+			}	
+		}
+		
+		class TblStringRenderer extends JLabel implements TableCellRenderer{
+			
+			private static final long serialVersionUID = 6200115008088445331L;
+
+			public TblStringRenderer() {
+				super.setOpaque(true);
+			}		
+		
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+					int column) {
+				setText(value.toString());
+				if(row>0) {				
+					if(isSelected) {
+						setBackground(Color.ORANGE);
+					}else {
+						setBackground(row%2==0 ? Color.white : Color.lightGray);   
+					}				
+				}else {
+					setBackground(Color.white);				
+					
+				}
+				return this;
+				
 			}
 			
 		}
