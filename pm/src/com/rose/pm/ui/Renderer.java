@@ -201,8 +201,7 @@ public class Renderer {
 				if(value instanceof Manufacturer) {
 					setText(((Manufacturer) value).getNotation());
 				}else {
-					setText("");
-					
+					setText("");					
 				}
 			}
 			return this;

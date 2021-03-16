@@ -51,7 +51,7 @@ public class PnlMonitorType extends PnlAggregateTypeBase {
 		
 	}
 
-	public void setManufacturerCellEditor(TableCellEditor editor) {
+	protected void setManufacturerCellEditor(TableCellEditor editor) {
 		table.getColumnModel().getColumn(2).setCellEditor(editor);		
 	}
 	

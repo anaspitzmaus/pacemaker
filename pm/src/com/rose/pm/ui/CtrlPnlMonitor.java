@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +15,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.AbstractCellEditor;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -30,6 +34,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.BadLocationException;
 
@@ -43,9 +48,7 @@ import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.CtrlPnlMonitorType.SearchNotationListener;
-import com.rose.pm.ui.CtrlPnlMonitorType.TblStringRenderer;
-import com.rose.pm.ui.Editor.DateCellEditor;
+
 import com.rose.pm.ui.Listener.NotationListener;
 
 
@@ -74,6 +77,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	TblStringRenderer notationRenderer;
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
+	MonitorTypeTblCellEditor monitorTypeTblCellEditor;
 	
 	public CtrlPnlMonitor() {
 		createPanel();
@@ -81,6 +85,8 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		ctrlPnlSetDate = new Ctrl_PnlSetDate("dd.MM.yyyy", LocalDate.now(), LocalDate.now());
 		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
 		((PnlMonitor)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
+		monitorTypeTblCellEditor = new MonitorTypeTblCellEditor();
+		((PnlMonitor)panel).setMonitorTypeTblCellEditor(monitorTypeTblCellEditor);
 		JTextField textField = new JTextField("Text");
 		SearchNotationListener searchNotationListener = new SearchNotationListener();
 		textField.getDocument().addDocumentListener(searchNotationListener);
@@ -271,12 +277,20 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		
 		@Override
 		public void setValueAt(Object value, int row, int col) {
-            monitors.get(row).setDateOfImplantation((Date)value);
-            try {
-				SQL_UPDATE.dateOfImplant(monitors.get(row));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(row == 0) {//for the first 'search' row
+				switch(col) {
+				case 1:
+					searchMonitorType = (MonitorType)value;
+					break;				
+				}
+			}else {
+	            monitors.get(row).setDateOfImplantation((Date)value);
+	            try {
+					SQL_UPDATE.dateOfImplant(monitors.get(row));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
             //change value at database;
 		}
@@ -288,10 +302,18 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			if(columnIndex == 7) {
-				return true;
+			if(rowIndex == 0) {
+				if(columnIndex == 1) {
+					return true;
+				}else {
+					return false;
+				}
 			}else {
-				return false;
+				if(columnIndex == 7) {
+					return true;
+				}else {
+					return false;
+				}
 			}
 		}
 
@@ -385,18 +407,25 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		 
 	 }
 	 
+	 /**
+	  * renderer for the types of monitors shown in the table
+	  * @author Ekki
+	  *
+	  */
 	 class TblMonitorTypeRenderer extends JLabel implements TableCellRenderer{
 
 		private static final long serialVersionUID = 324810444790377934L;
 		
 		public TblMonitorTypeRenderer() {
 			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+	        setVerticalAlignment(CENTER);
 		}
 
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-			if(row>0) {
+			if(row>0) {//for all but the first row
 				if(value instanceof MonitorType) {				
 					String notation = ((MonitorType)value).getNotation();
 					setText(notation);
@@ -405,11 +434,14 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 					}else {
 						setBackground(row%2==0 ? Color.white : Color.lightGray);   
 					}
+				}					
+			}else{//for the first 'search' row
+				setBackground(Color.white);	
+				if(value instanceof MonitorType) {
+					setText(((MonitorType) value).getNotation());
+				}else {
+					setText("");					
 				}
-					
-			}else {
-				setBackground(Color.white);
-				return null;
 			}
 			return this;
 		}
@@ -613,31 +645,137 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			
 		}
 		
-		class TblMouseAdaptor extends MouseAdapter{
-			 JTable table;
-			 @Override
-		    public void mouseClicked(MouseEvent mouseEvent){
-		        if(mouseEvent.getClickCount()==2){
-		        	 table =(JTable) mouseEvent.getSource();
-		             Point point = mouseEvent.getPoint();
-		             int row = table.rowAtPoint(point);
-		             if (table.getSelectedRow() != -1 && row >= 0) {
-		                CtrlDlgChangeMonitor ctrlDlgChangeMonitor = new CtrlDlgChangeMonitor((Monitor) monitorTblModel.getValueAt(row, 0), monitorTblModel);
-		                ctrlDlgChangeMonitor.getDialog().setVisible(true);
-		             }
-		        }else if(SwingUtilities.isRightMouseButton(mouseEvent) == true){
-		        	table =(JTable) mouseEvent.getSource();
-		        	Point point = mouseEvent.getPoint();
-		        	int row = table.rowAtPoint(point);
-		        	if(table.getSelectedRow() == row) {
-		        		Isynet isynet = new Isynet();
-		        		Patient patient = isynet.getPatient();
-		        		PopupMenu menu = new PopupMenu(patient, (Monitor) monitorTblModel.getValueAt(row, 0), monitorTblModel);
-		                menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
-		        	}
+	 public class MonitorTypeTblCellEditor extends AbstractCellEditor implements TableCellEditor {
+
+		
+		private static final long serialVersionUID = 6537028958231168566L;
+		private TableCellEditor editor;
+		private JComboBox<MonitorType> cbxMonitorType;
+		SearchMonitorTypeListener searchMonitorTypeListener;
+		private ComboBoxModel<MonitorType> cbxMonitorTypeModel;
+		
+		public MonitorTypeTblCellEditor() {
+			ArrayList<MonitorType> monitorTypes;
+			try {
+				monitorTypes = SQL_SELECT.monitorTypes(null, "");
+				MonitorType[] arr = new MonitorType[monitorTypes.size() + 1]; 		  
+		        // ArrayList to Array Conversion 
+				arr[0] = new MonitorType(" ");
+		        for (int i = 1; i < monitorTypes.size() + 1; i++) {
+		            arr[i] = monitorTypes.get(i - 1);		
 		        }
-		        		
-		    }
+				cbxMonitorTypeModel = new DefaultComboBoxModel<MonitorType>(arr);
+				cbxMonitorType = new JComboBox<MonitorType>();
+				cbxMonitorType.setModel(cbxMonitorTypeModel);
+				cbxMonitorType.setRenderer(new ListMonitorTypeRenderer());
+				searchMonitorTypeListener = new SearchMonitorTypeListener();
+				cbxMonitorType.addItemListener(searchMonitorTypeListener);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		@Override
+		public Object getCellEditorValue() {
+			if (editor != null) {
+				return editor.getCellEditorValue();
+			}
+            return null;
 		}
 
+		@Override
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+				int column) {
+			if (column == 1 && row == 0) {
+                editor = new DefaultCellEditor(cbxMonitorType);
+            } 
+
+			return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
+		}
+		 
+	 }
+		 
+	 class ListMonitorTypeRenderer extends JLabel implements ListCellRenderer<MonitorType>{
+
+		private static final long serialVersionUID = -8346710491847958732L;
+
+		public ListMonitorTypeRenderer() {
+			setOpaque(true);
+	        setHorizontalAlignment(CENTER);
+	        setVerticalAlignment(CENTER);
+		}
+	
+		@Override
+		public Component getListCellRendererComponent(JList<? extends MonitorType> list, MonitorType value, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			if(value instanceof MonitorType) {
+				setText(((MonitorType) value).getNotation());
+				setFont(new Font("Tahoma", Font.ITALIC, 14));
+			}else {
+				setText("");
+			}
+			return this;
+		}				
+	}
+		 
+	 class SearchMonitorTypeListener implements ItemListener{
+		 MonitorType monitorType;
+		 
+		 protected MonitorType getMonitorType() {
+			return monitorType;
+		}
+
+		@Override
+		 public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+				try {
+					monitorType = (MonitorType) event.getItem();	
+					if(monitorType.getNotation() == " ") {
+						monitorType = null;
+					}
+				} catch (ClassCastException e) {
+					monitorType = null;				
+				}
+				
+				try {
+					monitorTblModel.setValueAt(monitorType, 0, 1);
+					monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType) monitorTblModel.getValueAt(0, 1)));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				monitorTblModel.fireTableDataChanged();
+				((PnlMonitor)panel).setFirstRowHeight(40);
+		    }
+			
+		 }		 
+	 }
+	
+	class TblMouseAdaptor extends MouseAdapter{
+		 JTable table;
+		 @Override
+	    public void mouseClicked(MouseEvent mouseEvent){
+	        if(mouseEvent.getClickCount()==2){
+	        	 table =(JTable) mouseEvent.getSource();
+	             Point point = mouseEvent.getPoint();
+	             int row = table.rowAtPoint(point);
+	             if (table.getSelectedRow() != -1 && row >= 0) {
+	                CtrlDlgChangeMonitor ctrlDlgChangeMonitor = new CtrlDlgChangeMonitor((Monitor) monitorTblModel.getValueAt(row, 0), monitorTblModel);
+	                ctrlDlgChangeMonitor.getDialog().setVisible(true);
+	             }
+	        }else if(SwingUtilities.isRightMouseButton(mouseEvent) == true){
+	        	table =(JTable) mouseEvent.getSource();
+	        	Point point = mouseEvent.getPoint();
+	        	int row = table.rowAtPoint(point);
+	        	if(table.getSelectedRow() == row) {
+	        		Isynet isynet = new Isynet();
+	        		Patient patient = isynet.getPatient();
+	        		PopupMenu menu = new PopupMenu(patient, (Monitor) monitorTblModel.getValueAt(row, 0), monitorTblModel);
+	                menu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+	        	}
+	        }	        		
+	    }
+	}
 }

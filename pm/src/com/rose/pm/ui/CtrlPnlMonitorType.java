@@ -376,10 +376,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
             } 
 
             return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
-        }
-        
-        
-        
+        }      
         
     }
 	 
