@@ -465,9 +465,10 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 				setBackground(Color.white);	
 			}
 			return this;
-		}
-		
+		}		
 	}
+	
+	
 	
 	
 	class SearchManufacturerListener implements ItemListener{

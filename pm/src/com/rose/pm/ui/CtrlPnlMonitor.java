@@ -479,6 +479,25 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		
 	}
 	 
+	 class SearchStatusRenderer extends JLabel implements TableCellRenderer{
+
+		private static final long serialVersionUID = -6352537259628112228L;
+
+			public SearchStatusRenderer() {
+				setOpaque(true);
+		        setHorizontalAlignment(CENTER);
+		        setVerticalAlignment(CENTER);	
+			}
+
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+					int row, int column) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+		}
+	 
 	class TblRowSelectionListener implements ListSelectionListener{
 		Monitor monitor;
 		@Override
@@ -761,7 +780,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	        	 table =(JTable) mouseEvent.getSource();
 	             Point point = mouseEvent.getPoint();
 	             int row = table.rowAtPoint(point);
-	             if (table.getSelectedRow() != -1 && row >= 0) {
+	             if (table.getSelectedRow() != -1 && row > 0) {//not for the first row
 	                CtrlDlgChangeMonitor ctrlDlgChangeMonitor = new CtrlDlgChangeMonitor((Monitor) monitorTblModel.getValueAt(row, 0), monitorTblModel);
 	                ctrlDlgChangeMonitor.getDialog().setVisible(true);
 	             }
