@@ -145,6 +145,10 @@ public class PnlMonitor extends PnlBase {
 		table.getColumnModel().getColumn(1).setCellEditor(editor);		
 	}
 
+	public void setStatusTblCellEditor(TableCellEditor editor) {
+		table.getColumnModel().getColumn(5).setCellEditor(editor);			
+	}
+
 	
 
 }

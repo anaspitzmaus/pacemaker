@@ -9,11 +9,19 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 
+import javax.swing.AbstractCellEditor;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableCellEditor;
 import javax.swing.text.DateFormatter;
+
+import com.rose.pm.material.Status;
+
 
 public class Editor {
 	 class DateCellEditor extends DefaultCellEditor{
@@ -70,4 +78,47 @@ public class Editor {
 		 
 		}
     }
+	 
+	 class SearchStatusTblCellEditor extends AbstractCellEditor implements TableCellEditor{
+
+		
+		private static final long serialVersionUID = -6298511433943873838L;
+		private TableCellEditor editor;
+		private JComboBox<Status> cbxStatus;
+		private ComboBoxModel<Status> cbxStatusModel;
+		private Renderer renderer;
+		private Listener listener;
+		private Renderer.SearchStatusListCellRenderer searchStatusListCellRenderer;
+		private Listener.SearchStatusListener searchStatusListener;
+		
+		public SearchStatusTblCellEditor() {
+			Status[] s = Status.class.getEnumConstants();
+			cbxStatusModel = new DefaultComboBoxModel<>(s);
+			cbxStatus = new JComboBox<>(cbxStatusModel);
+			renderer = new Renderer();
+			searchStatusListCellRenderer = renderer.new SearchStatusListCellRenderer();
+			cbxStatus.setRenderer(searchStatusListCellRenderer);
+			listener = new Listener();
+			searchStatusListener = listener.new SearchStatusListener();
+			cbxStatus.addItemListener(searchStatusListener);
+		}
+		
+		@Override
+		public Object getCellEditorValue() {
+			if (editor != null) {
+				return editor.getCellEditorValue();
+			}
+            return null;
+		}
+
+		@Override
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+				int column) {
+			if (column == 5 && row == 0) {
+                editor = new DefaultCellEditor(cbxStatus);
+            } 
+			return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
+		}
+		
+	}
 }

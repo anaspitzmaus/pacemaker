@@ -48,7 +48,7 @@ import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
-
+import com.rose.pm.ui.Editor.SearchStatusTblCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
 
 
@@ -78,6 +78,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
 	MonitorTypeTblCellEditor monitorTypeTblCellEditor;
+	Editor.SearchStatusTblCellEditor statusTblCellEditor;
 	
 	public CtrlPnlMonitor() {
 		createPanel();
@@ -87,10 +88,14 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		((PnlMonitor)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
 		monitorTypeTblCellEditor = new MonitorTypeTblCellEditor();
 		((PnlMonitor)panel).setMonitorTypeTblCellEditor(monitorTypeTblCellEditor);
+		editor = new Editor();
+		statusTblCellEditor = editor.new SearchStatusTblCellEditor();
+		((PnlMonitor)panel).setStatusTblCellEditor(statusTblCellEditor);
 		JTextField textField = new JTextField("Text");
 		SearchNotationListener searchNotationListener = new SearchNotationListener();
 		textField.getDocument().addDocumentListener(searchNotationListener);
 		((PnlMonitor)panel).setNotationCellEditor(new DefaultCellEditor(textField));
+		
 		((PnlMonitor)panel).setFirstRowHeight(40);
 	}
 	
@@ -281,7 +286,10 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 				switch(col) {
 				case 1:
 					searchMonitorType = (MonitorType)value;
-					break;				
+					break;		
+				case 2:
+					searchNotation = (String)value;
+					break;
 				}
 			}else {
 	            monitors.get(row).setDateOfImplantation((Date)value);
@@ -303,7 +311,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			if(rowIndex == 0) {
-				if(columnIndex == 1) {
+				if(columnIndex == 1 || columnIndex ==2 || columnIndex == 5) {
 					return true;
 				}else {
 					return false;
@@ -495,8 +503,31 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+	 }
+	 
+	 class SearchStatusListCellRenderer extends JLabel implements ListCellRenderer<Status>{
+
+		private static final long serialVersionUID = -3682525429996426370L;
+
+		public SearchStatusListCellRenderer() {
+			setOpaque(true);
+		    setHorizontalAlignment(CENTER);
+		    setVerticalAlignment(CENTER);	
 		}
+		 
+		@Override
+		public Component getListCellRendererComponent(JList<? extends Status> list, Status value, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			if(value instanceof Status) {
+				setText(((Status) value).name());
+				setFont(new Font("Tahoma", Font.ITALIC, 14));
+			}else {
+				setText("");
+			}
+			return this;
+		}
+	 }
+
 	 
 	class TblRowSelectionListener implements ListSelectionListener{
 		Monitor monitor;
@@ -624,7 +655,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 				} catch (BadLocationException e1) {
 					txt = "";
 				}
-				monitorTblModel.setValueAt(txt, 0, 1);
+				monitorTblModel.setValueAt(txt, 0, 2);
 //				try {
 //					monitorTblModel.setMonitors(SQL_SELECT.monitors((Manufacturer) tblMonitorTypeModel.getValueAt(0, 2), (String) tblMonitorTypeModel.getValueAt(0, 1)));
 //				} catch (SQLException e1) {
@@ -632,7 +663,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 //					e1.printStackTrace();
 //				}
 				monitorTblModel.fireTableDataChanged();
-				((PnlMonitorType)panel).setFirstRowHeight(40);
+				((PnlMonitor)panel).setFirstRowHeight(40);
 			}	
 		}
 		
@@ -663,6 +694,43 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			}
 			
 		}
+		
+//	class SearchStatusTblCellEditor extends AbstractCellEditor implements TableCellEditor{
+//
+//		private static final long serialVersionUID = -3555252152419993704L;
+//		private TableCellEditor editor;
+//		private JComboBox<Status> cbxStatus;
+//		private ComboBoxModel<Status> cbxStatusModel;
+//		private SearchStatusListener searchStatusListener; 
+//		
+//		
+//		public SearchStatusTblCellEditor() {
+//			Status[] s = Status.class.getEnumConstants();
+//			cbxStatusModel = new DefaultComboBoxModel<>(s);
+//			cbxStatus = new JComboBox<>(cbxStatusModel);
+//			cbxStatus.setRenderer(new SearchStatusListCellRenderer());
+//			searchStatusListener = new SearchStatusListener();
+//			cbxStatus.addItemListener(searchStatusListener);
+//		}
+//		
+//		@Override
+//		public Object getCellEditorValue() {
+//			if (editor != null) {
+//				return editor.getCellEditorValue();
+//			}
+//            return null;
+//		}
+//
+//		@Override
+//		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+//				int column) {
+//			if (column == 5 && row == 0) {
+//                editor = new DefaultCellEditor(cbxStatus);
+//            } 
+//			return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
+//		}
+//		
+//	}
 		
 	 public class MonitorTypeTblCellEditor extends AbstractCellEditor implements TableCellEditor {
 
@@ -771,6 +839,8 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			
 		 }		 
 	 }
+	 
+	
 	
 	class TblMouseAdaptor extends MouseAdapter{
 		 JTable table;

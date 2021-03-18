@@ -97,6 +97,15 @@ public class Listener {
 		}
 	}
 	
+	 class SearchStatusListener implements ItemListener{
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			 
+		 }
 
 	
 }

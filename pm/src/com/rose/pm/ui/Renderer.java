@@ -2,6 +2,7 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -232,4 +233,27 @@ public class Renderer {
 			return this;
 		}		
 	} 
+	
+	class SearchStatusListCellRenderer extends JLabel implements ListCellRenderer<Status>{
+
+		private static final long serialVersionUID = -3682525429996426370L;
+
+		public SearchStatusListCellRenderer() {
+			setOpaque(true);
+		    setHorizontalAlignment(CENTER);
+		    setVerticalAlignment(CENTER);	
+		}
+		 
+		@Override
+		public Component getListCellRendererComponent(JList<? extends Status> list, Status value, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			if(value instanceof Status) {
+				setText(((Status) value).name());
+				setFont(new Font("Tahoma", Font.ITALIC, 14));
+			}else {
+				setText("");
+			}
+			return this;
+		}
+	 }
 }
