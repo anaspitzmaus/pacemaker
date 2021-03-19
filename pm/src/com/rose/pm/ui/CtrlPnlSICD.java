@@ -44,7 +44,7 @@ import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblImplantDateRenderer;
 import com.rose.pm.ui.Renderer.TblPatientRenderer;
-import com.rose.pm.ui.Renderer.TblStatusRenderer;
+import com.rose.pm.ui.Renderer.TblCellStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 public class CtrlPnlSICD extends CtrlPnlBase{
@@ -61,7 +61,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	TblSICDIDRenderer tblSICDIDRenderer;
 	TblStringRenderer tblStringRenderer;
 	TblAggregateTypeRenderer tblAggregateTypeRenderer;
-	TblStatusRenderer tblStatusRenderer;
+	TblCellStatusRenderer tblStatusRenderer;
 	com.rose.pm.ui.Renderer.TblLocalDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
@@ -168,7 +168,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 			((PnlSICD)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 			tblAggregateTypeRenderer = new TblAggregateTypeRenderer();
 			((PnlSICD)panel).setTblAggregateTypeRenderer(SICDType.class, tblAggregateTypeRenderer);
-			tblStatusRenderer = renderer.new TblStatusRenderer();
+			tblStatusRenderer = renderer.new TblCellStatusRenderer();
 			((PnlSICD)panel).setStatusRenderer(Status.class, tblStatusRenderer);
 			tblPatientRenderer = renderer.new TblPatientRenderer();
 			((PnlSICD)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);

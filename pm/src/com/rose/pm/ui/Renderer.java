@@ -122,11 +122,11 @@ public class Renderer {
 		
 	}
 	
-	class TblStatusRenderer extends JLabel implements TableCellRenderer{
+	class TblCellStatusRenderer extends JLabel implements TableCellRenderer{
 
 		private static final long serialVersionUID = 6751749887945145998L;
 
-		public TblStatusRenderer() {
+		public TblCellStatusRenderer() {
 			setOpaque(true);
 		}
 		

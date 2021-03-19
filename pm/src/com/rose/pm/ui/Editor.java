@@ -94,7 +94,13 @@ public class Editor {
 		private Listener.SearchStatusListener searchStatusListener;
 		private AbstractTableModel tblModel;
 		
-		public SearchStatusTblCellEditor(AbstractTableModel tblModel) {
+		
+		
+		protected Listener.SearchStatusListener getSearchStatusListener() {
+			return searchStatusListener;
+		}
+
+		public SearchStatusTblCellEditor(AbstractTableModel tblModel, PnlBase pnlBase) {
 			this.tblModel = tblModel;
 			Status[] s = Status.class.getEnumConstants();
 			cbxStatusModel = new DefaultComboBoxModel<>(s);
@@ -103,7 +109,7 @@ public class Editor {
 			searchStatusListCellRenderer = renderer.new SearchStatusListCellRenderer();
 			cbxStatus.setRenderer(searchStatusListCellRenderer);
 			listener = new Listener();
-			searchStatusListener = listener.new SearchStatusListener(tblModel, Monitor.class);
+			searchStatusListener = listener.new SearchStatusListener(this.tblModel, Monitor.class, pnlBase);
 			cbxStatus.addItemListener(searchStatusListener);
 		}
 		

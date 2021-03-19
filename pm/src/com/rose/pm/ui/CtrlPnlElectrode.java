@@ -40,7 +40,7 @@ import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblLocalDateRenderer;
 import com.rose.pm.ui.Renderer.TblPatientRenderer;
-import com.rose.pm.ui.Renderer.TblStatusRenderer;
+import com.rose.pm.ui.Renderer.TblCellStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 
@@ -64,7 +64,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	TblMouseAdaptor tblMouseAdaptor;
 	DeleteListener deleteListener; 
 	TblPatientRenderer tblPatientRenderer;
-	TblStatusRenderer tblStatusRenderer;
+	TblCellStatusRenderer tblStatusRenderer;
 	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
@@ -154,7 +154,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 ((PnlElectrode)panel).setTblElectrodeTypeRenderer(ElectrodeType.class, tblElectrodeTypeRenderer);
 		 tblPatientRenderer = renderer.new TblPatientRenderer();
 		 ((PnlElectrode)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
-		 tblStatusRenderer = renderer.new TblStatusRenderer();
+		 tblStatusRenderer = renderer.new TblCellStatusRenderer();
 		 ((PnlElectrode)panel).setTblStatusRenderer(Status.class, tblStatusRenderer);
 		 tblImplantDateRenderer = renderer.new TblImplantDateRenderer();
 		 ((PnlElectrode)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);

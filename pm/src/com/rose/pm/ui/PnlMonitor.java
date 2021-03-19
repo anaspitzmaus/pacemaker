@@ -113,15 +113,15 @@ public class PnlMonitor extends PnlBase {
 		table.setDefaultRenderer(stringClass, renderer);
 	}
 
-	protected void setTblPatientRenderer(Class<Patient> patientClass, TableCellRenderer renderer) {
+	protected void setTblCellPatientRenderer(Class<Patient> patientClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(patientClass, renderer);
 	}
 
-	protected void setTblStatusRenderer(Class<Status> statusClass, TableCellRenderer renderer) {
+	protected void setTblCellStatusRenderer(Class<Status> statusClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(statusClass, renderer);
 	}
 
-	protected void setTblImplantDateRenderer(Class<Date> dateClass, TableCellRenderer renderer) {
+	protected void setTblCellImplantDateRenderer(Class<Date> dateClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(dateClass, renderer);
 	}
 

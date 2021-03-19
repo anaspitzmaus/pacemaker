@@ -1187,7 +1187,7 @@ public class SQL_SELECT {
 		return monitorTypes;
 	}
 
-	public static ArrayList<Monitor> monitors(MonitorType monitorType) throws SQLException{
+	public static ArrayList<Monitor> monitors(MonitorType monitorType, String serialNr, Status status) throws SQLException{
 		ArrayList<Monitor> monitors = new ArrayList<Monitor>();
 		PreparedStatement ps;
 		Integer patProv;

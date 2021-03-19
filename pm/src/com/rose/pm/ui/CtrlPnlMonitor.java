@@ -11,6 +11,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,15 +71,16 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	TblMonitorIDRenderer tblMonitorIDRenderer;
 	TblMonitorTypeRenderer tblMonitorTypeRenderer;
 	Renderer.TblStringRenderer tblStringRenderer;
-	Renderer.TblPatientRenderer tblPatientRenderer;
-	Renderer.TblStatusRenderer tblStatusRenderer;
-	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
+	TblCellPatientRenderer tblCellPatientRenderer;
+	TblCellStatusRenderer tblCellStatusRenderer;
+	TblCellImplantDateRenderer tblCellImplantDateRenderer;
 	TblLocalDateRenderer tblLocalDateRenderer;
 	TblStringRenderer notationRenderer;
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
 	MonitorTypeTblCellEditor monitorTypeTblCellEditor;
 	Editor.SearchStatusTblCellEditor statusTblCellEditor;
+	
 	
 	public CtrlPnlMonitor() {
 		createPanel();
@@ -89,11 +91,11 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		monitorTypeTblCellEditor = new MonitorTypeTblCellEditor();
 		((PnlMonitor)panel).setMonitorTypeTblCellEditor(monitorTypeTblCellEditor);
 		editor = new Editor();
-		statusTblCellEditor = editor.new SearchStatusTblCellEditor(monitorTblModel);
+		statusTblCellEditor = editor.new SearchStatusTblCellEditor(monitorTblModel, panel);
 		((PnlMonitor)panel).setStatusTblCellEditor(statusTblCellEditor);
 		JTextField textField = new JTextField("Text");
 		SearchNotationListener searchNotationListener = new SearchNotationListener();
-		textField.getDocument().addDocumentListener(searchNotationListener);
+		textField.getDocument().addDocumentListener(searchNotationListener);		
 		((PnlMonitor)panel).setNotationCellEditor(new DefaultCellEditor(textField));
 		
 		((PnlMonitor)panel).setFirstRowHeight(40);
@@ -148,7 +150,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		
 		//table model for the monitors
 		try {
-			monitorTblModel = new MonitorTblModel(SQL_SELECT.monitors(monitorTypeListener.monitorType));
+			monitorTblModel = new MonitorTblModel(SQL_SELECT.monitors(monitorTypeListener.monitorType, "", null));
 
 			panel.setTblModel(monitorTblModel);
 		} catch (SQLException e) {
@@ -187,12 +189,12 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		((PnlMonitor)panel).setTblMonitorTypeRenderer(MonitorType.class, tblMonitorTypeRenderer);
 		notationRenderer = new TblStringRenderer();
 		((PnlMonitor)panel).setTblStringRenderer(String.class, notationRenderer);
-		 tblPatientRenderer = renderer.new TblPatientRenderer();
-		 ((PnlMonitor)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
-		 tblStatusRenderer = renderer.new TblStatusRenderer();
-		 ((PnlMonitor)panel).setTblStatusRenderer(Status.class, tblStatusRenderer);
-		 tblImplantDateRenderer = renderer.new TblImplantDateRenderer();
-		 ((PnlMonitor)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
+		 tblCellPatientRenderer = new TblCellPatientRenderer();
+		 ((PnlMonitor)panel).setTblCellPatientRenderer(Patient.class, tblCellPatientRenderer);
+		 tblCellStatusRenderer = new TblCellStatusRenderer();
+		 ((PnlMonitor)panel).setTblCellStatusRenderer(Status.class, tblCellStatusRenderer);
+		 tblCellImplantDateRenderer = new TblCellImplantDateRenderer();
+		 ((PnlMonitor)panel).setTblCellImplantDateRenderer(Date.class, tblCellImplantDateRenderer);
 		 tblLocalDateRenderer = new TblLocalDateRenderer();
 		 ((PnlMonitor)panel).setLocalDateRenderer(LocalDate.class, tblLocalDateRenderer);
 	}
@@ -229,6 +231,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			columnNames.add("Patient");
 			columnNames.add("Einsatz ab");
 		}
+		
 		@Override
 		public int getRowCount() {
 			return monitors.size() + 1;
@@ -267,16 +270,16 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 				}	
 			}else {
 				switch (columnIndex) {
-				case 0: return searchMonitor;
-				case 1: return searchMonitorType;
-				case 2: return searchNotation;
-				case 3: return searchLocalDate;
-				case 4: return searchNotice;
-				case 5: return searchStatus;
-				case 6: return searchPatient;
-				case 7: return searchDate;
-				default: return null;
-			}
+					case 0: return searchMonitor;
+					case 1: return searchMonitorType;
+					case 2: return searchNotation;
+					case 3: return searchLocalDate;
+					case 4: return searchNotice;
+					case 5: return searchStatus;
+					case 6: return searchPatient;
+					case 7: return searchDate;
+					default: return null;
+				}
 			}
 		}
 		
@@ -289,6 +292,9 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 					break;		
 				case 2:
 					searchNotation = (String)value;
+					break;
+				case 5:
+					searchStatus = (Status)value;
 					break;
 				}
 			}else {
@@ -348,8 +354,14 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		}
 		
 		protected void updateTblModel() {
+			Status status;
 			try {
-				monitorTblModel.setMonitors(SQL_SELECT.monitors(monitorType));
+				status = statusTblCellEditor.getSearchStatusListener().getStatus();
+			}catch(NullPointerException e) {
+				status = null;
+			}
+			try {
+				monitorTblModel.setMonitors(SQL_SELECT.monitors(monitorType, monitorTblModel.searchNotation, status));
 				monitorTblModel.fireTableDataChanged();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -582,7 +594,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			
 			protected void update() {
 				try {
-					monitorTblModel.setMonitors(SQL_SELECT.monitors(null));
+					monitorTblModel.setMonitors(SQL_SELECT.monitors(null, monitorTblModel.searchNotation, statusTblCellEditor.getSearchStatusListener().getStatus()));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -620,7 +632,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 				}	
 				if(key != null) {//if insertion was successful
 					try {
-						monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType) monitorTypeModel.getSelectedItem()));
+						monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType) monitorTypeModel.getSelectedItem(), monitorTblModel.searchNotation, statusTblCellEditor.getSearchStatusListener().getStatus()));
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -686,8 +698,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 						setBackground(row%2==0 ? Color.white : Color.lightGray);   
 					}				
 				}else {
-					setBackground(Color.white);				
-					
+					setBackground(Color.white);					
 				}
 				return this;
 				
@@ -695,42 +706,97 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			
 		}
 		
-//	class SearchStatusTblCellEditor extends AbstractCellEditor implements TableCellEditor{
-//
-//		private static final long serialVersionUID = -3555252152419993704L;
-//		private TableCellEditor editor;
-//		private JComboBox<Status> cbxStatus;
-//		private ComboBoxModel<Status> cbxStatusModel;
-//		private SearchStatusListener searchStatusListener; 
-//		
-//		
-//		public SearchStatusTblCellEditor() {
-//			Status[] s = Status.class.getEnumConstants();
-//			cbxStatusModel = new DefaultComboBoxModel<>(s);
-//			cbxStatus = new JComboBox<>(cbxStatusModel);
-//			cbxStatus.setRenderer(new SearchStatusListCellRenderer());
-//			searchStatusListener = new SearchStatusListener();
-//			cbxStatus.addItemListener(searchStatusListener);
-//		}
-//		
-//		@Override
-//		public Object getCellEditorValue() {
-//			if (editor != null) {
-//				return editor.getCellEditorValue();
-//			}
-//            return null;
-//		}
-//
-//		@Override
-//		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-//				int column) {
-//			if (column == 5 && row == 0) {
-//                editor = new DefaultCellEditor(cbxStatus);
-//            } 
-//			return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
-//		}
-//		
-//	}
+	class TblCellStatusRenderer extends JLabel implements TableCellRenderer{
+
+		private static final long serialVersionUID = 5020207379904224258L;
+
+		public TblCellStatusRenderer() {
+			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+		    setVerticalAlignment(CENTER);	
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			setText(((Status)value).name());
+			if(row>0) {
+				if(isSelected) {
+					setBackground(Color.ORANGE);
+				}else {
+					setBackground(row%2==0 ? Color.white : Color.lightGray);  
+				}
+			}else {
+				setBackground(Color.white);	
+			}
+			return this;
+		}
+		
+	}
+	
+	class TblCellPatientRenderer extends JLabel implements TableCellRenderer{
+		
+		private static final long serialVersionUID = -680884553897367888L;
+
+		public TblCellPatientRenderer() {
+			setOpaque(true);
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			if(row>0) {
+				if(value instanceof Patient) {
+					setText(String.valueOf(((Patient)value).getNumber()));
+				}else {
+					setText("");
+				}
+				if(isSelected) {
+					setBackground(Color.ORANGE);
+				}else {
+					setBackground(row%2==0 ? Color.white : Color.lightGray);  
+				}
+			}else {
+				setBackground(Color.white);	
+			}
+			return this;
+		}
+		
+	}
+	
+	class TblCellImplantDateRenderer extends JLabel implements TableCellRenderer{
+
+		private static final long serialVersionUID = -2379590529932925310L;
+		
+		SimpleDateFormat f;
+		
+		public TblCellImplantDateRenderer() {
+			setOpaque(true);
+			f = new SimpleDateFormat("dd.MM.yyyy");
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			if(row>0) {
+				 if( value instanceof Date) {
+			            value = f.format(value);
+			            setText((String) value);
+			        }else {
+			        	setText("");
+			        }
+				if(isSelected) {
+					setBackground(Color.ORANGE);
+				}else {
+					setBackground(row%2==0 ? Color.white : Color.lightGray);   
+				}
+			}else {
+				setBackground(Color.white);	
+			}
+			 return this;
+		}
+		
+	}
 		
 	 public class MonitorTypeTblCellEditor extends AbstractCellEditor implements TableCellEditor {
 
@@ -828,7 +894,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 				
 				try {
 					monitorTblModel.setValueAt(monitorType, 0, 1);
-					monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType) monitorTblModel.getValueAt(0, 1)));
+					monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType) monitorTblModel.searchMonitorType, monitorTblModel.searchNotation, monitorTblModel.searchStatus));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

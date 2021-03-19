@@ -104,9 +104,17 @@ public class Listener {
 	class SearchStatusListener implements ItemListener{
 		Status status;
 		AbstractTableModel tblModel;
+		PnlBase panel;
+		Class<? extends Material> materialClass;
 		
-		public SearchStatusListener(AbstractTableModel tblModel, Class<? extends Material> materialClass) {
+		protected Status getStatus() {
+			return this.status;
+		}
+		
+		public SearchStatusListener(AbstractTableModel tblModel, Class<? extends Material> materialClass, PnlBase panel) {
 			this.tblModel = tblModel;
+			this.materialClass = materialClass;
+			this.panel = panel;
 		}
 		
 		@Override
@@ -120,20 +128,17 @@ public class Listener {
 				
 				try {
 					tblModel.setValueAt(status, 0, 5);
-					((CtrlPnlMonitor.MonitorTblModel)tblModel).setMonitors(SQL_SELECT.monitors((Monitor) tblModel.getValueAt(0, 5), (String) tblModel.getValueAt(0, 1)));
+					((CtrlPnlMonitor.MonitorTblModel)tblModel).setMonitors(SQL_SELECT.monitors(null, (String) tblModel.getValueAt(0, 2), status));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				tblModel.fireTableDataChanged();
-				((PnlMonitor)panel).setFirstRowHeight(40);
+				panel.setFirstRowHeight(40);
 		    }
 			
 		}
 			
-		}
-			 
-		 }
-
+	}
 	
 }
