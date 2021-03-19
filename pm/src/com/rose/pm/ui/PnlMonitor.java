@@ -137,9 +137,7 @@ public class PnlMonitor extends PnlBase {
 		table.getColumnModel().getColumn(2).setCellEditor(editor);
 	}
 	
-	protected void setFirstRowHeight(int height) {
-		table.setRowHeight(0, height);		
-	}
+	
 	
 	protected void setMonitorTypeTblCellEditor(TableCellEditor editor) {
 		table.getColumnModel().getColumn(1).setCellEditor(editor);		

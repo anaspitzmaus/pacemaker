@@ -89,7 +89,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		monitorTypeTblCellEditor = new MonitorTypeTblCellEditor();
 		((PnlMonitor)panel).setMonitorTypeTblCellEditor(monitorTypeTblCellEditor);
 		editor = new Editor();
-		statusTblCellEditor = editor.new SearchStatusTblCellEditor();
+		statusTblCellEditor = editor.new SearchStatusTblCellEditor(monitorTblModel);
 		((PnlMonitor)panel).setStatusTblCellEditor(statusTblCellEditor);
 		JTextField textField = new JTextField("Text");
 		SearchNotationListener searchNotationListener = new SearchNotationListener();

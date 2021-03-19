@@ -4,15 +4,19 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.text.BadLocationException;
 
-import com.rose.Isynet;
-import com.rose.person.Patient;
+import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.Material;
+import com.rose.pm.material.Monitor;
+import com.rose.pm.material.Status;
 
 public class Listener {
 
@@ -97,13 +101,37 @@ public class Listener {
 		}
 	}
 	
-	 class SearchStatusListener implements ItemListener{
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				// TODO Auto-generated method stub
+	class SearchStatusListener implements ItemListener{
+		Status status;
+		AbstractTableModel tblModel;
+		
+		public SearchStatusListener(AbstractTableModel tblModel, Class<? extends Material> materialClass) {
+			this.tblModel = tblModel;
+		}
+		
+		@Override
+		public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+				try {
+					status = (Status) event.getItem();						
+				} catch (ClassCastException e) {
+					status = null;				
+				}
 				
-			}
+				try {
+					tblModel.setValueAt(status, 0, 5);
+					((CtrlPnlMonitor.MonitorTblModel)tblModel).setMonitors(SQL_SELECT.monitors((Monitor) tblModel.getValueAt(0, 5), (String) tblModel.getValueAt(0, 1)));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				tblModel.fireTableDataChanged();
+				((PnlMonitor)panel).setFirstRowHeight(40);
+		    }
+			
+		}
+			
+		}
 			 
 		 }
 

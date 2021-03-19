@@ -144,6 +144,10 @@ public abstract class PnlBase extends JPanel {
 		table.setDefaultRenderer(dblClass, renderer);
 	}
 	
+	protected void setFirstRowHeight(int height) {
+		table.setRowHeight(0, height);		
+	}
+	
 	
 
 }

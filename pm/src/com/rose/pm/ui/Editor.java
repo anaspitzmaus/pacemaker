@@ -17,9 +17,11 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.text.DateFormatter;
 
+import com.rose.pm.material.Monitor;
 import com.rose.pm.material.Status;
 
 
@@ -90,8 +92,10 @@ public class Editor {
 		private Listener listener;
 		private Renderer.SearchStatusListCellRenderer searchStatusListCellRenderer;
 		private Listener.SearchStatusListener searchStatusListener;
+		private AbstractTableModel tblModel;
 		
-		public SearchStatusTblCellEditor() {
+		public SearchStatusTblCellEditor(AbstractTableModel tblModel) {
+			this.tblModel = tblModel;
 			Status[] s = Status.class.getEnumConstants();
 			cbxStatusModel = new DefaultComboBoxModel<>(s);
 			cbxStatus = new JComboBox<>(cbxStatusModel);
@@ -99,7 +103,7 @@ public class Editor {
 			searchStatusListCellRenderer = renderer.new SearchStatusListCellRenderer();
 			cbxStatus.setRenderer(searchStatusListCellRenderer);
 			listener = new Listener();
-			searchStatusListener = listener.new SearchStatusListener();
+			searchStatusListener = listener.new SearchStatusListener(tblModel, Monitor.class);
 			cbxStatus.addItemListener(searchStatusListener);
 		}
 		
