@@ -769,16 +769,21 @@ public class SQL_SELECT {
 		return icds;
 	}
 	
-	public static ArrayList<ElectrodeType> electrodeModels(){
+	public static ArrayList<ElectrodeType> electrodeTypes(Manufacturer manufacturer, String notation) throws SQLException{
 		stmt = DB.getStatement();
 		ArrayList<ElectrodeType> models = new ArrayList<ElectrodeType>();
-		try {
-			rs = stmt.executeQuery(
-					"SELECT idelectrode_type, electrode_type.id_manufacturer, length, electrode_type.notation AS electrodeNotation, notice, mri, fixmode, manufacturer.notation AS manufacturerNotation, price "
+		
+		String select = "SELECT idelectrode_type, electrode_type.id_manufacturer, length, electrode_type.notation AS electrodeNotation, notice, mri, fixmode, manufacturer.notation AS manufacturerNotation, price "
 					+ "FROM sm.electrode_type "
 					+ "INNER JOIN sm.manufacturer "
-					+ "ON sm.electrode_type.id_manufacturer = sm.manufacturer.idmanufacturer");
-			
+					+ "ON sm.electrode_type.id_manufacturer = sm.manufacturer.idmanufacturer "
+					+ "WHERE elctrode_type.notation LIKE '" + notation + "%'";
+		if(manufacturer instanceof Manufacturer) {
+			select = select.concat(" AND sm.manufacturer.idmanufacturer = " + manufacturer.getId() + "");
+		}
+		
+		rs = stmt.executeQuery(select);	
+		
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
 					ElectrodeType model = new ElectrodeType(rs.getString("electrodeNotation"));
@@ -789,17 +794,16 @@ public class SQL_SELECT {
 					model.setMri(rs.getBoolean("mri"));
 					model.setPrice(rs.getDouble("price"));
 					
-					Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
-					manufacturer.setId(rs.getInt("id_manufacturer"));
-					model.setManufacturer(manufacturer);
+					if(!(manufacturer instanceof Manufacturer)) {					
+						Manufacturer manuf = new Manufacturer(rs.getString("manufacturerNotation"));
+						manuf.setId(rs.getInt("idmanufacturer"));
+						model.setManufacturer(manuf);
+					}else {				
+						model.setManufacturer(manufacturer);
+					}
 					models.add(model);
 				}
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		return models;
 	}
 
@@ -812,42 +816,77 @@ public class SQL_SELECT {
 	 * @return an ArrayList<Electrode> that contains the electrodes of the specific type
 	 * if no type is known, all electrodes are returned
 	 */
-	public static ArrayList<Electrode> electrodes(ElectrodeType type) {
-		stmt = DB.getStatement();
+	public static ArrayList<Electrode> electrodes(ElectrodeType electrodeType, String serialNr, Status status) throws SQLException {
+		
 		ArrayList<Electrode> electrodes = new ArrayList<Electrode>();
-		try {
-			if(type instanceof ElectrodeType) {//if type of electrode is known
-				rs = stmt.executeQuery(
-						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided, patnr, implant "
-						+ "FROM sm.electrode "
-						+ "INNER JOIN sm.electrode_type "
-						+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type "
-						+ "LEFT OUTER JOIN human.patient "
-						+ "ON sm.electrode.idpat_provided = human.patient.idpatient "
-						+ "WHERE sm.electrode.id_electrode_type = " + type.getId() + "");
-			}else {//select all electrodes
-				rs = stmt.executeQuery(
-						"SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided, patnr, implant "
-						+ "FROM sm.electrode "
-						+ "INNER JOIN sm.electrode_type "
-						+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type "
-						+ "LEFT OUTER JOIN human.patient "
-						+ "ON sm.electrode.idpat_provided = human.patient.idpatient");
-			}
+		PreparedStatement ps;
+		Integer patProv;
+		
+		String select = "SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided, patnr, implant "
+				+ "FROM sm.electrode "
+				+ "INNER JOIN sm.electrode_type "
+				+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type "
+				+ "LEFT OUTER JOIN human.patient "
+				+ "ON sm.electrode.idpat_provided = human.patient.idpatient";
+		
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		
+		if(electrodeType instanceof ElectrodeType && !serialNr.equals("") && status instanceof Status) {
+			select = select.concat(" WHERE sm.electrode_type.idmonitor_type = ? AND sm.electrode.serialNr LIKE ? AND sm.electrode.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, electrodeType.getId());	
+			ps.setString(2, serialNr + "%");
+			ps.setString(3, status.name());
+		}else if(electrodeType instanceof ElectrodeType && !serialNr.equals("")){ //type of electrode and serialNr are given
+			select = select.concat(" WHERE sm.electrode_type.idelectrode_type = ? AND sm.electrode.serialNr LIKE ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, electrodeType.getId());	
+			ps.setString(2, serialNr + "%");
+		}else if(electrodeType instanceof ElectrodeType && status instanceof Status) {//if type of electrode and status are given
+			select = select.concat(" WHERE sm.electrode_type.idelectrode_type = ? AND sm.electrode.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, electrodeType.getId());
+			ps.setString(2, status.name());
+		}else if(!serialNr.equals("") && status instanceof Status){//if serialNr and status are given	
+			select = select.concat(" WHERE sm.electrode.serialNr LIKE ? AND sm.electrode.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, serialNr +"%");
+			ps.setString(2, status.name());
+		}else if(electrodeType instanceof ElectrodeType) {
+			select = select.concat(" WHERE sm.electrode_type.idelectrode_type = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, electrodeType.getId());	
+		}else if(!serialNr.equals("")) {
+			select = select.concat(" WHERE sm.electrode.serialNr LIKE ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, serialNr + "%");
+		}else if(status instanceof Status) {
+			select = select.concat(" WHERE sm.electrode.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, status.name());
+		}else {
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+		}
+		
+		ResultSet rs = ps.executeQuery();
 			if(rs.isBeforeFirst()){
-				Integer patProv;
+				ElectrodeType et;
 			
 				while(rs.next()) {
+					if(!(electrodeType instanceof ElectrodeType)) {
+						et = new ElectrodeType(rs.getString("notation"));
+						et.setId(rs.getInt("idelectrode_type"));
+					}else {
+						et = electrodeType;
+					}
 					
-					ElectrodeType model = new ElectrodeType(rs.getString("notation"));
-					model.setId(rs.getInt("modelId"));
-					Electrode electrode = new Electrode(model);
+					Electrode electrode = new Electrode(et);
 					electrode.setId(rs.getInt("electrodeId"));					
 					electrode.setNotice(rs.getString("notice"));
 					electrode.setSerialNr(rs.getString("serialNr"));
 					electrode.setExpireDate(rs.getDate("expire").toLocalDate());
-					electrode.setStatus(Status.valueOf(rs.getString("status")));
-				
+					electrode.setStatus(Status.valueOf(rs.getString("status")));				
 					
 					patProv = rs.getInt("idpat_provided");
 					
@@ -866,10 +905,7 @@ public class SQL_SELECT {
 				}
 			}
 			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		
 		return electrodes;
 	}
@@ -1150,6 +1186,7 @@ public class SQL_SELECT {
 	public static ArrayList<MonitorType> monitorTypes(Manufacturer manufacturer, String notation) throws SQLException{
 		stmt = DB.getStatement();
 		ArrayList<MonitorType> monitorTypes;
+		
 		monitorTypes = new ArrayList<MonitorType>();
 		String select = "SELECT idmonitor_type, monitor_type.notation AS monitorNotation, monitor_type.idmanufacturer, manufacturer.notation AS manufacturerNotation, notice, price "
 				+ "FROM sm.monitor_type "
@@ -1191,6 +1228,7 @@ public class SQL_SELECT {
 		ArrayList<Monitor> monitors = new ArrayList<Monitor>();
 		PreparedStatement ps;
 		Integer patProv;
+		
 		String select = "SELECT idmonitor, monitor.idmonitor_type, expire, serialNr, monitor.notice AS notice, status, monitor_type.notation AS typeNotation, idpat_provided, patnr, implant "
 				+ "FROM sm.monitor "
 				+ "INNER JOIN sm.monitor_type "
@@ -1199,10 +1237,39 @@ public class SQL_SELECT {
 				+ "ON sm.monitor.idpat_provided = human.patient.idpatient";
 		Connection con = DB.getConnection();
 		DB.getConnection().setAutoCommit(true);
-		if(monitorType instanceof MonitorType) {
+		if(monitorType instanceof MonitorType && !serialNr.equals("") && status instanceof Status) {
+			select = select.concat(" WHERE sm.monitor_type.idmonitor_type = ? AND sm.monitor.serialNr LIKE ? AND sm.monitor.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, monitorType.getId());	
+			ps.setString(2, serialNr + "%");
+			ps.setString(3, status.name());
+		}else if(monitorType instanceof MonitorType && !serialNr.equals("")){ //type of monitor and serialNr are given
+			select = select.concat(" WHERE sm.monitor_type.idmonitor_type = ? AND sm.monitor.serialNr LIKE ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, monitorType.getId());	
+			ps.setString(2, serialNr + "%");
+		}else if(monitorType instanceof MonitorType && status instanceof Status) {//if type of monitor and status are given
+			select = select.concat(" WHERE sm.monitor_type.idmonitor_type = ? AND sm.monitor.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, monitorType.getId());
+			ps.setString(2, status.name());
+		}else if(!serialNr.equals("") && status instanceof Status){//if serialNr and status are given	
+			select = select.concat(" WHERE sm.monitor.serialNr LIKE ? AND sm.monitor.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, serialNr +"%");
+			ps.setString(2, status.name());
+		}else if(monitorType instanceof MonitorType) {
 			select = select.concat(" WHERE sm.monitor_type.idmonitor_type = ?");
 			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
-			ps.setInt(1, monitorType.getId());			
+			ps.setInt(1, monitorType.getId());	
+		}else if(!serialNr.equals("")) {
+			select = select.concat(" WHERE sm.monitor.serialNr LIKE ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, serialNr + "%");
+		}else if(status instanceof Status) {
+			select = select.concat(" WHERE sm.monitor.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, status.name());
 		}else {
 			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
 		}
@@ -1210,12 +1277,15 @@ public class SQL_SELECT {
 		ResultSet rs = ps.executeQuery();
 		
 		if(rs.isBeforeFirst()){
-			while(rs.next()) {
+			MonitorType mt;
+			while(rs.next()) {				
 				if(!(monitorType instanceof MonitorType)) {
-					monitorType = new MonitorType(rs.getString("typeNotation"));
-					monitorType.setId(rs.getInt("idmonitor_type"));
+					mt = new MonitorType(rs.getString("typeNotation"));
+					mt.setId(rs.getInt("idmonitor_type"));
+				}else {
+					mt = monitorType;
 				}
-				Monitor monitor = new Monitor(monitorType);
+				Monitor monitor = new Monitor(mt);
 				monitor.setId(rs.getInt("idmonitor"));
 				monitor.setSerialNr(rs.getString("serialNr"));					
 				monitor.setExpireDate(rs.getDate("expire").toLocalDate());

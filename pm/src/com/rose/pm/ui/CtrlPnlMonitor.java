@@ -11,11 +11,10 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
-
 import javax.swing.AbstractCellEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
@@ -37,21 +36,20 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
+import javax.swing.table.TableStringConverter;
 import javax.swing.text.BadLocationException;
-
 import com.rose.Isynet;
 import com.rose.person.Patient;
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.Manufacturer;
+import com.rose.pm.material.MaterialType;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.Editor.SearchStatusTblCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
-
 
 
 public class CtrlPnlMonitor extends CtrlPnlBase {
@@ -64,18 +62,17 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	MonitorTypeListCellRenderer monitorTypeListCellRenderer;
 	NotationListener serialNrListener, noticeListener;
 	TblRowSelectionListener tblRowSelectionListener;
-	ShowAllListener showAllListener;
 	CreateListener createListener;
 	TblMouseAdaptor tblMouseAdaptor;
 	DeleteListener deleteListener; 
-	TblMonitorIDRenderer tblMonitorIDRenderer;
-	TblMonitorTypeRenderer tblMonitorTypeRenderer;
+	Renderer.TblCellMaterialIDRenderer tblCellMaterialIDRenderer;
+	TblCellMonitorTypeRenderer tblCellMonitorTypeRenderer;
 	Renderer.TblStringRenderer tblStringRenderer;
-	TblCellPatientRenderer tblCellPatientRenderer;
-	TblCellStatusRenderer tblCellStatusRenderer;
-	TblCellImplantDateRenderer tblCellImplantDateRenderer;
-	TblLocalDateRenderer tblLocalDateRenderer;
-	TblStringRenderer notationRenderer;
+	Renderer.TblCellPatientRenderer tblCellPatientRenderer;
+	Renderer.TblCellStatusRenderer tblCellStatusRenderer;
+	Renderer.TblCellImplantDateRenderer tblCellImplantDateRenderer;
+	Renderer.TblCellLocalDateRenderer tblCellLocalDateRenderer;
+	Renderer.TblCellStringRenderer notationRenderer;
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
 	MonitorTypeTblCellEditor monitorTypeTblCellEditor;
@@ -97,8 +94,9 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		SearchNotationListener searchNotationListener = new SearchNotationListener();
 		textField.getDocument().addDocumentListener(searchNotationListener);		
 		((PnlMonitor)panel).setNotationCellEditor(new DefaultCellEditor(textField));
+		//panel.table.setAutoCreateRowSorter(true);
+		panel.setFirstRowHeight(40);//the standard height of the first row
 		
-		((PnlMonitor)panel).setFirstRowHeight(40);
 	}
 	
 	protected void createPanel() {
@@ -171,8 +169,6 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		 ((PnlMonitor)panel).addNoticeListener(noticeListener);
 		 tblRowSelectionListener = new TblRowSelectionListener();
 		 ((PnlMonitor)panel).addTblRowSelectionListener(tblRowSelectionListener);
-		 showAllListener = new ShowAllListener();
-		 ((PnlMonitor)panel).addShowAllListener(showAllListener);
 		 createListener = new CreateListener();
 		 ((PnlMonitor)panel).addCreateListener(createListener);
 		 deleteListener = new DeleteListener();
@@ -183,20 +179,20 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		renderer = new Renderer();
 		monitorTypeListCellRenderer = new MonitorTypeListCellRenderer();
 		((PnlMonitor)panel).setMonitorTypeRenderer(monitorTypeListCellRenderer);
-		tblMonitorIDRenderer = new TblMonitorIDRenderer();
-		((PnlMonitor)panel).setTblMonitorIDRenderer(Monitor.class, tblMonitorIDRenderer);
-		tblMonitorTypeRenderer = new TblMonitorTypeRenderer();
-		((PnlMonitor)panel).setTblMonitorTypeRenderer(MonitorType.class, tblMonitorTypeRenderer);
-		notationRenderer = new TblStringRenderer();
-		((PnlMonitor)panel).setTblStringRenderer(String.class, notationRenderer);
-		 tblCellPatientRenderer = new TblCellPatientRenderer();
+		tblCellMaterialIDRenderer = renderer.new TblCellMaterialIDRenderer();
+		((PnlMonitor)panel).setTblMonitorIDRenderer(Monitor.class, tblCellMaterialIDRenderer);
+		tblCellMonitorTypeRenderer = new TblCellMonitorTypeRenderer();
+		((PnlMonitor)panel).setTblMonitorTypeRenderer(MonitorType.class, tblCellMonitorTypeRenderer);
+		notationRenderer = renderer.new TblCellStringRenderer();
+		((PnlMonitor)panel).setTblCellStringRenderer(String.class, notationRenderer);
+		 tblCellPatientRenderer = renderer.new TblCellPatientRenderer();
 		 ((PnlMonitor)panel).setTblCellPatientRenderer(Patient.class, tblCellPatientRenderer);
-		 tblCellStatusRenderer = new TblCellStatusRenderer();
+		 tblCellStatusRenderer = renderer.new TblCellStatusRenderer();
 		 ((PnlMonitor)panel).setTblCellStatusRenderer(Status.class, tblCellStatusRenderer);
-		 tblCellImplantDateRenderer = new TblCellImplantDateRenderer();
+		 tblCellImplantDateRenderer = renderer.new TblCellImplantDateRenderer();
 		 ((PnlMonitor)panel).setTblCellImplantDateRenderer(Date.class, tblCellImplantDateRenderer);
-		 tblLocalDateRenderer = new TblLocalDateRenderer();
-		 ((PnlMonitor)panel).setLocalDateRenderer(LocalDate.class, tblLocalDateRenderer);
+		 tblCellLocalDateRenderer = renderer.new TblCellLocalDateRenderer();
+		 ((PnlMonitor)panel).setLocalDateRenderer(LocalDate.class, tblCellLocalDateRenderer);
 	}
 	
 	class MonitorTblModel extends AbstractTableModel{
@@ -230,6 +226,15 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			columnNames.add("Status");
 			columnNames.add("Patient");
 			columnNames.add("Einsatz ab");
+		}
+		
+		
+	
+		
+		@Override
+		public void fireTableDataChanged() {			
+			super.fireTableDataChanged();
+			panel.setFirstRowHeight(40);//set the height of the first row 
 		}
 		
 		@Override
@@ -350,7 +355,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 					monitorType = null;
 				}				
 		    }
-			updateTblModel();		
+			//updateTblModel();		
 		}
 		
 		protected void updateTblModel() {
@@ -395,109 +400,63 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			
 	} 
 	 
-	 class TblMonitorIDRenderer extends JLabel implements TableCellRenderer{
-
-		private static final long serialVersionUID = 8727963414643594470L;
-
-		public TblMonitorIDRenderer() {
-			setOpaque(true);
-		 }
 		 
-		 @Override
-		 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			 if(row>0) {
-				if(value instanceof Monitor) {
-					setText(String.valueOf(((Monitor) value).getId()));			
-				}else {
-					setText("");
-				}
-				if(isSelected) {
-					setBackground(Color.ORANGE);
-				}else {
-					setBackground(row%2==0 ? Color.white : Color.lightGray);   
-				}
-			}else {
-				setBackground(Color.white);
-				setText("");
-			}
-			return this;
-				
-		 }
-		 
-	 }
-	 
 	 /**
 	  * renderer for the types of monitors shown in the table
 	  * @author Ekki
 	  *
 	  */
-	 class TblMonitorTypeRenderer extends JLabel implements TableCellRenderer{
+	 class TblCellMonitorTypeRenderer extends Renderer.TblCellMaterialTypeRenderer{
 
-		private static final long serialVersionUID = 324810444790377934L;
-		
-		public TblMonitorTypeRenderer() {
-			setOpaque(true);
-			setHorizontalAlignment(CENTER);
-	        setVerticalAlignment(CENTER);
+		private static final long serialVersionUID = 3751035874683130981L;
+
+		public TblCellMonitorTypeRenderer() {
+			renderer.super();
 		}
-
+		 
 		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			if(row>0) {//for all but the first row
-				if(value instanceof MonitorType) {				
-					String notation = ((MonitorType)value).getNotation();
-					setText(notation);
-					if(isSelected) {
-						setBackground(Color.ORANGE);
-					}else {
-						setBackground(row%2==0 ? Color.white : Color.lightGray);   
-					}
-				}					
-			}else{//for the first 'search' row
-				setBackground(Color.white);	
-				if(value instanceof MonitorType) {
-					setText(((MonitorType) value).getNotation());
-				}else {
-					setText("");					
-				}
-			}
-			return this;
+		protected String getFirstRowText(MaterialType value) {
+			if(value instanceof MonitorType) {
+				return (((MonitorType) value).getNotation());
+			}else {
+				return "Alle Monitormodelle";				
+			}	
 		}
+		
+		
 		 
 	 }
 	 
-	 class TblLocalDateRenderer extends JLabel implements TableCellRenderer{
-			
-		private static final long serialVersionUID = 2717295573009886572L;
-
-		public TblLocalDateRenderer() {
-			super.setOpaque(true);
-		}
-		
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			if(row > 0) {
-				if(value instanceof LocalDate) {
-					LocalDate date = (LocalDate) value;			
-					setText(date.getDayOfMonth() + "." + date.getMonthValue() + "." + date.getYear());
-					if(isSelected) {
-						setBackground(Color.ORANGE);
-					}else {
-						setBackground(row%2==0 ? Color.white : Color.lightGray);   
-					}
-				}
-				return this;	
-			}else {
-				setBackground(Color.white);
-				return null;
-			}
-				
-		}		
-		
-	}
+//	 class TblLocalDateRenderer extends JLabel implements TableCellRenderer{
+//			
+//		private static final long serialVersionUID = 2717295573009886572L;
+//
+//		public TblLocalDateRenderer() {
+//			super.setOpaque(true);
+//		}
+//		
+//		@Override
+//		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+//				int row, int column) {
+//			if(row > 0) {
+//				if(value instanceof LocalDate) {
+//					LocalDate date = (LocalDate) value;			
+//					setText(date.getDayOfMonth() + "." + date.getMonthValue() + "." + date.getYear());
+//					if(isSelected) {
+//						setBackground(Color.ORANGE);
+//					}else {
+//						setBackground(row%2==0 ? Color.white : Color.lightGray);   
+//					}
+//				}
+//				return this;	
+//			}else {
+//				setBackground(Color.white);
+//				return null;
+//			}
+//				
+//		}		
+//		
+//	}
 	 
 	 class SearchStatusRenderer extends JLabel implements TableCellRenderer{
 
@@ -566,6 +525,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 							SQL_UPDATE.deleteMonitor(tblRowSelectionListener.getMonitorSelected());
 							monitorTblModel.monitors.remove(tblRowSelectionListener.getMonitorSelected());
 							monitorTblModel.fireTableDataChanged();
+							
 						} catch (SQLException e1) {
 							if(e1.getErrorCode() == 1451) {
 								JOptionPane.showMessageDialog(null, "Dieser Monitor kann nicht gelöscht werden, da er bereits für eine Untersuchung verwendet wurde!", "Hinweis", JOptionPane.WARNING_MESSAGE);
@@ -584,25 +544,25 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			}
 		}
 		
-		class ShowAllListener implements ActionListener{
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				((PnlMonitor)panel).setMonitorTypeSelectionIndex(-1);
-				update();
-			}
-			
-			protected void update() {
-				try {
-					monitorTblModel.setMonitors(SQL_SELECT.monitors(null, monitorTblModel.searchNotation, statusTblCellEditor.getSearchStatusListener().getStatus()));
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}			
-				monitorTblModel.fireTableDataChanged();
-			}
-			
-		}
+//		class ShowAllListener implements ActionListener{
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				((PnlMonitor)panel).setMonitorTypeSelectionIndex(-1);
+//				update();
+//			}
+//			
+//			protected void update() {
+//				try {
+//					monitorTblModel.setMonitors(SQL_SELECT.monitors(null, monitorTblModel.searchNotation, statusTblCellEditor.getSearchStatusListener().getStatus()));
+//				} catch (SQLException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}			
+//				monitorTblModel.fireTableDataChanged();
+//			}
+//			
+//		}
 		
 		class CreateListener implements ActionListener{
 			Monitor monitor;
@@ -631,14 +591,27 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 					e.printStackTrace();
 				}	
 				if(key != null) {//if insertion was successful
+					monitorTblModel.setValueAt(Status.Lager, 0, 5);
+					monitorTblModel.setValueAt(monitorTypeModel.getSelectedItem(), 0, 1);
+					for(int i = 0; i < monitorTypeTblCellEditor.getCbxMonitorTypeModel().getSize(); i++) {
+						try {
+							if(monitorTypeTblCellEditor.getCbxMonitorTypeModel().getElementAt(i).getNotation().equals(((MonitorType)monitorTypeModel.getSelectedItem()).getNotation())) {
+								monitorTypeTblCellEditor.getCbxMonitorTypeModel().setSelectedItem(monitorTypeTblCellEditor.getCbxMonitorTypeModel().getElementAt(i));
+							}
+						}catch(NullPointerException e) {//if (monitorTypeTblCellEditor.getCbxMonitorTypeModel().getElementAt(i) == null
+							//do nothing
+						}
+					}
+					
 					try {
-						monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType) monitorTypeModel.getSelectedItem(), monitorTblModel.searchNotation, statusTblCellEditor.getSearchStatusListener().getStatus()));
+						monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType) monitorTypeModel.getSelectedItem(), (String)monitorTblModel.getValueAt(0, 2), (Status)monitorTblModel.getValueAt(0, 5)));
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 				monitorTblModel.fireTableDataChanged();
+				
 			}
 			
 		}
@@ -668,158 +641,76 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 					txt = "";
 				}
 				monitorTblModel.setValueAt(txt, 0, 2);
-//				try {
-//					monitorTblModel.setMonitors(SQL_SELECT.monitors((Manufacturer) tblMonitorTypeModel.getValueAt(0, 2), (String) tblMonitorTypeModel.getValueAt(0, 1)));
-//				} catch (SQLException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
+				try {
+					monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType)monitorTblModel.getValueAt(0, 1), (String) monitorTblModel.getValueAt(0, 2), (Status) monitorTblModel.getValueAt(0, 5)));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				monitorTblModel.fireTableDataChanged();
-				((PnlMonitor)panel).setFirstRowHeight(40);
+				
 			}	
 		}
 		
-		class TblStringRenderer extends JLabel implements TableCellRenderer{
-			
-			private static final long serialVersionUID = 6200115008088445331L;
+	class TblStringRenderer extends JLabel implements TableCellRenderer{
+		
+		private static final long serialVersionUID = 6200115008088445331L;
 
-			public TblStringRenderer() {
-				super.setOpaque(true);
-			}		
-		
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-					int column) {
-				setText(value.toString());
-				if(row>0) {				
-					if(isSelected) {
-						setBackground(Color.ORANGE);
-					}else {
-						setBackground(row%2==0 ? Color.white : Color.lightGray);   
-					}				
-				}else {
-					setBackground(Color.white);					
-				}
-				return this;
-				
-			}
-			
-		}
-		
-	class TblCellStatusRenderer extends JLabel implements TableCellRenderer{
-
-		private static final long serialVersionUID = 5020207379904224258L;
-
-		public TblCellStatusRenderer() {
-			setOpaque(true);
-			setHorizontalAlignment(CENTER);
-		    setVerticalAlignment(CENTER);	
-		}
-		
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			setText(((Status)value).name());
-			if(row>0) {
-				if(isSelected) {
-					setBackground(Color.ORANGE);
-				}else {
-					setBackground(row%2==0 ? Color.white : Color.lightGray);  
-				}
-			}else {
-				setBackground(Color.white);	
-			}
-			return this;
-		}
-		
-	}
+		public TblStringRenderer() {
+			super.setOpaque(true);
+		}		
 	
-	class TblCellPatientRenderer extends JLabel implements TableCellRenderer{
-		
-		private static final long serialVersionUID = -680884553897367888L;
-
-		public TblCellPatientRenderer() {
-			setOpaque(true);
-		}
-		
 		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			if(row>0) {
-				if(value instanceof Patient) {
-					setText(String.valueOf(((Patient)value).getNumber()));
-				}else {
-					setText("");
-				}
-				if(isSelected) {
-					setBackground(Color.ORANGE);
-				}else {
-					setBackground(row%2==0 ? Color.white : Color.lightGray);  
-				}
-			}else {
-				setBackground(Color.white);	
-			}
-			return this;
-		}
-		
-	}
-	
-	class TblCellImplantDateRenderer extends JLabel implements TableCellRenderer{
-
-		private static final long serialVersionUID = -2379590529932925310L;
-		
-		SimpleDateFormat f;
-		
-		public TblCellImplantDateRenderer() {
-			setOpaque(true);
-			f = new SimpleDateFormat("dd.MM.yyyy");
-		}
-		
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			if(row>0) {
-				 if( value instanceof Date) {
-			            value = f.format(value);
-			            setText((String) value);
-			        }else {
-			        	setText("");
-			        }
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+			setText(value.toString());
+			if(row>0) {				
 				if(isSelected) {
 					setBackground(Color.ORANGE);
 				}else {
 					setBackground(row%2==0 ? Color.white : Color.lightGray);   
-				}
+				}				
 			}else {
-				setBackground(Color.white);	
+				setBackground(Color.white);					
 			}
-			 return this;
+			return this;				
 		}
 		
 	}
+		
+	
+	
+	
 		
 	 public class MonitorTypeTblCellEditor extends AbstractCellEditor implements TableCellEditor {
 
 		
 		private static final long serialVersionUID = 6537028958231168566L;
+		
 		private TableCellEditor editor;
 		private JComboBox<MonitorType> cbxMonitorType;
 		SearchMonitorTypeListener searchMonitorTypeListener;
-		private ComboBoxModel<MonitorType> cbxMonitorTypeModel;
+		private ComboBoxModel<MonitorType> cbxMonitorTypeModel;		
 		
+		protected ComboBoxModel<MonitorType> getCbxMonitorTypeModel() {
+			return cbxMonitorTypeModel;
+		}
+
 		public MonitorTypeTblCellEditor() {
 			ArrayList<MonitorType> monitorTypes;
 			try {
 				monitorTypes = SQL_SELECT.monitorTypes(null, "");
-				MonitorType[] arr = new MonitorType[monitorTypes.size() + 1]; 		  
+				MonitorType[] arr = new MonitorType[monitorTypes.size()]; 		  
 		        // ArrayList to Array Conversion 
-				arr[0] = new MonitorType(" ");
-		        for (int i = 1; i < monitorTypes.size() + 1; i++) {
-		            arr[i] = monitorTypes.get(i - 1);		
+				
+		        for (int i = 0; i < monitorTypes.size(); i++) {
+		            arr[i] = monitorTypes.get(i);		
 		        }
+		        
 				cbxMonitorTypeModel = new DefaultComboBoxModel<MonitorType>(arr);
-				cbxMonitorType = new JComboBox<MonitorType>();
+				cbxMonitorType = new JComboBox<MonitorType>();				
 				cbxMonitorType.setModel(cbxMonitorTypeModel);
+				cbxMonitorType.insertItemAt(null, 0);
 				cbxMonitorType.setRenderer(new ListMonitorTypeRenderer());
 				searchMonitorTypeListener = new SearchMonitorTypeListener();
 				cbxMonitorType.addItemListener(searchMonitorTypeListener);
@@ -867,7 +758,8 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 				setText(((MonitorType) value).getNotation());
 				setFont(new Font("Tahoma", Font.ITALIC, 14));
 			}else {
-				setText("");
+				setText("Alle Monitormodelle");
+				setFont(new Font("Tahoma", Font.ITALIC, 14));
 			}
 			return this;
 		}				
@@ -885,24 +777,22 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			if (event.getStateChange() == ItemEvent.SELECTED) {
 				try {
 					monitorType = (MonitorType) event.getItem();	
-					if(monitorType.getNotation() == " ") {
-						monitorType = null;
-					}
 				} catch (ClassCastException e) {
 					monitorType = null;				
 				}
+			}else {
+				monitorType = null;
+			}
 				
-				try {
-					monitorTblModel.setValueAt(monitorType, 0, 1);
-					monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType) monitorTblModel.searchMonitorType, monitorTblModel.searchNotation, monitorTblModel.searchStatus));
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				monitorTblModel.fireTableDataChanged();
-				((PnlMonitor)panel).setFirstRowHeight(40);
-		    }
-			
+			try {
+				monitorTblModel.setValueAt(monitorType, 0, 1);
+				monitorTblModel.setMonitors(SQL_SELECT.monitors((MonitorType) monitorTblModel.getValueAt(0, 1), (String)monitorTblModel.getValueAt(0, 2), (Status)monitorTblModel.getValueAt(0, 5)));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			monitorTblModel.fireTableDataChanged();
+					
 		 }		 
 	 }
 	 
@@ -932,5 +822,53 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	        	}
 	        }	        		
 	    }
+	}
+	
+	class MyTableRowSorter extends TableRowSorter<MonitorTblModel>{
+
+		@Override
+		public void setStringConverter(TableStringConverter stringConverter) {
+			// TODO Auto-generated method stub
+			super.setStringConverter(stringConverter);
+		}
+
+		@Override
+		public TableStringConverter getStringConverter() {
+			// TODO Auto-generated method stub
+			return super.getStringConverter();
+		}
+
+		@Override
+		public Comparator<?> getComparator(int column) {
+			// TODO Auto-generated method stub
+			return super.getComparator(column);
+		}
+
+		@Override
+		protected boolean useToString(int column) {
+			// TODO Auto-generated method stub
+			return super.useToString(column);
+		}
+
+		@Override
+		public void toggleSortOrder(int column) {
+			// TODO Auto-generated method stub
+			super.toggleSortOrder(column);
+		}
+
+		@Override
+		public int convertRowIndexToView(int index) {
+			// TODO Auto-generated method stub
+			return super.convertRowIndexToView(index);
+		}
+
+		@Override
+		public int convertRowIndexToModel(int index) {
+			// TODO Auto-generated method stub
+			return super.convertRowIndexToModel(index);
+		}
+		
+		
+		
 	}
 }

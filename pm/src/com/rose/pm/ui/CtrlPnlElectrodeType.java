@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.AbstractButton;
 import javax.swing.ComboBoxModel;
@@ -129,7 +130,12 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	
 		((PnlElectrodeType)panel).setManufacturerModel(manufacturerModel);
 		
-		tblElectrodesModel = new TblElectrodesModel(SQL_SELECT.electrodeModels());
+		try {
+			tblElectrodesModel = new TblElectrodesModel(SQL_SELECT.electrodeTypes(null, ""));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		panel.setTblModel(tblElectrodesModel);
 	}
 	

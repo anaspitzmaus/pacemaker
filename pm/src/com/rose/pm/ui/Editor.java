@@ -81,8 +81,12 @@ public class Editor {
 		}
     }
 	 
+	 /**
+	  * table cell editor for the first row and the status column of the table
+	  * @author Ekki
+	  *
+	  */
 	 class SearchStatusTblCellEditor extends AbstractCellEditor implements TableCellEditor{
-
 		
 		private static final long serialVersionUID = -6298511433943873838L;
 		private TableCellEditor editor;
@@ -99,17 +103,24 @@ public class Editor {
 		protected Listener.SearchStatusListener getSearchStatusListener() {
 			return searchStatusListener;
 		}
-
+		/**
+		 * standard constructor
+		 * @param tblModel
+		 * @param pnlBase
+		 */
 		public SearchStatusTblCellEditor(AbstractTableModel tblModel, PnlBase pnlBase) {
 			this.tblModel = tblModel;
 			Status[] s = Status.class.getEnumConstants();
+
 			cbxStatusModel = new DefaultComboBoxModel<>(s);
+			
 			cbxStatus = new JComboBox<>(cbxStatusModel);
+			cbxStatus.insertItemAt(null, 0);
 			renderer = new Renderer();
 			searchStatusListCellRenderer = renderer.new SearchStatusListCellRenderer();
 			cbxStatus.setRenderer(searchStatusListCellRenderer);
 			listener = new Listener();
-			searchStatusListener = listener.new SearchStatusListener(this.tblModel, Monitor.class, pnlBase);
+			searchStatusListener = listener.new SearchStatusListener(this.tblModel, pnlBase);
 			cbxStatus.addItemListener(searchStatusListener);
 		}
 		

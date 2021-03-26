@@ -64,7 +64,7 @@ public class CtrlElectrodes {
 					Integer id = SQL_INSERT.electrodeModel(elType);
 					if(id != null) {
 						elType.setId(id);
-						ctrlPnlElectrodeType.getTblElectrodeModel().setElectrodeModels(SQL_SELECT.electrodeModels());
+						ctrlPnlElectrodeType.getTblElectrodeModel().setElectrodeModels(SQL_SELECT.electrodeTypes(null, ""));
 						ctrlPnlElectrodeType.getTblElectrodeModel().fireTableDataChanged();
 						ctrlPnlElectrode.electrodeTypeModel.addElement(elType);
 					}

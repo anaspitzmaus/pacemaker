@@ -109,7 +109,7 @@ public class PnlMonitor extends PnlBase {
 		table.setDefaultRenderer(monitorTypeClass, renderer);		
 	}
 
-	protected void setTblStringRenderer(Class<String> stringClass, TableCellRenderer renderer) {
+	protected void setTblCellStringRenderer(Class<String> stringClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(stringClass, renderer);
 	}
 
@@ -135,9 +135,7 @@ public class PnlMonitor extends PnlBase {
 	
 	protected void setNotationCellEditor(TableCellEditor editor) {
 		table.getColumnModel().getColumn(2).setCellEditor(editor);
-	}
-	
-	
+	}	
 	
 	protected void setMonitorTypeTblCellEditor(TableCellEditor editor) {
 		table.getColumnModel().getColumn(1).setCellEditor(editor);		

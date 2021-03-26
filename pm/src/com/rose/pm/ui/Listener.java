@@ -13,9 +13,11 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.text.BadLocationException;
 
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.material.Electrode;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Material;
 import com.rose.pm.material.Monitor;
+import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
 
 public class Listener {
@@ -105,18 +107,18 @@ public class Listener {
 		Status status;
 		AbstractTableModel tblModel;
 		PnlBase panel;
-		Class<? extends Material> materialClass;
+		
 		
 		protected Status getStatus() {
 			return this.status;
 		}
 		
-		public SearchStatusListener(AbstractTableModel tblModel, Class<? extends Material> materialClass, PnlBase panel) {
+		public SearchStatusListener(AbstractTableModel tblModel, PnlBase panel) {
 			this.tblModel = tblModel;
-			this.materialClass = materialClass;
 			this.panel = panel;
 		}
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		public void itemStateChanged(ItemEvent event) {
 			if (event.getStateChange() == ItemEvent.SELECTED) {
@@ -125,17 +127,25 @@ public class Listener {
 				} catch (ClassCastException e) {
 					status = null;				
 				}
-				
-				try {
-					tblModel.setValueAt(status, 0, 5);
-					((CtrlPnlMonitor.MonitorTblModel)tblModel).setMonitors(SQL_SELECT.monitors(null, (String) tblModel.getValueAt(0, 2), status));
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				tblModel.fireTableDataChanged();
-				panel.setFirstRowHeight(40);
+			}else {
+				status = null;		    		    	
 		    }
+				
+			try {
+				tblModel.setValueAt(status, 0, 5);
+				Class<? extends Material> matClass;
+				matClass = (Class<? extends Material>) tblModel.getColumnClass(0);
+				if(matClass == Monitor.class) {
+					((CtrlPnlMonitor.MonitorTblModel)tblModel).setMonitors(SQL_SELECT.monitors((MonitorType)tblModel.getValueAt(0,  1), (String) tblModel.getValueAt(0, 2), (Status) tblModel.getValueAt(0, 5)));
+				}else if(matClass == Electrode.class) {
+					//has to be added here for all types of material
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	    	
+			tblModel.fireTableDataChanged();
+			panel.setFirstRowHeight(40);
 			
 		}
 			

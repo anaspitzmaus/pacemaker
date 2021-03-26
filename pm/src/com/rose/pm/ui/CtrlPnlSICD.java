@@ -42,8 +42,8 @@ import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
-import com.rose.pm.ui.Renderer.TblImplantDateRenderer;
-import com.rose.pm.ui.Renderer.TblPatientRenderer;
+import com.rose.pm.ui.Renderer.TblCellImplantDateRenderer;
+import com.rose.pm.ui.Renderer.TblCellPatientRenderer;
 import com.rose.pm.ui.Renderer.TblCellStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
 
@@ -62,14 +62,14 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	TblStringRenderer tblStringRenderer;
 	TblAggregateTypeRenderer tblAggregateTypeRenderer;
 	TblCellStatusRenderer tblStatusRenderer;
-	com.rose.pm.ui.Renderer.TblLocalDateRenderer tblDateRenderer;
+	com.rose.pm.ui.Renderer.TblCellLocalDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
-	TblPatientRenderer tblPatientRenderer;
+	TblCellPatientRenderer tblPatientRenderer;
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
-	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
+	Renderer.TblCellImplantDateRenderer tblImplantDateRenderer;
 	
 	
 	public CtrlPnlSICD() {
@@ -164,15 +164,15 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 			((PnlSICD)panel).setAggregateIDRenderer(SICD.class, tblSICDIDRenderer);
 			tblStringRenderer = renderer.new TblStringRenderer();
 			((PnlSICD)panel).setStringRenderer(String.class, tblStringRenderer);
-			tblDateRenderer = renderer.new TblLocalDateRenderer();
+			tblDateRenderer = renderer.new TblCellLocalDateRenderer();
 			((PnlSICD)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 			tblAggregateTypeRenderer = new TblAggregateTypeRenderer();
 			((PnlSICD)panel).setTblAggregateTypeRenderer(SICDType.class, tblAggregateTypeRenderer);
 			tblStatusRenderer = renderer.new TblCellStatusRenderer();
 			((PnlSICD)panel).setStatusRenderer(Status.class, tblStatusRenderer);
-			tblPatientRenderer = renderer.new TblPatientRenderer();
+			tblPatientRenderer = renderer.new TblCellPatientRenderer();
 			((PnlSICD)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
-			tblImplantDateRenderer = renderer.new TblImplantDateRenderer();
+			tblImplantDateRenderer = renderer.new TblCellImplantDateRenderer();
 			((PnlSICD)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer); 
 		}
 	

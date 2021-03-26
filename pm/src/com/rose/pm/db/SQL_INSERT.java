@@ -560,30 +560,24 @@ public class SQL_INSERT {
 	        }		
 	}
 
-	public static Integer electrode(Electrode electrode) {
+	public static Integer electrode(Electrode electrode) throws SQLException{
 		Integer id = null;
 		stmt = DB.getStatement();
 		
-		try {
-			DB.getConnection().setAutoCommit(true);
-			stmt.executeUpdate("INSERT INTO electrode (id_electrode_type, serialNr, notice, expire) "
-					+ "VALUES ('" + electrode.getElectrodeType().getId() + "', '" 
-					+ electrode.getSerialNr() + "', '"
-					+ electrode.getNotice() + "', '"
-					+ Date.valueOf(electrode.getExpireDate()) + "')");
-					
-			ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
-			if(rs.isBeforeFirst()){
-				rs.next();
-				id = rs.getInt("ID");
-			}
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(new JFrame(),
-				    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT electrode(Electrode electrode)", "SQL Exception warning",
-				    JOptionPane.WARNING_MESSAGE);
-		}			
-	
-	return id;
+		
+		DB.getConnection().setAutoCommit(true);
+		stmt.executeUpdate("INSERT INTO electrode (id_electrode_type, serialNr, notice, expire) "
+				+ "VALUES ('" + electrode.getElectrodeType().getId() + "', '" 
+				+ electrode.getSerialNr() + "', '"
+				+ electrode.getNotice() + "', '"
+				+ Date.valueOf(electrode.getExpireDate()) + "')");
+				
+		ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() AS ID");
+		if(rs.isBeforeFirst()){
+			rs.next();
+			id = rs.getInt("ID");
+		}	
+		return id;
 	}
 
 	/**

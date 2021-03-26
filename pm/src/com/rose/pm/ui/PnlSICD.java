@@ -23,7 +23,7 @@ import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.Renderer.TblPatientRenderer;
+import com.rose.pm.ui.Renderer.TblCellPatientRenderer;
 
 import net.miginfocom.swing.MigLayout;
 

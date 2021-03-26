@@ -40,8 +40,8 @@ import com.rose.pm.material.PM;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
-import com.rose.pm.ui.Renderer.TblImplantDateRenderer;
-import com.rose.pm.ui.Renderer.TblPatientRenderer;
+import com.rose.pm.ui.Renderer.TblCellImplantDateRenderer;
+import com.rose.pm.ui.Renderer.TblCellPatientRenderer;
 
 public class CtrlPnlER extends CtrlPnlBase{
 	Ctrl_PnlSetDate ctrlPnlSetDate;
@@ -58,14 +58,14 @@ public class CtrlPnlER extends CtrlPnlBase{
 	TblStringRenderer tblStringRenderer;
 	TblERTypeRenderer tblERTypeRenderer;
 	TblStatusRenderer tblStatusRenderer;
-	com.rose.pm.ui.Renderer.TblLocalDateRenderer tblDateRenderer;
+	com.rose.pm.ui.Renderer.TblCellLocalDateRenderer tblDateRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
-	Renderer.TblImplantDateRenderer tblImplantDateRenderer;
-	TblPatientRenderer tblPatientRenderer;
+	Renderer.TblCellImplantDateRenderer tblImplantDateRenderer;
+	TblCellPatientRenderer tblPatientRenderer;
 	
 	public CtrlPnlER() {
 		createPanel();
@@ -165,15 +165,15 @@ public class CtrlPnlER extends CtrlPnlBase{
 		((PnlER)panel).setERIDRenderer(ER.class, tblERIDRenderer);
 		tblStringRenderer = new TblStringRenderer();
 		((PnlER)panel).setStringRenderer(String.class, tblStringRenderer);
-		tblDateRenderer = renderer.new TblLocalDateRenderer();
+		tblDateRenderer = renderer.new TblCellLocalDateRenderer();
 		((PnlER)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 		tblERTypeRenderer = new TblERTypeRenderer();
 		((PnlER)panel).setTblERTypeRenderer(ERType.class, tblERTypeRenderer);
 		tblStatusRenderer = new TblStatusRenderer();
 		((PnlER)panel).setStatusRenderer(Status.class, tblStatusRenderer);
-		 tblPatientRenderer = renderer.new TblPatientRenderer();
+		 tblPatientRenderer = renderer.new TblCellPatientRenderer();
 		 ((PnlER)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
-		 tblImplantDateRenderer = renderer.new TblImplantDateRenderer();
+		 tblImplantDateRenderer = renderer.new TblCellImplantDateRenderer();
 		 ((PnlER)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
 	}
 	

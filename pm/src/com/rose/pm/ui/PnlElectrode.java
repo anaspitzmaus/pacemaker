@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.person.Patient;
@@ -124,7 +125,7 @@ public class PnlElectrode extends PnlBase {
 		table.setDefaultRenderer(elclass, r);
 	}
 	
-	protected void setStringRenderer(Class<String> stringClass, TableCellRenderer r) {
+	protected void setTblCellStringRenderer(Class<String> stringClass, TableCellRenderer r) {
 		table.setDefaultRenderer(stringClass, r);
 	}
 	
@@ -150,6 +151,10 @@ public class PnlElectrode extends PnlBase {
 
 	protected void setDateCellEditor(DefaultCellEditor editor) {
 		 table.getColumnModel().getColumn(7).setCellEditor(editor);		
+	}
+	
+	protected void setElectrodeTypeTblCellEditor(TableCellEditor editor) {
+		table.getColumnModel().getColumn(1).setCellEditor(editor);		
 	}
 
 	
