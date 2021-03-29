@@ -46,8 +46,8 @@ public class CtrlMonitors {
 	}
 	
 	/**
-	 * listener for adding a new created type of electrodes to the database
-	 * adds the new type of electrode to the ComboBoxModel in the Electrode panel
+	 * listener for adding a new created type of monitors to the database
+	 * adds the new type of monitors to the ComboBoxModel in the Monitor panel
 	 * @author user2
 	 *
 	 */
@@ -80,8 +80,8 @@ public class CtrlMonitors {
 	}
 	
 	/**
-	 * listener for deleting a type of electrode
-	 * deletes the electrode type at the database and in the ComboBoxModel of the electrode panel
+	 * listener for deleting a type of monitor
+	 * deletes the monitor type at the database and in the ComboBoxModel of the monitor panel
 	 * @author Ekki
 	 *
 	 */

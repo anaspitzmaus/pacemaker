@@ -50,7 +50,7 @@ import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
-import com.rose.pm.ui.Listener.SearchMaterialTypeListener;
+
 
 
 public class CtrlPnlMonitor extends CtrlPnlBase {
@@ -92,6 +92,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		
 		statusTblCellEditor = editor.new SearchStatusTblCellEditor(monitorTblModel, panel);
 		((PnlMonitor)panel).setStatusTblCellEditor(statusTblCellEditor);
+		
 		JTextField textField = new JTextField("Text");
 		SearchNotationListener searchNotationListener = new SearchNotationListener();
 		textField.getDocument().addDocumentListener(searchNotationListener);		
@@ -162,7 +163,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	}
 	
 	private void setListener() {
-		 monitorTypeListener = new MonitorTypeListener();
+		 monitorTypeListener = new MonitorTypeListener();//listener for the comboBox that shows the types og monitors
 		 ((PnlMonitor)panel).addMonitorTypeListener(monitorTypeListener);	
 		 listener = new Listener();
 		 serialNrListener = listener.new NotationListener();
@@ -180,13 +181,13 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 	private void setRenderer() {
 		renderer = new Renderer();
 		monitorTypeListCellRenderer = new MonitorTypeListCellRenderer();
-		((PnlMonitor)panel).setMonitorTypeRenderer(monitorTypeListCellRenderer);
+		((PnlMonitor)panel).setMonitorTypeRenderer(monitorTypeListCellRenderer);		
 		tblCellMaterialIDRenderer = renderer.new TblCellMaterialIDRenderer();
-		((PnlMonitor)panel).setTblMonitorIDRenderer(Monitor.class, tblCellMaterialIDRenderer);
+		((PnlMonitor)panel).setTblMonitorIDRenderer(Monitor.class, tblCellMaterialIDRenderer);		
 		tblCellMonitorTypeRenderer = new TblCellMonitorTypeRenderer();
 		((PnlMonitor)panel).setTblMonitorTypeRenderer(MonitorType.class, tblCellMonitorTypeRenderer);
 		notationRenderer = renderer.new TblCellStringRenderer();
-		((PnlMonitor)panel).setTblCellStringRenderer(String.class, notationRenderer);
+		((PnlMonitor)panel).setTblCellStringRenderer(String.class, notationRenderer);		
 		 tblCellPatientRenderer = renderer.new TblCellPatientRenderer();
 		 ((PnlMonitor)panel).setTblCellPatientRenderer(Patient.class, tblCellPatientRenderer);
 		 tblCellStatusRenderer = renderer.new TblCellStatusRenderer();
@@ -709,6 +710,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 				cbxMonitorType = new JComboBox<MonitorType>(cbxMonitorTypeModel);				
 				
 				cbxMonitorType.insertItemAt(null, 0);
+				
 				cbxMonitorType.setRenderer(new ListMonitorTypeRenderer());
 				searchMonitorTypeListener = new SearchMonitorTypeListener();
 				cbxMonitorType.addItemListener(searchMonitorTypeListener);

@@ -47,6 +47,7 @@ import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.CtrlPnlMonitor.ListMonitorTypeRenderer;
@@ -55,6 +56,8 @@ import com.rose.pm.ui.CtrlPnlMonitor.SearchMonitorTypeListener;
 import com.rose.pm.ui.CtrlPnlMonitor.SearchNotationListener;
 import com.rose.pm.ui.Editor.SearchStatusTblCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Renderer.TblCellLocalDateRenderer;
+import com.rose.pm.ui.Renderer.TblCellMaterialIDRenderer;
 
 
 public class CtrlPnlElectrode extends CtrlPnlBase{
@@ -68,7 +71,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	NotationListener serialNrListener, noticeListener;
 	Renderer renderer;
 	Renderer.TblCellLocalDateRenderer tblCellLocalDateRenderer;
-	Renderer.TblCellStringRenderer tblCellStringRenderer;
+	Renderer.TblCellStringRenderer notationRenderer;
 	Renderer.TblCellMaterialIDRenderer tblCellMaterialIDRenderer;
 	Renderer.TblCellStatusRenderer tblStatusRenderer;
 	Renderer.TblCellImplantDateRenderer tblImplantDateRenderer;
@@ -93,6 +96,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		editor = new Editor();
 		searchStatusTblCellEditor = editor.new SearchStatusTblCellEditor(electrodeTblModel, panel);
 		((PnlElectrode)panel).setStatusTblCellEditor(searchStatusTblCellEditor);
+		
 		JTextField textField = new JTextField("Text");
 		SearchNotationListener searchNotationListener = new SearchNotationListener();
 		textField.getDocument().addDocumentListener(searchNotationListener);		
@@ -152,7 +156,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	}
 	 
 	 private void setListener() {
-		 electrodeTypeListener = new ElectrodeTypeListener();
+		 electrodeTypeListener = new ElectrodeTypeListener();//listener for the comboBox, that shows the types of electrodes
 		 ((PnlElectrode)panel).addElectrodeTypeListener(electrodeTypeListener);	
 		 listener = new Listener();
 		 serialNrListener = listener.new NotationListener();
@@ -174,23 +178,23 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	 }
 	 
 	 private void setRenderer() {
-		 listCellElectrodeTypeRenderer = new ListCellElectrodeTypeRenderer();
-		 ((PnlElectrode)panel).setElectrodeTypeRenderer(listCellElectrodeTypeRenderer);
 		 renderer = new Renderer();
-		 tblCellLocalDateRenderer = renderer.new TblCellLocalDateRenderer();
-		 ((PnlElectrode)panel).setDateRenderer(LocalDate.class, tblCellLocalDateRenderer);
-		 tblCellStringRenderer = renderer.new TblCellStringRenderer();
-		((PnlElectrode)panel).setTblCellStringRenderer(String.class, tblCellStringRenderer);
+		 listCellElectrodeTypeRenderer = new ListCellElectrodeTypeRenderer();
+		 ((PnlElectrode)panel).setElectrodeTypeRenderer(listCellElectrodeTypeRenderer);		
 		 tblCellMaterialIDRenderer = renderer.new TblCellMaterialIDRenderer();
-		 ((PnlElectrode)panel).setElectrodeRenderer(Electrode.class, tblCellMaterialIDRenderer);
-		 tblElectrodeTypeRenderer = new TblElectrodeTypeRenderer();
+		((PnlElectrode)panel).setTblElectrodeIDRenderer(Electrode.class, tblCellMaterialIDRenderer);
+		tblElectrodeTypeRenderer = new TblElectrodeTypeRenderer();
 		 ((PnlElectrode)panel).setTblElectrodeTypeRenderer(ElectrodeType.class, tblElectrodeTypeRenderer);
-		 tblCellPatientRenderer = renderer.new TblCellPatientRenderer();
+		 notationRenderer = renderer.new TblCellStringRenderer();
+		((PnlElectrode)panel).setTblCellStringRenderer(String.class, notationRenderer);
+		  tblCellPatientRenderer = renderer.new TblCellPatientRenderer();
 		 ((PnlElectrode)panel).setTblPatientRenderer(Patient.class, tblCellPatientRenderer);
 		 tblStatusRenderer = renderer.new TblCellStatusRenderer();
 		 ((PnlElectrode)panel).setTblStatusRenderer(Status.class, tblStatusRenderer);
 		 tblImplantDateRenderer = renderer.new TblCellImplantDateRenderer();
 		 ((PnlElectrode)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
+		 tblCellLocalDateRenderer = renderer.new TblCellLocalDateRenderer();
+		 ((PnlElectrode)panel).setLocalDateRenderer(LocalDate.class, tblCellLocalDateRenderer);
 	 }
 	 
 	 private Boolean isElectrodeProvided(Electrode electrode) {		
@@ -367,7 +371,9 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 				cbxElectrodeTypeModel = new DefaultComboBoxModel<ElectrodeType>(arr);
 				cbxElectrodeType = new JComboBox<ElectrodeType>();				
 				cbxElectrodeType.setModel(cbxElectrodeTypeModel);
+				
 				cbxElectrodeType.insertItemAt(null, 0);
+				
 				cbxElectrodeType.setRenderer(new ListElectrodeTypeRenderer());
 				searchElectrodeTypeListener = new SearchElectrodeTypeListener();
 				cbxElectrodeType.addItemListener(searchElectrodeTypeListener);
@@ -466,7 +472,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 					model = null;
 				}				
 		    }
-			updateTblModel();		
+			//updateTblModel();		
 		}
 		
 		protected void updateTblModel() {
