@@ -92,11 +92,11 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		((PnlElectrode)panel).setElectrodeTypeTblCellEditor(electrodeTypeTblCellEditor);
 		editor = new Editor();
 		searchStatusTblCellEditor = editor.new SearchStatusTblCellEditor(electrodeTblModel, panel);
-		((PnlMonitor)panel).setStatusTblCellEditor(searchStatusTblCellEditor);
+		((PnlElectrode)panel).setStatusTblCellEditor(searchStatusTblCellEditor);
 		JTextField textField = new JTextField("Text");
 		SearchNotationListener searchNotationListener = new SearchNotationListener();
 		textField.getDocument().addDocumentListener(searchNotationListener);		
-		((PnlMonitor)panel).setNotationCellEditor(new DefaultCellEditor(textField));
+		((PnlElectrode)panel).setNotationCellEditor(new DefaultCellEditor(textField));
 		//panel.table.setAutoCreateRowSorter(true);
 		panel.setFirstRowHeight(40);//the standard height of the first row
 	}
@@ -675,7 +675,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	        	 table =(JTable) mouseEvent.getSource();
 	             Point point = mouseEvent.getPoint();
 	             int row = table.rowAtPoint(point);
-	             if (table.getSelectedRow() != -1 && row >= 0) {
+	             if (table.getSelectedRow() != -1 && row > 0) {
 	                CtrlDlgChangeElectrode ctrlDlgChangeElectrode = new CtrlDlgChangeElectrode((Electrode) electrodeTblModel.getValueAt(row, 0), electrodeTblModel);
 	                ctrlDlgChangeElectrode.getDialog().setVisible(true);
 	             }

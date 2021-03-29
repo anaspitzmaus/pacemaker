@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.table.AbstractTableModel;
 
-
-
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.Electrode;
@@ -55,8 +53,9 @@ public class CtrlDlgChangeElectrode extends CtrlDlgChange {
 		
 		
 		protected void updateDBAndTblModel() {
-			SQL_UPDATE.electrode(electrode);				
-			((ElectrodeTblModel)model).setElectrodes(SQL_SELECT.electrodes(electrode.getElectrodeType()));
+			SQL_UPDATE.electrode(electrode);
+			
+			//((ElectrodeTblModel)model).setElectrodes(SQL_SELECT.electrodes(electrode.getElectrodeType()));
 			model.fireTableDataChanged();
 			dlgChange.dispose();
 		}

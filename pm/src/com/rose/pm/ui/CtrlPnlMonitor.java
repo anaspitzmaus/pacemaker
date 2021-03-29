@@ -50,6 +50,7 @@ import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Listener.SearchMaterialTypeListener;
 
 
 public class CtrlPnlMonitor extends CtrlPnlBase {
@@ -85,9 +86,10 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		ctrlPnlSetDate = new Ctrl_PnlSetDate("dd.MM.yyyy", LocalDate.now(), LocalDate.now());
 		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
 		((PnlMonitor)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
-		monitorTypeTblCellEditor = new MonitorTypeTblCellEditor();
-		((PnlMonitor)panel).setMonitorTypeTblCellEditor(monitorTypeTblCellEditor);
 		editor = new Editor();
+		monitorTypeTblCellEditor = new MonitorTypeTblCellEditor(monitorTblModel);
+		((PnlMonitor)panel).setMonitorTypeTblCellEditor(monitorTypeTblCellEditor);
+		
 		statusTblCellEditor = editor.new SearchStatusTblCellEditor(monitorTblModel, panel);
 		((PnlMonitor)panel).setStatusTblCellEditor(statusTblCellEditor);
 		JTextField textField = new JTextField("Text");
@@ -677,26 +679,22 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		}
 		
 	}
-		
-	
-	
 	
 		
 	 public class MonitorTypeTblCellEditor extends AbstractCellEditor implements TableCellEditor {
 
 		
 		private static final long serialVersionUID = 6537028958231168566L;
-		
-		private TableCellEditor editor;
-		private JComboBox<MonitorType> cbxMonitorType;
-		SearchMonitorTypeListener searchMonitorTypeListener;
-		private ComboBoxModel<MonitorType> cbxMonitorTypeModel;		
-		
-		protected ComboBoxModel<MonitorType> getCbxMonitorTypeModel() {
-			return cbxMonitorTypeModel;
-		}
+		protected ComboBoxModel<MonitorType> cbxMonitorTypeModel;	
+		protected TableCellEditor editor;
+		protected JComboBox<MonitorType> cbxMonitorType;
+		protected SearchMonitorTypeListener searchMonitorTypeListener;		
+		protected AbstractTableModel tblModel;
+		protected ArrayList<MonitorType> materialTypes;
 
-		public MonitorTypeTblCellEditor() {
+		public MonitorTypeTblCellEditor(AbstractTableModel tblModel) {
+			
+			
 			ArrayList<MonitorType> monitorTypes;
 			try {
 				monitorTypes = SQL_SELECT.monitorTypes(null, "");
@@ -708,8 +706,8 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		        }
 		        
 				cbxMonitorTypeModel = new DefaultComboBoxModel<MonitorType>(arr);
-				cbxMonitorType = new JComboBox<MonitorType>();				
-				cbxMonitorType.setModel(cbxMonitorTypeModel);
+				cbxMonitorType = new JComboBox<MonitorType>(cbxMonitorTypeModel);				
+				
 				cbxMonitorType.insertItemAt(null, 0);
 				cbxMonitorType.setRenderer(new ListMonitorTypeRenderer());
 				searchMonitorTypeListener = new SearchMonitorTypeListener();
@@ -720,7 +718,14 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			}
 			
 		}
-		
+
+
+		public ComboBoxModel<MonitorType> getCbxMonitorTypeModel() {
+			// TODO Auto-generated method stub
+			return cbxMonitorTypeModel;
+		}
+
+
 		@Override
 		public Object getCellEditorValue() {
 			if (editor != null) {

@@ -777,7 +777,7 @@ public class SQL_SELECT {
 					+ "FROM sm.electrode_type "
 					+ "INNER JOIN sm.manufacturer "
 					+ "ON sm.electrode_type.id_manufacturer = sm.manufacturer.idmanufacturer "
-					+ "WHERE elctrode_type.notation LIKE '" + notation + "%'";
+					+ "WHERE electrode_type.notation LIKE '" + notation + "%'";
 		if(manufacturer instanceof Manufacturer) {
 			select = select.concat(" AND sm.manufacturer.idmanufacturer = " + manufacturer.getId() + "");
 		}
@@ -796,7 +796,7 @@ public class SQL_SELECT {
 					
 					if(!(manufacturer instanceof Manufacturer)) {					
 						Manufacturer manuf = new Manufacturer(rs.getString("manufacturerNotation"));
-						manuf.setId(rs.getInt("idmanufacturer"));
+						manuf.setId(rs.getInt("id_manufacturer"));
 						model.setManufacturer(manuf);
 					}else {				
 						model.setManufacturer(manufacturer);
@@ -833,7 +833,7 @@ public class SQL_SELECT {
 		DB.getConnection().setAutoCommit(true);
 		
 		if(electrodeType instanceof ElectrodeType && !serialNr.equals("") && status instanceof Status) {
-			select = select.concat(" WHERE sm.electrode_type.idmonitor_type = ? AND sm.electrode.serialNr LIKE ? AND sm.electrode.status = ?");
+			select = select.concat(" WHERE sm.electrode_type.idelectrode_type = ? AND sm.electrode.serialNr LIKE ? AND sm.electrode.status = ?");
 			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, electrodeType.getId());	
 			ps.setString(2, serialNr + "%");
@@ -876,7 +876,7 @@ public class SQL_SELECT {
 				while(rs.next()) {
 					if(!(electrodeType instanceof ElectrodeType)) {
 						et = new ElectrodeType(rs.getString("notation"));
-						et.setId(rs.getInt("idelectrode_type"));
+						et.setId(rs.getInt("modelId"));
 					}else {
 						et = electrodeType;
 					}

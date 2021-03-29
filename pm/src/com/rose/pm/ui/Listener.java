@@ -16,6 +16,7 @@ import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Material;
+import com.rose.pm.material.MaterialType;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
@@ -150,5 +151,42 @@ public class Listener {
 		}
 			
 	}
+	
+	class SearchMaterialTypeListener implements ItemListener{
+		MaterialType materialType;
+		AbstractTableModel tblModel;
+		 
+		 
+		protected MaterialType getMaterialType() {
+			return materialType;
+		}
+		 
+		public SearchMaterialTypeListener(AbstractTableModel tblModel) {
+			this.tblModel = tblModel;
+		}
+
+		@Override
+		 public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+				try {
+					materialType = (MaterialType) event.getItem();	
+				} catch (ClassCastException e) {
+					materialType = null;				
+				}
+			}else {
+				materialType = null;
+			}
+				
+//			try {
+//				tblModel.setValueAt(materialType, 0, 1);
+//				tblModel.setMonitors(SQL_SELECT.monitors((MonitorType) tblModel.getValueAt(0, 1), (String) tblModel.getValueAt(0, 2), (Status) tblModel.getValueAt(0, 5)));
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			tblModel.fireTableDataChanged();
+					
+		 }		 
+	 }
 	
 }

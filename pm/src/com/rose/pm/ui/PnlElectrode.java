@@ -156,6 +156,14 @@ public class PnlElectrode extends PnlBase {
 	protected void setElectrodeTypeTblCellEditor(TableCellEditor editor) {
 		table.getColumnModel().getColumn(1).setCellEditor(editor);		
 	}
+	
+	protected void setNotationCellEditor(TableCellEditor editor) {
+		table.getColumnModel().getColumn(2).setCellEditor(editor);
+	}	
+	
+	protected void setStatusTblCellEditor(TableCellEditor editor) {
+		table.getColumnModel().getColumn(5).setCellEditor(editor);			
+	}
 
 	
 

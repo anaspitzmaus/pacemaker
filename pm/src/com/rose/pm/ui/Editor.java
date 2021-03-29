@@ -1,12 +1,14 @@
 package com.rose.pm.ui;
 
 import java.awt.Component;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.AbstractCellEditor;
@@ -21,8 +23,13 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.text.DateFormatter;
 
-import com.rose.pm.material.Monitor;
+import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.material.MaterialType;
+import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.CtrlPnlMonitor.ListMonitorTypeRenderer;
+import com.rose.pm.ui.CtrlPnlMonitor.SearchMonitorTypeListener;
+import com.rose.pm.ui.Listener.SearchMaterialTypeListener;
 
 
 public class Editor {
@@ -142,4 +149,43 @@ public class Editor {
 		}
 		
 	}
+	 
+	 public abstract class MaterialTypeTblCellEditor extends AbstractCellEditor implements TableCellEditor {
+
+		private static final long serialVersionUID = -1852119063688536260L;
+		
+		protected TableCellEditor editor;
+		protected JComboBox<? extends MaterialType> cbxMaterialType;
+		protected SearchMaterialTypeListener searchMaterialTypeListener;
+		
+		protected AbstractTableModel tblModel;
+		protected ArrayList<? extends MaterialType> materialTypes;
+		
+		public MaterialTypeTblCellEditor(AbstractTableModel tblModel) {
+			
+			this.tblModel = tblModel;
+			
+		}
+		
+		
+		
+		@Override
+		public Object getCellEditorValue() {
+			if (editor != null) {
+				return editor.getCellEditorValue();
+			}
+            return null;
+		}
+
+		@Override
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+				int column) {
+			if (column == 1 && row == 0) {
+                editor = new DefaultCellEditor(cbxMaterialType);
+            } 
+
+			return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
+		}
+		 
+	 }
 }
