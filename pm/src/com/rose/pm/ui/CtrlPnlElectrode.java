@@ -145,7 +145,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		((PnlElectrode)panel).setElectrodeTypeModel(electrodeTypeModel);
 		
 		try {
-			electrodeTblModel = new ElectrodeTblModel(SQL_SELECT.electrodes(electrodeTypeListener.model, "", null));
+			electrodeTblModel = new ElectrodeTblModel(SQL_SELECT.electrodes(electrodeTypeListener.model, "", Status.Lager));//initial search values
 			panel.setTblModel(electrodeTblModel);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

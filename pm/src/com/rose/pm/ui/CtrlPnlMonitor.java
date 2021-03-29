@@ -151,7 +151,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		
 		//table model for the monitors
 		try {
-			monitorTblModel = new MonitorTblModel(SQL_SELECT.monitors(monitorTypeListener.monitorType, "", null));
+			monitorTblModel = new MonitorTblModel(SQL_SELECT.monitors(monitorTypeListener.monitorType, "", Status.Lager));//initial values
 
 			panel.setTblModel(monitorTblModel);
 		} catch (SQLException e) {
