@@ -132,6 +132,7 @@ public class Renderer {
 				}
 			}else {
 				setBackground(Color.white);	
+				setText("");
 			}
 			return this;
 		}
@@ -205,6 +206,7 @@ public class Renderer {
 				}
 			}else {
 				setBackground(Color.white);	
+				setText("");
 			}
 			 return this;
 		}

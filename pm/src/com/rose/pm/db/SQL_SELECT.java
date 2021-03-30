@@ -478,16 +478,21 @@ public class SQL_SELECT {
 	 * select all types of pacemakers
 	 * @return an arraylist with the types of pacemakers
 	 */
-	public static ArrayList<AggregateType>pacemakerKinds(){
+	public static ArrayList<AggregateType>pacemakerKinds(Manufacturer manufacturer, String notation) throws SQLException{
 		stmt = DB.getStatement();
 		ArrayList<AggregateType> pmTypes;
 		pmTypes = new ArrayList<AggregateType>();
-		try {
-			rs = stmt.executeQuery(
-					 "SELECT idpm_type, pm_type.notation AS pmNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice, price "
+	
+			String select = "SELECT idpm_type, pm_type.notation AS pmNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice, price "
 					+ "FROM sm.pm_type "
 					+ "INNER JOIN sm.manufacturer "
-					+ "ON sm.pm_type.id_manufacturer = sm.manufacturer.idmanufacturer");
+					+ "ON sm.pm_type.id_manufacturer = sm.manufacturer.idmanufacturer "
+					+ "WHERE pm_type.notation LIKE '" + notation + "%'";
+			
+			if(manufacturer instanceof Manufacturer) {
+				select = select.concat(" AND sm.manufacturer.idmanufacturer = " + manufacturer.getId() + "");
+			}
+			rs = stmt.executeQuery(select);
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
@@ -504,15 +509,18 @@ public class SQL_SELECT {
 					}
 					pmType.setPrice(rs.getDouble("price"));
 					
-					Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
-					manufacturer.setId(rs.getInt("id_manufacturer"));
-					pmType.setManufacturer(manufacturer);
+					if(!(manufacturer instanceof Manufacturer)) {					
+						Manufacturer manuf = new Manufacturer(rs.getString("manufacturerNotation"));
+						manuf.setId(rs.getInt("id_manufacturer"));
+						pmType.setManufacturer(manuf);
+					}else {				
+						pmType.setManufacturer(manufacturer);
+					}
+					
 					pmTypes.add(pmType);
 				}
 			}
-		} catch (SQLException e) {
-			System.out.println(e);
-		}
+		
 		return pmTypes;
 	}
 	
@@ -1185,14 +1193,14 @@ public class SQL_SELECT {
 	 */
 	public static ArrayList<MonitorType> monitorTypes(Manufacturer manufacturer, String notation) throws SQLException{
 		stmt = DB.getStatement();
-		ArrayList<MonitorType> monitorTypes;
+		ArrayList<MonitorType> monitorTypes = new ArrayList<MonitorType>();
 		
-		monitorTypes = new ArrayList<MonitorType>();
 		String select = "SELECT idmonitor_type, monitor_type.notation AS monitorNotation, monitor_type.idmanufacturer, manufacturer.notation AS manufacturerNotation, notice, price "
 				+ "FROM sm.monitor_type "
 				+ "INNER JOIN sm.manufacturer "
 				+ "ON sm.monitor_type.idmanufacturer = sm.manufacturer.idmanufacturer "
 				+ "WHERE monitor_type.notation LIKE '" + notation + "%'";
+		
 		if(manufacturer instanceof Manufacturer) {
 			select = select.concat(" AND sm.manufacturer.idmanufacturer = " + manufacturer.getId() + "");
 		}
@@ -1217,6 +1225,7 @@ public class SQL_SELECT {
 				}else {				
 					monitorType.setManufacturer(manufacturer);
 				}
+				
 				monitorTypes.add(monitorType);
 			}
 		}

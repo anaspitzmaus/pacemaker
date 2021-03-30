@@ -3,6 +3,7 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +16,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.AbstractCellEditor;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -26,6 +31,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.Isynet;
@@ -36,8 +42,11 @@ import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
+import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.CtrlPnlMonitor.ListMonitorTypeRenderer;
+import com.rose.pm.ui.CtrlPnlMonitor.SearchMonitorTypeListener;
 import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblCellImplantDateRenderer;
@@ -54,7 +63,6 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	AggregateTypeListener aggregateTypeListener;
 	AggregateTblModel aggregateTblModel;
 	CreateListener createListener;
-	ShowAllListener showAllListener;
 	TblPMIDRenderer tblPMIDRenderer;
 	TblStringRenderer tblStringRenderer;
 	TblAggregateTypeRenderer tblAggregateTypeRenderer;
@@ -120,8 +128,6 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		((PnlPM)panel).addCreateListener(createListener);
 		aggregateTypeListener = new AggregateTypeListener();
 		((PnlPM)panel).addAggregateTypeListener(aggregateTypeListener);	
-		showAllListener = new ShowAllListener();
-		((PnlPM)panel).addShowAllListener(showAllListener);
 		tblMouseAdaptor = new TblMouseAdaptor();
 		((PnlPM)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
@@ -348,20 +354,125 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		
 	}
 	
-	class ShowAllListener implements ActionListener{
+	 public class PMTypeTblCellEditor extends AbstractCellEditor implements TableCellEditor {
+
+		private static final long serialVersionUID = 2575940233015655236L;
+			protected ComboBoxModel<AggregateType> cbxPMTypeModel;	
+			protected TableCellEditor editor;
+			protected JComboBox<AggregateType> cbxPMType;
+			protected SearchPMTypeListener searchPMTypeListener;		
+			protected AbstractTableModel tblModel;
+			protected ArrayList<AggregateType> materialTypes;
+
+			public PMTypeTblCellEditor(AbstractTableModel tblModel) {
+				
+				
+				ArrayList<AggregateType> pmTypes;
+				try {
+					pmTypes = SQL_SELECT.pacemakerKinds(null, "");
+					AggregateType[] arr = new AggregateType[pmTypes.size()]; 		  
+			        // ArrayList to Array Conversion 
+					
+			        for (int i = 0; i < pmTypes.size(); i++) {
+			            arr[i] = pmTypes.get(i);		
+			        }
+			        
+					cbxPMTypeModel = new DefaultComboBoxModel<AggregateType>(arr);
+					cbxPMType = new JComboBox<AggregateType>(cbxPMTypeModel);				
+					
+					cbxPMType.insertItemAt(null, 0);
+					
+					cbxPMType.setRenderer(new ListPMTypeRenderer());
+					searchPMTypeListener = new SearchPMTypeListener();
+					cbxPMType.addItemListener(searchPMTypeListener);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+
+
+			public ComboBoxModel<AggregateType> getCbxPMTypeModel() {
+				// TODO Auto-generated method stub
+				return cbxPMTypeModel;
+			}
+
+
+			@Override
+			public Object getCellEditorValue() {
+				if (editor != null) {
+					return editor.getCellEditorValue();
+				}
+	            return null;
+			}
+
+			@Override
+			public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+					int column) {
+				if (column == 1 && row == 0) {
+	                editor = new DefaultCellEditor(cbxPMType);
+	            } 
+
+				return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
+			}
+			 
+		 }
+	 
+	 class SearchPMTypeListener implements ItemListener{
+		 AggregateType pmType;
+		 
+		 protected AggregateType getPMType() {
+			return pmType;
+		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			((PnlPM)panel).setAggregateTypeSelectionIndex(-1);
-			update();
-		}
-		
-		protected void update() {
-			aggregateTblModel.setAggregats(SQL_SELECT.pacemakers(null));			
+		 public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+				try {
+					pmType = (AggregateType) event.getItem();	
+				} catch (ClassCastException e) {
+					pmType = null;				
+				}
+			}else {
+				pmType = null;
+			}
+				
+			try {
+				aggregateTblModel.setValueAt(pmType, 0, 1);
+				aggregateTblModel.setAggregates(SQL_SELECT.pacemakers((AggregateType) aggregateTblModel.getValueAt(0, 1), (String)aggregateTblModel.getValueAt(0, 2), (Status)aggregateTblModel.getValueAt(0, 5)));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			aggregateTblModel.fireTableDataChanged();
-		}
+					
+		 }		 
+	 }
+	 
+	 class ListPMTypeRenderer extends JLabel implements ListCellRenderer<AggregateType>{
+
+		private static final long serialVersionUID = -3407551918200555529L;
+
+			public ListPMTypeRenderer() {
+				setOpaque(true);
+		        setHorizontalAlignment(CENTER);
+		        setVerticalAlignment(CENTER);
+			}
 		
-	}
+			@Override
+			public Component getListCellRendererComponent(JList<? extends AggregateType> list, AggregateType value, int index,
+					boolean isSelected, boolean cellHasFocus) {
+				if(value instanceof AggregateType) {
+					setText(((AggregateType) value).getNotation());
+					setFont(new Font("Tahoma", Font.ITALIC, 14));
+				}else {
+					setText("Alle Schrittmachermodelle");
+					setFont(new Font("Tahoma", Font.ITALIC, 14));
+				}
+				return this;
+			}				
+		}
 	
 	class TblPMIDRenderer extends JLabel implements TableCellRenderer{
 
