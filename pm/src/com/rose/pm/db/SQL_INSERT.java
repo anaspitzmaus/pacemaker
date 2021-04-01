@@ -457,11 +457,11 @@ public class SQL_INSERT {
 		
 	}
 	
-	public static Integer pacemaker(PM pm) {
+	public static Integer pacemaker(PM pm) throws SQLException {
 		Integer id = null;
 		stmt = DB.getStatement();
 		
-		try {
+		
 			DB.getConnection().setAutoCommit(true);
 			stmt.executeUpdate("INSERT INTO pm_implant (pm_type, expiry, serialNr, notice, status) "
 					+ "VALUES ('" + pm.getMaterialType().getId() + "', '" 
@@ -475,21 +475,19 @@ public class SQL_INSERT {
 				rs.next();
 				id = rs.getInt("ID");
 			}
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(new JFrame(),
-				    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT Pacemaker(PM pm)", "SQL Exception warning",
-				    JOptionPane.WARNING_MESSAGE);
-		}			
+		
+			
+				
 	
 	return id;
 		
 	}
 	
-	public static Integer icd(ICD icd) {
+	public static Integer icd(ICD icd) throws SQLException {
 		Integer id = null;
 		stmt = DB.getStatement();
 		
-		try {
+		
 			DB.getConnection().setAutoCommit(true);
 			stmt.executeUpdate("INSERT INTO icd (icd_type, expiry, serialNr, notice, status) "
 					+ "VALUES ('" + icd.getMaterialType().getId() + "', '" 
@@ -503,11 +501,7 @@ public class SQL_INSERT {
 				rs.next();
 				id = rs.getInt("ID");
 			}
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(new JFrame(),
-				    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT icd(ICD icd)", "SQL Exception warning",
-				    JOptionPane.WARNING_MESSAGE);
-		}			
+				
 	
 	return id;
 		

@@ -59,7 +59,9 @@ public class CtrlDlgChangePM extends CtrlDlgChange{
 		
 		protected void updateDBAndTblModel() {
 			SQL_UPDATE.Pacemaker(pm);				
-			((AggregateTblModel)model).setAggregats(SQL_SELECT.pacemakers((AggregateType) pm.getMaterialType()));			
+			//((AggregateTblModel)model).setAggregats(SQL_SELECT.pacemakers((AggregateType) pm.getMaterialType()));			
+			model.fireTableDataChanged();
+			dlgChange.dispose();
 		}
 		
 	}

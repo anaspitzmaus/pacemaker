@@ -528,16 +528,21 @@ public class SQL_SELECT {
 	 * select all types of icds
 	 * @return an arraylist with the types of icds
 	 */
-	public static ArrayList<ICD_Type>ICD_Kinds(){
+	public static ArrayList<ICD_Type>ICD_Kinds(Manufacturer manufacturer, String notation) throws SQLException{
 		stmt = DB.getStatement();
 		ArrayList<ICD_Type> icdTypes;
 		icdTypes = new ArrayList<ICD_Type>();
-		try {
-			rs = stmt.executeQuery(
-					 "SELECT idicd_type, icd_type.notation AS icdNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice, price "
+		
+		String select = "SELECT idicd_type, icd_type.notation AS icdNotation, id_manufacturer, manufacturer.notation AS manufacturerNotation, ra, rv, lv, mri, notice, price "
 					+ "FROM sm.icd_type "
 					+ "INNER JOIN sm.manufacturer "
-					+ "ON sm.icd_type.id_manufacturer = sm.manufacturer.idmanufacturer");
+					+ "ON sm.icd_type.id_manufacturer = sm.manufacturer.idmanufacturer "
+					+ "WHERE icd_type.notation LIKE '" + notation + "%'";
+		
+		if(manufacturer instanceof Manufacturer) {
+			select = select.concat(" AND sm.manufacturer.idmanufacturer = " + manufacturer.getId() + "");
+		}
+		rs = stmt.executeQuery(select);
 			
 			if(rs.isBeforeFirst()){
 				while(rs.next()) {
@@ -554,121 +559,118 @@ public class SQL_SELECT {
 					}
 					icdType.setPrice(rs.getDouble("price"));
 					
-					Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
-					manufacturer.setId(rs.getInt("id_manufacturer"));
-					icdType.setManufacturer(manufacturer);
+					if(!(manufacturer instanceof Manufacturer)) {					
+						Manufacturer manuf = new Manufacturer(rs.getString("manufacturerNotation"));
+						manuf.setId(rs.getInt("id_manufacturer"));
+						icdType.setManufacturer(manuf);
+					}else {				
+						icdType.setManufacturer(manufacturer);
+					}
+					
 					icdTypes.add(icdType);
 				}
 			}
-		} catch (SQLException e) {
-			System.out.println(e);
-		}
+		
 		return icdTypes;
 	}
 
 	/**
 	 * select all pacemakers of a specific pacemaker model
-	 * @param pmModel
+	 * @param pmType
 	 * @return the pacemakers of a specific pacemaker model
 	 */
-	public static ArrayList<PM> pacemakers(AggregateType pmModel) {
-		stmt = DB.getStatement();
-		ArrayList<PM> pms;
-		pms = new ArrayList<PM>();
+	public static ArrayList<PM> pacemakers(AggregateType pmType, String serialNr, Status status) throws SQLException {
+		
+		ArrayList<PM> pms= new ArrayList<PM>();
+		PreparedStatement ps;
 		Integer patProv;
-		try {
-			if(pmModel instanceof AggregateType && pmModel.getId() != null) {//select pacemakers of a selected model
-				rs = stmt.executeQuery(
-					 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, expiry, serialNr, idpat_provided, pm_implant.notice, pm_implant.status, patnr, implant "
+		
+		String select = "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation AS typeNotation, expiry, serialNr, idpat_provided, pm_implant.notice, pm_implant.status, patnr, implant "
 					+ "FROM sm.pm_implant "
 					+ "INNER JOIN sm.pm_type "
 					+ "ON sm.pm_implant.pm_type = sm.pm_type.idpm_type "
 					+ "LEFT OUTER JOIN human.patient "
-					+ "ON sm.pm_implant.idpat_provided = human.patient.idpatient "
-					+ "WHERE sm.pm_implant.pm_type = " + pmModel.getId() + "");
-				
-				if(rs.isBeforeFirst()){
-					while(rs.next()) {
-						PM pm = new PM(pmModel);
-						pm.setId(rs.getInt("id_pm_implant"));
-						pm.setSerialNr(rs.getString("serialNr"));					
-						pm.setExpireDate(rs.getDate("expiry").toLocalDate());
-						pm.setNotice(rs.getString("notice"));
-						pm.setStatus(Status.valueOf(rs.getString("status")));
-						
-						patProv = rs.getInt("idpat_provided");
-						
-						if(patProv == 0) {
-							pm.setPatient(null);
-						}else{
-							Patient patient = new Patient("Test", "Test");
-							patient.setId(patProv);
-							patient.setNumber(rs.getInt("patNr"));
-							pm.setPatient(patient);
-						}	
-						
-						pm.setDateOfImplantation(rs.getDate("implant"));
-						
-						//create and add an examination
-//						if(rs.getObject("id_exam") != null) {
-//							PM_Implant exam = new PM_Implant();
-//							System.out.println(rs.getObject("id_exam"));
-//							exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
-//							pm.setExam(exam);
-//						}					
-						pms.add(pm);
-					}
-				}
-			}else {//select all pacemakers
-				rs = stmt.executeQuery(
-						 "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation, expiry, serialNr, idpat_provided, pm_implant.notice, pm_implant.status, patnr, implant "
-						+ "FROM sm.pm_implant "
-						+ "INNER JOIN sm.pm_type "
-						+ "ON sm.pm_implant.pm_type = sm.pm_type.idpm_type "
-						+ "LEFT OUTER JOIN human.patient "
-						+ "ON sm.pm_implant.idpat_provided = human.patient.idpatient");
-				
-				if(rs.isBeforeFirst()){
-					while(rs.next()) {
-						AggregateType type = new AggregateType(rs.getString("notation"));
-						type.setId(rs.getInt("pm_type"));
-						PM pm = new PM(type);
-						pm.setId(rs.getInt("id_pm_implant"));
-						pm.setSerialNr(rs.getString("serialNr"));					
-						pm.setExpireDate(rs.getDate("expiry").toLocalDate());
-						pm.setNotice(rs.getString("notice"));
-						pm.setStatus(Status.valueOf(rs.getString("status")));
-						
-						patProv = rs.getInt("idpat_provided");
-						
-						if(patProv == 0) {
-							pm.setPatient(null);
-						}else{
-							Patient patient = new Patient("Test", "Test");
-							patient.setId(patProv);
-							patient.setNumber(rs.getInt("patNr"));
-							pm.setPatient(patient);
-						}	
-						
-						pm.setDateOfImplantation(rs.getDate("implant"));
-						//create and add an examination
-//						if(rs.getObject("id_exam") != null) {
-//							PM_Implant exam = new PM_Implant();
-//							System.out.println(rs.getObject("id_exam"));
-//							exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
-//							pm.setExam(exam);
-//						}					
-						pms.add(pm);
-					}
-				}
-				
-			}
-			
-			
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Schrittmacheraggregate konnten nicht abgefragt werden", "Hinweis", JOptionPane.WARNING_MESSAGE);			
+					+ "ON sm.pm_implant.idpat_provided = human.patient.idpatient";
+					
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		
+		if(pmType instanceof AggregateType && !serialNr.equals("") && status instanceof Status) {
+			select = select.concat(" WHERE sm.pm_type.idpm_type = ? AND sm.pm_implant.serialNr LIKE ? AND sm.pm_implant.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, pmType.getId());	
+			ps.setString(2, serialNr + "%");
+			ps.setString(3, status.name());
+		}else if(pmType instanceof AggregateType && !serialNr.equals("")){ //type of pm and serialNr are given
+			select = select.concat(" WHERE sm.pm_type.idpm_type = ? AND sm.pm_implant.serialNr LIKE ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, pmType.getId());	
+			ps.setString(2, serialNr + "%");
+		}else if(pmType instanceof AggregateType && status instanceof Status) {//if type of pm and status are given
+			select = select.concat(" WHERE sm.pm_type.idpm_type = ? AND sm.pm_implant.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, pmType.getId());
+			ps.setString(2, status.name());
+		}else if(!serialNr.equals("") && status instanceof Status){//if serialNr and status are given	
+			select = select.concat(" WHERE sm.pm_implant.serialNr LIKE ? AND sm.pm_implant.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, serialNr +"%");
+			ps.setString(2, status.name());
+		}else if(pmType instanceof AggregateType) {
+			select = select.concat(" WHERE sm.pm_type.idpm_type = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, pmType.getId());	
+		}else if(!serialNr.equals("")) {
+			select = select.concat(" WHERE sm.pm_implant.serialNr LIKE ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, serialNr + "%");
+		}else if(status instanceof Status) {
+			select = select.concat(" WHERE sm.pm_implant.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, status.name());
+		}else {
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
 		}
+		
+		ResultSet rs = ps.executeQuery();
+		
+		if(rs.isBeforeFirst()){
+			AggregateType pmt;
+				while(rs.next()) {
+					if(!(pmType instanceof AggregateType)) {
+						pmt = new AggregateType(rs.getString("typeNotation"));
+						pmt.setId(rs.getInt("pm_type"));
+					}else {
+						pmt = pmType;
+					}
+					PM pm = new PM(pmt);
+					pm.setId(rs.getInt("id_pm_implant"));
+					pm.setSerialNr(rs.getString("serialNr"));					
+					pm.setExpireDate(rs.getDate("expiry").toLocalDate());
+					pm.setNotice(rs.getString("notice"));
+					pm.setStatus(Status.valueOf(rs.getString("status")));
+					
+					patProv = rs.getInt("idpat_provided");
+					
+					if(patProv == 0) {
+						pm.setPatient(null);
+					}else{
+						Patient patient = new Patient("Test", "Test");
+						patient.setId(patProv);
+						patient.setNumber(rs.getInt("patNr"));
+						pm.setPatient(patient);
+					}	
+						
+					pm.setDateOfImplantation(rs.getDate("implant"));
+					
+					pms.add(pm);
+					}
+				
+				}
+		ps.close();
+		
 		return pms;
+			
 	}
 	
 	/**
@@ -676,25 +678,71 @@ public class SQL_SELECT {
 	 * @param type
 	 * @return the icds of a specific icd icd
 	 */
-	public static ArrayList<ICD> icd(ICD_Type type) {
-		stmt = DB.getStatement();
-		ArrayList<ICD> icds;
-		icds = new ArrayList<ICD>();
+	public static ArrayList<ICD> icd(ICD_Type icdType, String serialNr, Status status) throws SQLException{
+	
+		ArrayList<ICD> icds = new ArrayList<ICD>();
+		PreparedStatement ps;
 		Integer patProv;
-		try {
-			if(type instanceof ICD_Type && type.getId() != null) {//select icds of a selected model
-				rs = stmt.executeQuery(
-					 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, expiry, serialNr, icd.notice, icd.status, idpat_provided, patnr, implant "
+		
+		String select = "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation AS typeNotation, expiry, serialNr, icd.notice, icd.status, idpat_provided, patnr, implant "
 					+ "FROM sm.icd "
 					+ "INNER JOIN sm.icd_type "
 					+ "ON sm.icd.icd_type = sm.icd_type.idicd_type "
 					+ "LEFT OUTER JOIN human.patient "
-					+ "ON sm.icd.idpat_provided = human.patient.idpatient "
-					+ "WHERE sm.icd.icd_type = " + type.getId() + "");
-				
+					+ "ON sm.icd.idpat_provided = human.patient.idpatient";
+			
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);		
+		
+		if(icdType instanceof ICD_Type && !serialNr.equals("") && status instanceof Status) {
+			select = select.concat(" WHERE sm.icd_type.idicd_type = ? AND sm.icd.serialNr LIKE ? AND sm.icd.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, icdType.getId());	
+			ps.setString(2, serialNr + "%");
+			ps.setString(3, status.name());
+		}else if(icdType instanceof ICD_Type && !serialNr.equals("")){ //type of pm and serialNr are given
+			select = select.concat(" WHERE sm.icd_type.idicd_type = ? AND sm.icd.serialNr LIKE ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, icdType.getId());	
+			ps.setString(2, serialNr + "%");
+		}else if(icdType instanceof ICD_Type && status instanceof Status) {//if type of pm and status are given
+			select = select.concat(" WHERE sm.icd_type.idicd_type = ? AND sm.icd.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, icdType.getId());
+			ps.setString(2, status.name());
+		}else if(!serialNr.equals("") && status instanceof Status){//if serialNr and status are given	
+			select = select.concat(" WHERE sm.icd.serialNr LIKE ? AND sm.icd.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, serialNr +"%");
+			ps.setString(2, status.name());
+		}else if(icdType instanceof ICD_Type) {
+			select = select.concat(" WHERE sm.icd_type.idicd_type = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, icdType.getId());	
+		}else if(!serialNr.equals("")) {
+			select = select.concat(" WHERE sm.icd.serialNr LIKE ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, serialNr + "%");
+		}else if(status instanceof Status) {
+			select = select.concat(" WHERE sm.icd.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, status.name());
+		}else {
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+		}
+		
+		ResultSet rs = ps.executeQuery();
+		
 				if(rs.isBeforeFirst()){
+					ICD_Type icdt;
 					while(rs.next()) {
-						ICD icd = new ICD(type);
+						if(!(icdType instanceof ICD_Type)) {
+							icdt = new ICD_Type(rs.getString("typeNotation"));
+							icdt.setId(rs.getInt("icd_type"));
+						}else {
+							icdt = icdType;
+						}
+						ICD icd = new ICD(icdt);
 						icd.setId(rs.getInt("id_icd"));
 						icd.setSerialNr(rs.getString("serialNr"));					
 						icd.setExpireDate(rs.getDate("expiry").toLocalDate());
@@ -714,66 +762,11 @@ public class SQL_SELECT {
 						
 						icd.setDateOfImplantation(rs.getDate("implant"));
 						
-						//create and add an examination
-//						if(rs.getObject("id_exam") != null) {
-//							PM_Implant exam = new PM_Implant();
-//							System.out.println(rs.getObject("id_exam"));
-//							exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
-//							pm.setExam(exam);
-//						}					
 						icds.add(icd);
 					}
 					
-				}
-				
-			}else {//select all icds
-				rs = stmt.executeQuery(
-						 "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation, expiry, serialNr, icd.notice, icd.status, idpat_provided, patnr, implant "
-						+ "FROM sm.icd "
-						+ "INNER JOIN sm.icd_type "
-						+ "ON sm.icd.icd_type = sm.icd_type.idicd_type "
-						+ "LEFT OUTER JOIN human.patient "
-						+ "ON sm.icd.idpat_provided = human.patient.idpatient ");
-				
-				if(rs.isBeforeFirst()){
-					while(rs.next()) {
-						ICD_Type model = new ICD_Type(rs.getString("notation"));
-						model.setId(rs.getInt("icd_type"));
-						ICD icd = new ICD(model);
-						icd.setId(rs.getInt("id_icd"));
-						icd.setSerialNr(rs.getString("serialNr"));					
-						icd.setExpireDate(rs.getDate("expiry").toLocalDate());
-						icd.setNotice(rs.getString("notice"));
-						icd.setStatus(Status.valueOf(rs.getString("status")));
-						
-						patProv = rs.getInt("idpat_provided");
-						
-						if(patProv == 0) {
-							icd.setPatient(null);
-						}else{
-							Patient patient = new Patient("Test", "Test");
-							patient.setId(patProv);
-							patient.setNumber(rs.getInt("patNr"));
-							icd.setPatient(patient);
-						}	
-						
-						icd.setDateOfImplantation(rs.getDate("implant"));
-						//create and add an examination
-//						if(rs.getObject("id_exam") != null) {
-//							PM_Implant exam = new PM_Implant();
-//							System.out.println(rs.getObject("id_exam"));
-//							exam.setRefNo(rs.getInt("id_exam"));//= 0 if no examination exists
-//							pm.setExam(exam);
-//						}					
-						icds.add(icd);
-					}
-				}
-			}
-			
-		
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "ICD-Aggregate konnten nicht abgefragt werden", "Hinweis", JOptionPane.WARNING_MESSAGE);	
-		}
+				}	
+		ps.close();		
 		return icds;
 	}
 	

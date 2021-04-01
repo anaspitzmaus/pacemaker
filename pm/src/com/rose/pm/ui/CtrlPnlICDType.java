@@ -1,8 +1,7 @@
 package com.rose.pm.ui;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-
-
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.material.AggregateType;
 
@@ -23,7 +22,12 @@ public class CtrlPnlICDType extends CtrlPnlPMType{
 	
 	@Override
 	protected void setModel() {
-		tblModel = new ICDTypeTblModel(SQL_SELECT.ICD_Kinds());
+		try {
+			tblModel = new ICDTypeTblModel(SQL_SELECT.ICD_Kinds(null, ""));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		((PnlICDType)panel).setTblModel(tblModel);
 	}
 	

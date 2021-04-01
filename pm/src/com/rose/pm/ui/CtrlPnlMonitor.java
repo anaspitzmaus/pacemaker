@@ -86,7 +86,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		ctrlPnlSetDate = new Ctrl_PnlSetDate("dd.MM.yyyy", LocalDate.now(), LocalDate.now());
 		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
 		((PnlMonitor)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
-		editor = new Editor();
+		
 		monitorTypeTblCellEditor = new MonitorTypeTblCellEditor(monitorTblModel);
 		((PnlMonitor)panel).setMonitorTypeTblCellEditor(monitorTypeTblCellEditor);
 		
@@ -135,12 +135,12 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		ArrayList<MonitorType> monitorTypes;
 		try {
 			monitorTypes = SQL_SELECT.monitorTypes(null, "");
-			MonitorType[] arr = new MonitorType[monitorTypes.size()]; 	
+			//MonitorType[] arr = new MonitorType[monitorTypes.size()]; 	
 			monitorTypeModel = new DefaultComboBoxModel<MonitorType>();
 			
 	        // ArrayList to Array Conversion 
 	        for (int i = 0; i < monitorTypes.size(); i++) {
-	            arr[i] = monitorTypes.get(i);		
+	           // arr[i] = monitorTypes.get(i);		
 	            monitorTypeModel.addElement(monitorTypes.get(i));
 		 	}
 		} catch (SQLException e) {
@@ -586,7 +586,7 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 			}
 			
 			protected void updateDBAndTblModel() {
-				Integer key = null;;
+				Integer key = null;
 				try {
 					key = SQL_INSERT.monitor(monitor);					
 				} catch (SQLException e) {

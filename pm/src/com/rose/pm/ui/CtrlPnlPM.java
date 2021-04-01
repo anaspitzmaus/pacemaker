@@ -21,18 +21,23 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.BadLocationException;
 
 import com.rose.Isynet;
 import com.rose.person.Patient;
@@ -42,12 +47,17 @@ import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
+import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.CtrlPnlMonitor.ListMonitorTypeRenderer;
+import com.rose.pm.ui.CtrlPnlMonitor.MonitorTypeTblCellEditor;
 import com.rose.pm.ui.CtrlPnlMonitor.SearchMonitorTypeListener;
+import com.rose.pm.ui.CtrlPnlMonitor.SearchNotationListener;
+import com.rose.pm.ui.CtrlPnlMonitor.TblMouseAdaptor;
 import com.rose.pm.ui.Editor.DateCellEditor;
+import com.rose.pm.ui.Editor.SearchStatusTblCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblCellImplantDateRenderer;
 import com.rose.pm.ui.Renderer.TblCellPatientRenderer;
@@ -75,27 +85,41 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
 	Renderer.TblCellImplantDateRenderer tblImplantDateRenderer;
+	Editor.SearchStatusTblCellEditor statusTblCellEditor;
+	PMTypeTblCellEditor pmTypeTblCellEditor;
 	
 	
 	public CtrlPnlPM() {
 		createPanel();
-		setComponentLabeling();
-		
+		setComponentLabeling();		
 		ctrlPnlSetDate = new Ctrl_PnlSetDate("dd.MM.yyyy", LocalDate.now(), LocalDate.now());
 		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
 		((PnlPM)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
-		setStandardListener();
-		setListener();
-		setModel();
-		setEditor();
-		setRenderer();
-		((PnlPM)panel).setAggregateTypeSelectionIndex(-1);
-		((PnlPM)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		pmTypeTblCellEditor = new PMTypeTblCellEditor(aggregateTblModel);
+		((PnlPM)panel).setPMTypeTblCellEditor(pmTypeTblCellEditor);
+		statusTblCellEditor = editor.new SearchStatusTblCellEditor(aggregateTblModel, panel);
+		((PnlPM)panel).setStatusTblCellEditor(statusTblCellEditor);
+		JTextField textField = new JTextField("Text");
+		SearchNotationListener searchNotationListener = new SearchNotationListener();
+		textField.getDocument().addDocumentListener(searchNotationListener);		
+		((PnlPM)panel).setNotationCellEditor(new DefaultCellEditor(textField));
+		//panel.table.setAutoCreateRowSorter(true);
+		panel.setFirstRowHeight(40);//the standard height of the first row
+		
+		setStandardListener();	
 	}
 	
 	protected void createPanel() {
 		panel = new PnlPM();
 		panel.setName("Schrittmacher");
+		setListener();
+		setModel();
+		setEditor();
+		setRenderer();
+		((PnlPM)panel).setAggregateTypeSelectionIndex(-1);
+		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tblMouseAdaptor = new TblMouseAdaptor();
+		((PnlPM)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
 	protected void setComponentLabeling() {
@@ -127,9 +151,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		createListener = new CreateListener();
 		((PnlPM)panel).addCreateListener(createListener);
 		aggregateTypeListener = new AggregateTypeListener();
-		((PnlPM)panel).addAggregateTypeListener(aggregateTypeListener);	
-		tblMouseAdaptor = new TblMouseAdaptor();
-		((PnlPM)panel).addTblMouseAdaptor(tblMouseAdaptor);
+		((PnlPM)panel).addAggregateTypeListener(aggregateTypeListener);			
 	}
 	
 	 protected void setEditor() {
@@ -139,20 +161,33 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	 }
 	
 	 void setModel() {
-		ArrayList<AggregateType> aggregateTypes = SQL_SELECT.pacemakerKinds();
-		AggregateType[] arr = new AggregateType[aggregateTypes.size()]; 		  
-        // ArrayList to Array Conversion 
-        for (int i = 0; i < aggregateTypes.size(); i++) 
-            arr[i] = aggregateTypes.get(i);		
+		ArrayList<AggregateType> aggregateTypes;
+		try {
+			aggregateTypes = SQL_SELECT.pacemakerKinds(null, "");
+			//AggregateType[] arr = new AggregateType[aggregateTypes.size()]; 
+			aggregateTypeModel = new DefaultComboBoxModel<AggregateType>();
+			 for (int i = 0; i < aggregateTypes.size(); i++) {
+		            //arr[i] = aggregateTypes.get(i);		
+		            aggregateTypeModel.addElement(aggregateTypes.get(i));
+			 }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				  
+       	((PnlPM)panel).setAggregatTypeModel(aggregateTypeModel);
+       	
+       	
+		try {
+			aggregateTblModel = new AggregateTblModel(SQL_SELECT.pacemakers(aggregateTypeListener.pmType, "", Status.Lager));
+			panel.setTblModel(aggregateTblModel);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Schrittmacheraggregate konnten nicht abgefragt werden" + e.getMessage(), "Hinweis", JOptionPane.WARNING_MESSAGE);			
+		}
 		
-		aggregateTypeModel = new DefaultComboBoxModel<AggregateType>(arr);
-		//aggregateTypeModel = new AggregateTypeModel();
-		((PnlPM)panel).setAggregatTypeModel(aggregateTypeModel);
-		aggregateTblModel = new AggregateTblModel(SQL_SELECT.pacemakers(aggregateTypeListener.model));
-		((PnlPM)panel).setAggregateTblModel(aggregateTblModel);
 	}
 	
-	private void setRenderer() {
+	protected void setRenderer() {
 		renderer = new Renderer();
 		aggregateTypeRenderer = new AggregateTypeRenderer();
 		((PnlPM)panel).setAggregatTypeRenderer(aggregateTypeRenderer);
@@ -174,23 +209,35 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	
 	class AggregateTypeListener implements ItemListener{
 
-		AggregateType model;
+		AggregateType pmType;
 		
 		@Override
 		public void itemStateChanged(ItemEvent event) {
 			if (event.getStateChange() == ItemEvent.SELECTED) {
 				try {
-					model = (AggregateType) event.getItem();			        
+					pmType = (AggregateType) event.getItem();			        
 				} catch (ClassCastException e) {
-					model = null;
+					pmType = null;
 				}				
 		    }
-			updateTblModel();		
+			//updateTblModel();		
 		}
 		
 		protected void updateTblModel() {
-			aggregateTblModel.setAggregats(SQL_SELECT.pacemakers(model));			
-			aggregateTblModel.fireTableDataChanged();
+			Status status;
+			try {
+				status = statusTblCellEditor.getSearchStatusListener().getStatus();
+			}catch(NullPointerException e) {
+				status = null;
+			}
+			try {
+				aggregateTblModel.setAggregats(SQL_SELECT.pacemakers(pmType, aggregateTblModel.searchNotation, status));
+				aggregateTblModel.fireTableDataChanged();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+			
 		}		
 	}
 	
@@ -244,8 +291,35 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		}
 		
 		protected void updateDBAndTblModel() {
-			SQL_INSERT.pacemaker(pm);				
-			aggregateTblModel.setAggregats(SQL_SELECT.pacemakers((AggregateType) aggregateTypeModel.getSelectedItem()));
+			Integer key = null;
+			try {
+				key = SQL_INSERT.pacemaker(pm);	
+			}catch(SQLException e) {
+				JOptionPane.showMessageDialog(new JFrame(),
+					    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: CreateListener at CtrlPnlPM", "SQL Exception warning",
+					    JOptionPane.WARNING_MESSAGE);
+			}
+			
+			if(key != null) {//if insertion was successful
+				aggregateTblModel.setValueAt(Status.Lager, 0, 5);
+				aggregateTblModel.setValueAt(aggregateTypeModel.getSelectedItem(), 0, 1);
+				for(int i = 0; i < pmTypeTblCellEditor.getCbxPMTypeModel().getSize(); i++) {
+					try {
+						if(pmTypeTblCellEditor.getCbxPMTypeModel().getElementAt(i).getNotation().equals(((AggregateType)aggregateTypeModel.getSelectedItem()).getNotation())) {
+							pmTypeTblCellEditor.getCbxPMTypeModel().setSelectedItem(pmTypeTblCellEditor.getCbxPMTypeModel().getElementAt(i));
+						}
+					}catch(NullPointerException e) {//if (monitorTypeTblCellEditor.getCbxMonitorTypeModel().getElementAt(i) == null
+						//do nothing
+					}
+				}
+				
+				try {
+					aggregateTblModel.setAggregats(SQL_SELECT.pacemakers((AggregateType) aggregateTypeModel.getSelectedItem(), (String)aggregateTblModel.getValueAt(0, 2), (Status)aggregateTblModel.getValueAt(0, 5)));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			aggregateTblModel.fireTableDataChanged();
 		}
 		
@@ -264,6 +338,15 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			 PM.class, AggregateType.class, String.class, LocalDate.class, Status.class, String.class, Patient.class, Date.class
 		};
 		
+		protected PM searchPM = null;
+		protected AggregateType searchPMType = null;
+		protected String searchNotation = "";
+		protected LocalDate searchLocalDate = null;
+		protected String searchNotice = "";
+		protected Status searchStatus = Status.Lager;
+		protected Patient searchPatient = null;
+		protected Date searchDate = null;
+		
 		public AggregateTblModel(ArrayList<? extends PM> paceMakers) {
 			this.aggregates = paceMakers;
 			columnNames = new ArrayList<String>();
@@ -275,6 +358,13 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			columnNames.add("Bemerkung");
 			columnNames.add("Patient");
 			columnNames.add("Implantationsdatum");
+		}
+		
+
+		@Override
+		public void fireTableDataChanged() {			
+			super.fireTableDataChanged();
+			panel.setFirstRowHeight(40);//set the height of the first row 
 		}
 		
 		@Override
@@ -303,48 +393,83 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-						
-			switch(columnIndex) {
-			case 0: return aggregates.get(rowIndex);
+			if(rowIndex > 0) {		
+				switch(columnIndex) {
+					case 0: return aggregates.get(rowIndex - 1);
+					
+					case 1: return aggregates.get(rowIndex - 1).getMaterialType();
+					
+					case 2: return aggregates.get(rowIndex - 1).getSerialNr();
+					
+					case 3: return aggregates.get(rowIndex - 1).getExpireDate();
+					
+					case 4: return aggregates.get(rowIndex - 1).getStatus();
+					
+					case 5: return aggregates.get(rowIndex - 1).getNotice();
+					
+					case 6: return aggregates.get(rowIndex - 1).getPatient();
+					
+					case 7: return aggregates.get(rowIndex - 1).getDateOfImplantation();
+					
+					default: return null;
+				}
 			
-			case 1: return aggregates.get(rowIndex).getMaterialType();
-			
-			case 2: return aggregates.get(rowIndex).getSerialNr();
-			
-			case 3: return aggregates.get(rowIndex).getExpireDate();
-			
-			case 4: return aggregates.get(rowIndex).getStatus();
-			
-			case 5: return aggregates.get(rowIndex).getNotice();
-			
-			case 6: return aggregates.get(rowIndex).getPatient();
-			
-			case 7: return aggregates.get(rowIndex).getDateOfImplantation();
-			
-			default: return null;
-			
-			}	
+			}else {
+				switch (columnIndex) {
+					case 0: return searchPM;
+					case 1: return searchPMType;
+					case 2: return searchNotation;
+					case 3: return searchLocalDate;
+					case 4: return searchNotice;
+					case 5: return searchStatus;
+					case 6: return searchPatient;
+					case 7: return searchDate;
+					default: return null;
+				}
+			}
 			
 		}
 		
 		@Override
 		public void setValueAt(Object value, int row, int col) {
-            aggregates.get(row).setDateOfImplantation((Date)value);
-            try {
-				SQL_UPDATE.dateOfImplant(aggregates.get(row));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(row == 0) {//for the first 'search' row
+				switch(col) {
+				case 1:
+					searchPMType = (AggregateType)value;
+					break;		
+				case 2:
+					searchNotation = (String)value;
+					break;
+				case 5:
+					searchStatus = (Status)value;
+					break;
+				}
+			}else {
+	            aggregates.get(row).setDateOfImplantation((Date)value);
+	            try {
+					SQL_UPDATE.dateOfImplant(aggregates.get(row));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
             //change value at database;
 		}
 		
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			if(columnIndex == 7) {
-				return true;
+			if(rowIndex == 0) {
+				if(columnIndex == 1 || columnIndex ==2 || columnIndex == 5) {
+					return true;
+				}else {
+					return false;
+				}
 			}else {
-				return false;
+				if(columnIndex == 7) {
+					return true;
+				}else {
+					return false;
+				}
 			}
 		}
 		
@@ -440,7 +565,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 				
 			try {
 				aggregateTblModel.setValueAt(pmType, 0, 1);
-				aggregateTblModel.setAggregates(SQL_SELECT.pacemakers((AggregateType) aggregateTblModel.getValueAt(0, 1), (String)aggregateTblModel.getValueAt(0, 2), (Status)aggregateTblModel.getValueAt(0, 5)));
+				aggregateTblModel.setAggregats(SQL_SELECT.pacemakers((AggregateType) aggregateTblModel.getValueAt(0, 1), (String)aggregateTblModel.getValueAt(0, 2), (Status)aggregateTblModel.getValueAt(0, 5)));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -449,6 +574,42 @@ public class CtrlPnlPM extends CtrlPnlBase{
 					
 		 }		 
 	 }
+	 
+	 class SearchNotationListener implements DocumentListener{
+			String txt;
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				setNotation(e);			
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				setNotation(e);				
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				setNotation(e);				
+			}
+			
+			private void setNotation(DocumentEvent e) {
+				try {
+					txt = e.getDocument().getText(0, e.getDocument().getLength());
+					
+				} catch (BadLocationException e1) {
+					txt = "";
+				}
+				aggregateTblModel.setValueAt(txt, 0, 2);
+				try {
+					aggregateTblModel.setAggregats(SQL_SELECT.pacemakers((AggregateType)aggregateTblModel.getValueAt(0, 1), (String) aggregateTblModel.getValueAt(0, 2), (Status) aggregateTblModel.getValueAt(0, 5)));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				aggregateTblModel.fireTableDataChanged();
+				
+			}	
+		}
 	 
 	 class ListPMTypeRenderer extends JLabel implements ListCellRenderer<AggregateType>{
 
@@ -477,14 +638,12 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	class TblPMIDRenderer extends JLabel implements TableCellRenderer{
 
 		
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -7687161924946698926L;
 
 		public TblPMIDRenderer() {
 			super.setOpaque(true);
 		}
+		
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
 				int column) {
@@ -592,8 +751,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		PM pm;
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
-			if (((PnlPM)panel).getSelectedTblRow() > -1) {			
-				int row = ((PnlPM)panel).getSelectedTblRow();
+			if (((PnlPM)panel).getSelectedTblRow() > 0) {			
+				int row = ((PnlPM)panel).getSelectedTblRow() - 1;
 	            pm = (PM) ((PnlPM)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
 	        }			
 		}

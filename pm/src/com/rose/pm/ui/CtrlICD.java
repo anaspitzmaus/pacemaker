@@ -51,9 +51,15 @@ public class CtrlICD extends CtrlAggregates{
 				
 				if(id != null) {
 					model.setId(id);
-					ctrlPnlPMType.getAggregateTypeTableModel().setAggregats(SQL_SELECT.ICD_Kinds());
+					try {
+						ctrlPnlPMType.getAggregateTypeTableModel().setAggregats(SQL_SELECT.ICD_Kinds(null, ""));
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					ctrlPnlPMType.getAggregateTypeTableModel().fireTableDataChanged();
 					ctrlPnlPM.aggregateTypeModel.addElement(model);
+					ctrlPnlPMType.setFirstRowHeight(40);
 				}
 			}
 		}

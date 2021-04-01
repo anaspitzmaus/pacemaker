@@ -27,7 +27,7 @@ public class CtrlDlgChangeICD extends CtrlDlgChangePM{
 		@Override
 		protected void updateDBAndTblModel() {
 			SQL_UPDATE.ICD((ICD) pm);				
-			((AggregateTblModel)model).setAggregats(SQL_SELECT.icd((ICD_Type) pm.getMaterialType()));			
+			//((AggregateTblModel)model).setAggregats(SQL_SELECT.icd((ICD_Type) pm.getMaterialType()));			
 		}
 		
 	

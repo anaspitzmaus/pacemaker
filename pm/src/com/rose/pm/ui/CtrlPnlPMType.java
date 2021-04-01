@@ -99,8 +99,13 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	}
 	
 	protected void setModel() {
-		tblModel = new PMTypeTblModel(SQL_SELECT.pacemakerKinds());
-		((PnlPMType)panel).setTblModel(tblModel);			
+		try {
+			tblModel = new PMTypeTblModel(SQL_SELECT.pacemakerKinds(null, ""));
+			((PnlPMType)panel).setTblModel(tblModel);	
+		}catch(SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	protected void setStandardModels() {
@@ -812,6 +817,10 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 
 	protected PropertyChangeListener getPriceListener() {
 		return this.priceListener;
+	}
+
+	protected void setFirstRowHeight(int height) {
+		panel.setFirstRowHeight(height);
 	}
 
 	
