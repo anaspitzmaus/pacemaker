@@ -22,10 +22,12 @@ import javax.swing.table.TableCellRenderer;
 import com.rose.person.Patient;
 import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.Electrode;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.CtrlPnlPM.PMTypeTblCellEditor;
 import com.rose.pm.ui.Editor.SearchStatusTblCellEditor;
+import com.rose.pm.ui.Renderer.TblCellMaterialIDRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -115,10 +117,6 @@ public class PnlPM extends PnlBase{
 		btnShowAll.addActionListener(l);
 	}
 	
-	protected void setPMIDRenderer(Class<PM> pmclass, TableCellRenderer r) {
-		table.setDefaultRenderer(pmclass, r);
-	}
-	
 	protected void setStringRenderer(Class<String> stringClass, TableCellRenderer r) {
 		table.setDefaultRenderer(stringClass, r);
 	}
@@ -183,6 +181,11 @@ public class PnlPM extends PnlBase{
 
 	protected void setNotationCellEditor(TableCellEditor editor) {
 		table.getColumnModel().getColumn(2).setCellEditor(editor);
+	}
+
+
+	protected void setTblPMIDRenderer(Class<PM> pmClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(pmClass, renderer);		
 	}	
 
 }

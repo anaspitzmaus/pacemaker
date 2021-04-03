@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
@@ -30,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -47,6 +49,7 @@ import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
+import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.PM;
@@ -60,6 +63,7 @@ import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Editor.SearchStatusTblCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblCellImplantDateRenderer;
+import com.rose.pm.ui.Renderer.TblCellMaterialIDRenderer;
 import com.rose.pm.ui.Renderer.TblCellPatientRenderer;
 
 public class CtrlPnlPM extends CtrlPnlBase{
@@ -73,12 +77,12 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	AggregateTypeListener aggregateTypeListener;
 	AggregateTblModel aggregateTblModel;
 	CreateListener createListener;
-	TblPMIDRenderer tblPMIDRenderer;
 	TblStringRenderer tblStringRenderer;
 	TblAggregateTypeRenderer tblAggregateTypeRenderer;
-	TblStatusRenderer tblStatusRenderer;
+	Renderer.TblCellStatusRenderer tblStatusRenderer;
 	TblCellPatientRenderer tblPatientRenderer;
-	com.rose.pm.ui.Renderer.TblCellLocalDateRenderer tblDateRenderer;
+	Renderer.TblCellLocalDateRenderer tblDateRenderer;
+	Renderer.TblCellMaterialIDRenderer tblCellMaterialIDRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
@@ -191,15 +195,15 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		renderer = new Renderer();
 		aggregateTypeRenderer = new AggregateTypeRenderer();
 		((PnlPM)panel).setAggregatTypeRenderer(aggregateTypeRenderer);
-		tblPMIDRenderer = new TblPMIDRenderer();
-		((PnlPM)panel).setPMIDRenderer(PM.class, tblPMIDRenderer);
+		 tblCellMaterialIDRenderer = renderer.new TblCellMaterialIDRenderer();
+		((PnlPM)panel).setTblPMIDRenderer(PM.class, tblCellMaterialIDRenderer);
 		tblStringRenderer = new TblStringRenderer();
 		((PnlPM)panel).setStringRenderer(String.class, tblStringRenderer);
 		tblDateRenderer = renderer.new TblCellLocalDateRenderer();
 		((PnlPM)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
 		tblAggregateTypeRenderer = new TblAggregateTypeRenderer();
 		((PnlPM)panel).setTblAggregateTypeRenderer(AggregateType.class, tblAggregateTypeRenderer);
-		tblStatusRenderer = new TblStatusRenderer();
+		tblStatusRenderer = renderer.new TblCellStatusRenderer();
 		((PnlPM)panel).setStatusRenderer(Status.class, tblStatusRenderer);
 		 tblPatientRenderer = renderer.new TblCellPatientRenderer();
 		 ((PnlPM)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
@@ -687,9 +691,6 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	
 	class TblStatusRenderer extends JLabel implements TableCellRenderer{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1457346148401818937L;
 
 		public TblStatusRenderer() {
@@ -711,36 +712,51 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			}		
 			
 			return this;
-		}
-		
-		
-		
-		
+		}	
 		
 	}
 	
 	class TblAggregateTypeRenderer extends JLabel implements TableCellRenderer{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 2455144833293671793L;
 
 		public TblAggregateTypeRenderer() {
-			super.setOpaque(true);
+			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+			setVerticalAlignment(CENTER);
 		}
 		
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-			AggregateType type = (AggregateType) value;
-			setText(type.getNotation());
-			if(isSelected) {
-				setBackground(Color.ORANGE);
-			}else {
-				setBackground(row%2==0 ? Color.white : Color.lightGray);   
-			}
+			if(row>0) {//for all but the first row
+				if(value instanceof AggregateType) {
+					AggregateType type = (AggregateType) value;
+					setLblText(type.getNotation());
+					if(isSelected) {
+						setBackground(Color.ORANGE);
+					}else {
+						setBackground(row%2==0 ? Color.white : Color.lightGray);   
+					}
+					setBorder(null);
+				}
+			}else if(row==0){//for the first 'search' row
+				Border border = BorderFactory.createLineBorder(Color.ORANGE, 2);
+				setBorder(border);
+				setBackground(Color.white);	
+				
+				if(value instanceof AggregateType) {
+					setText(((AggregateType) value).getNotation());
+				}else {
+					setLblText("Alle Aggregatmodelle");					
+				}
+			}			
+				
 			return this;
+		}
+		
+		protected void setLblText(String txt) {
+			setText(txt);
 		}
 		
 	}

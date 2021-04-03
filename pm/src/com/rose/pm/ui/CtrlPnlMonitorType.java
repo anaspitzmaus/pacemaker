@@ -411,8 +411,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		
 	}
 	
-	class TblStringRenderer extends JLabel implements TableCellRenderer{
-		
+	class TblStringRenderer extends JLabel implements TableCellRenderer{		
 		
 		private static final long serialVersionUID = 6835433470340104756L;
 
