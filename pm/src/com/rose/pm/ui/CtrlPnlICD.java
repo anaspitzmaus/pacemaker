@@ -9,6 +9,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.AbstractTableModel;
 
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
@@ -16,6 +17,8 @@ import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.CtrlPnlPM.AggregateTblModel;
+import com.rose.pm.ui.CtrlPnlPM.PMTypeTblCellEditor;
 import com.rose.pm.ui.CtrlPnlPM.TblMouseAdaptor;
 
 public class CtrlPnlICD extends CtrlPnlPM {
@@ -79,6 +82,7 @@ public class CtrlPnlICD extends CtrlPnlPM {
 	protected void setListener() {
 		createListener = new CreateListener();
 		((PnlICD)panel).addCreateListener(createListener);
+		//Listener for the JComboBox that displays the types of aggregates
 		aggregateTypeListener = new AggregateTypeListener();
 		((PnlICD)panel).addAggregateTypeListener(aggregateTypeListener);
 		tblMouseAdaptor = new TblMouseAdaptor();
@@ -90,27 +94,31 @@ public class CtrlPnlICD extends CtrlPnlPM {
 		 editor = new Editor();
 		 dateCellEditor = editor.new DateCellEditor();
 		 ((PnlICD)panel).setDateCellEditor(dateCellEditor);
+		 
+		 pmTypeTblCellEditor = new ICDTypeTblCellEditor(aggregateTblModel);
+		((PnlICD)panel).setPMTypeTblCellEditor(pmTypeTblCellEditor);
 	 }
 	
-	class AggregateTypeListener extends CtrlPnlPM.AggregateTypeListener{
-		
-		@Override
-		protected void updateTblModel() {
-			Status status;
-			try {
-				status = statusTblCellEditor.getSearchStatusListener().getStatus();
-			}catch(NullPointerException e) {
-				status = null;
-			}
-			try {
-				aggregateTblModel.setAggregats(SQL_SELECT.icd((ICD_Type)pmType, aggregateTblModel.searchNotation, status));			
-				aggregateTblModel.fireTableDataChanged();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-		}		
-	}
+	
+//	class AggregateTypeListener extends CtrlPnlPM.AggregateTypeListener{
+//		
+//		@Override
+//		protected void updateTblModel() {
+//			Status status;
+//			try {
+//				status = statusTblCellEditor.getSearchStatusListener().getStatus();
+//			}catch(NullPointerException e) {
+//				status = null;
+//			}
+//			try {
+//				aggregateTblModel.setAggregats(SQL_SELECT.icd((ICD_Type)pmType, aggregateTblModel.searchNotation, status));			
+//				aggregateTblModel.fireTableDataChanged();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}	
+//		}		
+//	}
 	
 		
 	class CreateListener extends CtrlPnlPM.CreateListener{
@@ -153,6 +161,62 @@ public class CtrlPnlICD extends CtrlPnlPM {
 			}
 			
 			aggregateTblModel.fireTableDataChanged();
+		}	
+	}
+	
+	protected class ICDTypeTblCellEditor extends PMTypeTblCellEditor{
+
+		private static final long serialVersionUID = -6752666468071864655L;
+
+		public ICDTypeTblCellEditor(AbstractTableModel tblModel) {
+			super(tblModel);			
+		}		
+		
+		@Override
+		protected void setAggregateTypeRenderer() {
+			listPMTypeRenderer = new ListICDTypeRenderer();
+		}
+
+		@Override
+		protected void setAggregateTypeListener() {
+			searchPMTypeListener = new SearchICDTypeListener(this.tblModel);			
+		}
+
+		@Override
+		protected void selectAggregateTypes() {
+			try {
+				pmTypes = SQL_SELECT.ICD_Kinds(null, "");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}		
+	}
+	
+	protected class SearchICDTypeListener extends SearchPMTypeListener{
+
+		public SearchICDTypeListener(AbstractTableModel tblModel) {
+			super(tblModel);			
+		}	
+
+		@Override
+		protected void setAggregates() {
+			try {
+				((AggregateTblModel) tblModel).setAggregats(SQL_SELECT.icd((ICD_Type) tblModel.getValueAt(0, 1), (String)tblModel.getValueAt(0, 2), (Status)tblModel.getValueAt(0, 5)));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+		}	
+	}
+	
+	protected class ListICDTypeRenderer extends ListPMTypeRenderer{
+
+		private static final long serialVersionUID = -6873350278090871909L;
+
+		@Override
+		protected void setAllAggregateText() {
+			setText("Alle ICD-Modelle");
 		}	
 	}
 	

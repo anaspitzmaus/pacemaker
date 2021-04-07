@@ -134,7 +134,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 			 electrodeTypeModel = new DefaultComboBoxModel<ElectrodeType>();
 	        // ArrayList to Array Conversion 
 	        for (int i = 0; i < electrodeTypes.size(); i++) {
-	            arr[i] = electrodeTypes.get(i);		
+	            //arr[i] = electrodeTypes.get(i);		
 	            electrodeTypeModel.addElement(electrodeTypes.get(i));
 		 	}
 		} catch (SQLException e) {
