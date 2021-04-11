@@ -1088,7 +1088,7 @@ public class SQL_SELECT {
 				
 				if(!(manufacturer instanceof Manufacturer)) {					
 					Manufacturer manuf = new Manufacturer(rs.getString("manufacturerNotation"));
-					manuf.setId(rs.getInt("id_manufacturer"));
+					manuf.setId(rs.getInt("idmanufacturer"));
 					sicdType.setManufacturer(manuf);
 				}else {				
 					sicdType.setManufacturer(manufacturer);
@@ -1107,7 +1107,7 @@ public class SQL_SELECT {
 		PreparedStatement ps;
 		Integer patProv;
 		
-		String select = "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, patnr, implant "
+		String select = "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, sicd_type.notation, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, patnr, implant "
 						+ "FROM sm.sicd "
 						+ "INNER JOIN sm.sicd_type "
 						+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype "
@@ -1119,18 +1119,18 @@ public class SQL_SELECT {
 		DB.getConnection().setAutoCommit(true);
 		
 		if(type instanceof SICDType && !serialNr.equals("") && status instanceof Status) {
-			select = select.concat(" WHERE sm.sicd_type.id_sicd_type = ? AND sm.sicd.serialNr LIKE ? AND sm.sicd.status = ?");
+			select = select.concat(" WHERE sm.sicd_type.idsicdtype = ? AND sm.sicd.serialNr LIKE ? AND sm.sicd.status = ?");
 			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, type.getId());	
 			ps.setString(2, serialNr + "%");
 			ps.setString(3, status.name());
 		}else if(type instanceof SICDType && !serialNr.equals("")){ //type of sicd and serialNr are given
-			select = select.concat(" WHERE sm.sicd_type.id_sicd_type = ? AND sm.sicd.serialNr LIKE ?");
+			select = select.concat(" WHERE sm.sicd_type.idsicdtype = ? AND sm.sicd.serialNr LIKE ?");
 			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, type.getId());	
 			ps.setString(2, serialNr + "%");
 		}else if(type instanceof SICDType && status instanceof Status) {//if type of sicd and status are given
-			select = select.concat(" WHERE sm.sicd_type.id_sicd_type = ? AND sm.sicd.status = ?");
+			select = select.concat(" WHERE sm.sicd_type.idsicdtype = ? AND sm.sicd.status = ?");
 			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, type.getId());
 			ps.setString(2, status.name());
@@ -1140,7 +1140,7 @@ public class SQL_SELECT {
 			ps.setString(1, serialNr +"%");
 			ps.setString(2, status.name());
 		}else if(type instanceof SICDType) {
-			select = select.concat(" WHERE sm.sicd_type.id_sicd_type = ?");
+			select = select.concat(" WHERE sm.sicd_type.idsicdtype = ?");
 			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, type.getId());	
 		}else if(!serialNr.equals("")) {
@@ -1162,7 +1162,7 @@ public class SQL_SELECT {
 			while(rs.next()) {
 				if(!(type instanceof SICDType)) {
 					st = new SICDType(rs.getString("notation"));
-					st.setId(rs.getInt("modelId"));
+					st.setId(rs.getInt("id_sicd_type"));
 				}else {
 					st = type;
 				}

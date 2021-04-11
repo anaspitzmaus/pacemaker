@@ -93,7 +93,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		((PnlElectrode)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
 		electrodeTypeTblCellEditor = new ElectrodeTypeTblCellEditor();
 		((PnlElectrode)panel).setElectrodeTypeTblCellEditor(electrodeTypeTblCellEditor);
-		editor = new Editor();
+		
 		searchStatusTblCellEditor = editor.new SearchStatusTblCellEditor(electrodeTblModel, panel);
 		((PnlElectrode)panel).setStatusTblCellEditor(searchStatusTblCellEditor);
 		
@@ -552,40 +552,41 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	 }
 	 
 	 class SearchNotationListener implements DocumentListener{
-			String txt;
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				setNotation(e);			
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				setNotation(e);				
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				setNotation(e);				
-			}
-			
-			private void setNotation(DocumentEvent e) {
-				try {
-					txt = e.getDocument().getText(0, e.getDocument().getLength());
-					
-				} catch (BadLocationException e1) {
-					txt = "";
-				}
-				electrodeTblModel.setValueAt(txt, 0, 2);
-				try {
-					electrodeTblModel.setElectrodes(SQL_SELECT.electrodes((ElectrodeType)electrodeTblModel.getValueAt(0, 1), (String) electrodeTblModel.getValueAt(0, 2), (Status) electrodeTblModel.getValueAt(0, 5)));
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				electrodeTblModel.fireTableDataChanged();
-				
-			}	
+		String txt;
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			setNotation(e);			
 		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			setNotation(e);				
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			setNotation(e);				
+		}
+		
+		private void setNotation(DocumentEvent e) {
+			try {
+				txt = e.getDocument().getText(0, e.getDocument().getLength());
+				
+			} catch (BadLocationException e1) {
+				txt = "";
+			}
+			electrodeTblModel.setValueAt(txt, 0, 2);
+			try {
+				electrodeTblModel.setElectrodes(SQL_SELECT.electrodes((ElectrodeType)electrodeTblModel.getValueAt(0, 1), (String) electrodeTblModel.getValueAt(0, 2), (Status) electrodeTblModel.getValueAt(0, 5)));
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			electrodeTblModel.fireTableDataChanged();
+			
+		}	
+	}
+	 
 	class TblRowSelectionListener implements ListSelectionListener{
 		Electrode electrode;
 		@Override

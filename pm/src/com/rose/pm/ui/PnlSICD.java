@@ -25,6 +25,8 @@ import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.CtrlPnlSICD.SICDTypeTblCellEditor;
+import com.rose.pm.ui.Editor.SearchStatusTblCellEditor;
+import com.rose.pm.ui.Renderer.TblCellMaterialIDRenderer;
 import com.rose.pm.ui.Renderer.TblCellPatientRenderer;
 
 import net.miginfocom.swing.MigLayout;
@@ -174,5 +176,22 @@ public class PnlSICD extends PnlBase {
 
 	protected void setSICDTypeTblCellEditor(TableCellEditor editor) {
 		table.getColumnModel().getColumn(1).setCellEditor(editor);		
+	}
+
+
+	protected void setTblSICDIDRenderer(Class<SICD> sicdClass, TblCellMaterialIDRenderer renderer) {
+		table.setDefaultRenderer(sicdClass, renderer);		
+	}
+
+	protected void setStatusTblCellEditor(TableCellEditor editor) {
+		table.getColumnModel().getColumn(5).setCellEditor(editor);			
+	}
+	
+	protected void setNotationCellEditor(TableCellEditor editor) {
+		table.getColumnModel().getColumn(2).setCellEditor(editor);
+	}
+	
+	protected void setTblCellStringRenderer(Class<String> stringClass, TableCellRenderer r) {
+		table.setDefaultRenderer(stringClass, r);
 	}
 }
