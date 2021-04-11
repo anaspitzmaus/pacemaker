@@ -22,6 +22,7 @@ import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.CtrlPnlSICD.SICDTypeTblCellEditor;
 import com.rose.pm.ui.Renderer.TblCellLocalDateRenderer;
 import com.rose.pm.ui.Renderer.TblCellMaterialIDRenderer;
 
@@ -175,6 +176,8 @@ public class PnlElectrode extends PnlBase {
 	protected void setLocalDateRenderer(Class<LocalDate> localDateClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(localDateClass, renderer);
 	}
+
+	
 
 	
 

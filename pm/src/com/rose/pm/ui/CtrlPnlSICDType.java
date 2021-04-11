@@ -113,7 +113,7 @@ public class CtrlPnlSICDType extends CtrlPnlBase{
 		((PnlSICDType)panel).setManufacturerModel(manufacturerModel);
 		
 		try {
-			tblModel = new SICDTypeTblModel(SQL_SELECT.sicdTypes());
+			tblModel = new SICDTypeTblModel(SQL_SELECT.sicdTypes(null, ""));
 			((PnlSICDType)panel).setTblModel(tblModel);
 			System.out.println("SICDType" + ((PnlSICDType)panel).table.getColumnClass(0));
 		} catch (SQLException e) {

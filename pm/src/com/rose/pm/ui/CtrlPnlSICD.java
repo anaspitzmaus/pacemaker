@@ -3,6 +3,7 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +15,12 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
-
+import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -24,11 +29,12 @@ import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-
 import com.rose.Isynet;
 import com.rose.person.Patient;
 import com.rose.pm.Ctrl_PnlSetDate;
@@ -36,15 +42,11 @@ import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.MaterialType;
-import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
-import com.rose.pm.ui.Renderer.TblCellImplantDateRenderer;
 import com.rose.pm.ui.Renderer.TblCellPatientRenderer;
-import com.rose.pm.ui.Renderer.TblCellStatusRenderer;
 import com.rose.pm.ui.Renderer.TblStringRenderer;
 
 public class CtrlPnlSICD extends CtrlPnlBase{
@@ -57,19 +59,23 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	SICDTypeListener sicdTypeListener;
 	SICDTblModel sicdTblModel;
 	CreateListener createListener;
-	ShowAllListener showAllListener;
 	TblSICDIDRenderer tblSICDIDRenderer;
 	TblStringRenderer tblStringRenderer;
-	TblAggregateTypeRenderer tblAggregateTypeRenderer;
-	TblCellStatusRenderer tblStatusRenderer;
-	com.rose.pm.ui.Renderer.TblCellLocalDateRenderer tblDateRenderer;
+	TblSICDTypeRenderer tblSICDTypeRenderer;
+	Renderer.TblCellLocalDateRenderer tblCellLocalDateRenderer;
+	Renderer.TblCellStringRenderer notationRenderer;
+	Renderer.TblCellMaterialIDRenderer tblCellMaterialIDRenderer;
+	Renderer.TblCellStatusRenderer tblStatusRenderer;
+	Renderer.TblCellImplantDateRenderer tblImplantDateRenderer;
+	Renderer.TblCellPatientRenderer tblCellPatientRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	DeleteListener deleteListener;
 	TblMouseAdaptor tblMouseAdaptor;
 	TblCellPatientRenderer tblPatientRenderer;
+	SICDTypeTblCellEditor sicdTypeTblCellEditor;
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
-	Renderer.TblCellImplantDateRenderer tblImplantDateRenderer;
+	
 	
 	
 	public CtrlPnlSICD() {
@@ -79,6 +85,8 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		ctrlPnlSetDate = new Ctrl_PnlSetDate("dd.MM.yyyy", LocalDate.now(), LocalDate.now());
 		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
 		((PnlSICD)panel).integratePnlDate(ctrlPnlSetDate.getPanel());
+		sicdTypeTblCellEditor = new SICDTypeTblCellEditor();
+		((PnlSICD)panel).setSICDTypeTblCellEditor(sicdTypeTblCellEditor);
 		setStandardListener();
 		setListener();
 		setModel();
@@ -86,6 +94,7 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		setRenderer();
 		((PnlSICD)panel).setAggregateTypeSelectionIndex(-1);
 		((PnlSICD)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		panel.setFirstRowHeight(40);//the standard height of the first row
 	}
 	
 	protected void createPanel() {
@@ -123,8 +132,6 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		((PnlSICD)panel).addCreateListener(createListener);
 		sicdTypeListener = new SICDTypeListener();
 		((PnlSICD)panel).addAggregateTypeListener(sicdTypeListener);
-		showAllListener = new ShowAllListener();
-		((PnlSICD)panel).addShowAllListener(showAllListener);
 		tblMouseAdaptor = new TblMouseAdaptor();
 		((PnlSICD)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
@@ -138,22 +145,28 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	 protected void setModel() {
 		 ArrayList<? extends MaterialType> aggregateTypes;
 		try {
-			aggregateTypes = SQL_SELECT.sicdTypes();
-			SICDType[] arr = new SICDType[aggregateTypes.size()]; 		  
-	        // ArrayList to Array Conversion 
-	        for (int i = 0; i < aggregateTypes.size(); i++) 
-	            arr[i] = (SICDType) aggregateTypes.get(i);		
+			aggregateTypes = SQL_SELECT.sicdTypes(null, "");
 			
-			sicdTypeModel = new DefaultComboBoxModel<SICDType>(arr);
+			sicdTypeModel = new DefaultComboBoxModel<SICDType>();
+	       
+	        for (int i = 0; i < aggregateTypes.size(); i++) 
+	          
+				sicdTypeModel.addElement((SICDType) aggregateTypes.get(i));
 			
 			((PnlSICD)panel).setAggregateTypeModel(sicdTypeModel);
-			sicdTblModel = new SICDTblModel(SQL_SELECT.sicds((SICDType) sicdTypeListener.model));
-			((PnlSICD)panel).setAggregateTblModel(sicdTblModel);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		((PnlSICD)panel).setAggregateTblModel(sicdTblModel);
 			
+		try {
+			sicdTblModel = new SICDTblModel(SQL_SELECT.sicds((SICDType) sicdTypeListener.model, "", Status.Lager));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 	 
 	 private void setRenderer() {
@@ -164,10 +177,10 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 			((PnlSICD)panel).setAggregateIDRenderer(SICD.class, tblSICDIDRenderer);
 			tblStringRenderer = renderer.new TblStringRenderer();
 			((PnlSICD)panel).setStringRenderer(String.class, tblStringRenderer);
-			tblDateRenderer = renderer.new TblCellLocalDateRenderer();
-			((PnlSICD)panel).setDateRenderer(LocalDate.class, tblDateRenderer);
-			tblAggregateTypeRenderer = new TblAggregateTypeRenderer();
-			((PnlSICD)panel).setTblAggregateTypeRenderer(SICDType.class, tblAggregateTypeRenderer);
+			tblCellLocalDateRenderer = renderer.new TblCellLocalDateRenderer();
+			((PnlSICD)panel).setDateRenderer(LocalDate.class, tblCellLocalDateRenderer);
+			tblSICDTypeRenderer = new TblSICDTypeRenderer();
+			((PnlSICD)panel).setTblAggregateTypeRenderer(SICDType.class, tblSICDTypeRenderer);
 			tblStatusRenderer = renderer.new TblCellStatusRenderer();
 			((PnlSICD)panel).setStatusRenderer(Status.class, tblStatusRenderer);
 			tblPatientRenderer = renderer.new TblCellPatientRenderer();
@@ -178,9 +191,6 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 	
 	class SICDTblModel extends AbstractTableModel{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -8444808544442905721L;
 
 		protected ArrayList<String> columnNames;
@@ -188,6 +198,15 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		private final Class[] columnClass = new Class[] {
 			 SICD.class, SICDType.class, String.class, LocalDate.class, String.class, Status.class, Patient.class, Date.class
 		};
+		
+		protected SICD searchSICD = null;
+		protected SICDType searchSICDType = null;
+		protected String searchNotation = "";
+		protected LocalDate searchLocalDate = null;
+		protected String searchNotice = "";
+		protected Status searchStatus = Status.Lager;
+		protected Patient searchPatient = null;
+		protected Date searchDate = null;
 		
 		public SICDTblModel(ArrayList<? extends SICD> sicds) {
 			this.sicds = sicds;
@@ -203,8 +222,13 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		}
 		
 		@Override
+		public void fireTableDataChanged() {
+			super.fireTableDataChanged();
+			panel.setFirstRowHeight(40);//set the height of the first row 
+		}
+		
+		@Override
 		public int getColumnCount() {
-			// TODO Auto-generated method stub
 			return columnNames.size();
 		}
 		
@@ -215,61 +239,86 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 
 		@Override
 		public int getRowCount() {
-			// TODO Auto-generated method stub
-			return this.sicds.size();
+			return this.sicds.size() + 1;
 		}
 		
 		@Override
 		public Class getColumnClass(int col) {
 			return columnClass[col];
 		}
-
-		
 		
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-						
-			switch(columnIndex) {
-			case 0: return sicds.get(rowIndex);
-			
-			case 1: return sicds.get(rowIndex).getMaterialType();
-			
-			case 2: return sicds.get(rowIndex).getSerialNr();
-			
-			case 3: return sicds.get(rowIndex).getExpireDate();
-			
-			case 4: return sicds.get(rowIndex).getNotice();
-			
-			case 5: return sicds.get(rowIndex).getStatus();
-			
-			case 6: return sicds.get(rowIndex).getPatient();
-			
-			case 7: return sicds.get(rowIndex).getDateOfImplantation();
-			
-			default: return null;
-			
-			}	
+			if(rowIndex > 0) {				
+				switch(columnIndex) {
+					case 0: return sicds.get(rowIndex - 1);			
+					case 1: return sicds.get(rowIndex - 1).getMaterialType();			
+					case 2: return sicds.get(rowIndex).getSerialNr();			
+					case 3: return sicds.get(rowIndex - 1).getExpireDate();			
+					case 4: return sicds.get(rowIndex - 1).getNotice();			
+					case 5: return sicds.get(rowIndex - 1).getStatus();			
+					case 6: return sicds.get(rowIndex - 1).getPatient();			
+					case 7: return sicds.get(rowIndex - 1).getDateOfImplantation();			
+					default: return null;	
+				}
+			}else {
+				switch (columnIndex) {
+					case 0: return searchSICD;
+					case 1: return searchSICDType;
+					case 2: return searchNotation;
+					case 3: return searchLocalDate;
+					case 4: return searchNotice;
+					case 5: return searchStatus;
+					case 6: return searchPatient;
+					case 7: return searchDate;
+					default: return null;
+				}
+			}
+		
 			
 		}	
 		
 		@Override
 		public void setValueAt(Object value, int row, int col) {
-            sicds.get(row).setDateOfImplantation((Date)value);
-            try {
-				SQL_UPDATE.dateOfImplant(sicds.get(row));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(row == 0) {//for the first 'search' row
+				switch(col) {
+				case 1:
+					searchSICDType = (SICDType)value;
+					break;		
+				case 2:
+					searchNotation = (String)value;
+					break;
+				case 5:
+					searchStatus = (Status)value;					
+					break;
+				}
+			}else {
+				sicds.get(row).setDateOfImplantation((Date)value);
+	            try {
+					SQL_UPDATE.dateOfImplant(sicds.get(row));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+           
             //change value at database;
 		}
 		
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			if(columnIndex == 7) {
-				return true;
+			if(rowIndex == 0) {
+				if(columnIndex == 1 || columnIndex ==2 || columnIndex == 5) {
+					return true;
+				}else {
+					return false;
+				}
 			}else {
-				return false;
+				if(columnIndex == 7) {
+					return true;
+				}else {
+					return false;
+				}
 			}
 		}
 		
@@ -278,6 +327,121 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		}
 		
 	}
+	
+	public class SICDTypeTblCellEditor extends AbstractCellEditor implements TableCellEditor{
+
+		private static final long serialVersionUID = 8559400690835752900L;
+
+		private TableCellEditor editor;
+		private JComboBox<SICDType> cbxSICDType;
+		SearchSICDTypeListener searchSICDTypeListener;
+		private ComboBoxModel<SICDType> cbxSICDTypeModel;	
+
+		protected ComboBoxModel<SICDType> getCbxSICDTypeModel() {
+			return cbxSICDTypeModel;
+		}
+		
+		public SICDTypeTblCellEditor() {
+			ArrayList<SICDType> electrodeTypes;
+			try {
+				electrodeTypes = SQL_SELECT.sicdTypes(null, "");
+				SICDType[] arr = new SICDType[electrodeTypes.size()]; 		  
+		        // ArrayList to Array Conversion 
+				
+		        for (int i = 0; i < electrodeTypes.size(); i++) {
+		            arr[i] = electrodeTypes.get(i);		
+		        }
+		        
+				cbxSICDTypeModel = new DefaultComboBoxModel<SICDType>(arr);
+				cbxSICDType = new JComboBox<SICDType>();				
+				cbxSICDType.setModel(cbxSICDTypeModel);
+				
+				cbxSICDType.insertItemAt(null, 0);
+				
+				cbxSICDType.setRenderer(new ListSICDTypeRenderer());
+				searchSICDTypeListener = new SearchSICDTypeListener();
+				cbxSICDType.addItemListener(searchSICDTypeListener);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		@Override
+		public Object getCellEditorValue() {
+			if (editor != null) {
+				return editor.getCellEditorValue();
+			}
+            return null;
+		}
+
+		@Override
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+				int column) {
+			if (column == 1 && row == 0) {
+                editor = new DefaultCellEditor(cbxSICDType);
+            } 
+
+			return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
+		}
+		
+	}
+	
+	 class SearchSICDTypeListener implements ItemListener{
+		 SICDType electrodeType;
+		 
+		 protected SICDType getSICDType() {
+			return electrodeType;
+		}
+
+		@Override
+		 public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+				try {
+					electrodeType = (SICDType) event.getItem();	
+				} catch (ClassCastException e) {
+					electrodeType = null;				
+				}
+			}else {
+				electrodeType = null;
+			}
+				
+			try {
+				sicdTblModel.setValueAt(electrodeType, 0, 1);
+				sicdTblModel.setSICDs(SQL_SELECT.sicds((SICDType) sicdTblModel.getValueAt(0, 1), (String)sicdTblModel.getValueAt(0, 2), (Status)sicdTblModel.getValueAt(0, 5)));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			sicdTblModel.fireTableDataChanged();
+					
+		 }		 
+	 }
+	 
+	 class ListSICDTypeRenderer extends JLabel implements ListCellRenderer<SICDType>{
+
+		private static final long serialVersionUID = 5733785645190504175L;
+
+			public ListSICDTypeRenderer() {
+				setOpaque(true);
+		        setHorizontalAlignment(CENTER);
+		        setVerticalAlignment(CENTER);
+			}
+		
+			@Override
+			public Component getListCellRendererComponent(JList<? extends SICDType> list, SICDType value, int index,
+					boolean isSelected, boolean cellHasFocus) {
+				if(value instanceof SICDType) {
+					setText(((SICDType) value).getNotation());
+					setFont(new Font("Tahoma", Font.ITALIC, 14));
+				}else {
+					setText("Alle SICD-Modelle");
+					setFont(new Font("Tahoma", Font.ITALIC, 14));
+				}
+				return this;
+			}				
+		}
 	
 	class SICDTypeListener implements ItemListener{
 
@@ -292,18 +456,18 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 					model = null;
 				}				
 		    }
-			updateTblModel();		
+			//updateTblModel();		
 		}
 		
-		protected void updateTblModel() {
-			try {
-				sicdTblModel.setSICDs(SQL_SELECT.sicds(model));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
-			sicdTblModel.fireTableDataChanged();
-		}		
+//		protected void updateTblModel() {
+//			try {
+//				sicdTblModel.setSICDs(SQL_SELECT.sicds(model));
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}			
+//			sicdTblModel.fireTableDataChanged();
+//		}		
 	}
 	
 	class SICDTypeRenderer extends JLabel implements ListCellRenderer<SICDType>{
@@ -351,16 +515,32 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		}
 		
 		protected void updateDBAndTblModel() {
+			Integer key = null;
 			try {
-				SQL_INSERT.sicd(sicd);
+				key = SQL_INSERT.sicd(sicd);
 			} catch (SQLException e) {
 				JOptionPane.showMessageDialog(new JFrame(),
 					    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_INSERT sicd(SICD sicd)", "SQL Exception warning",
 					    JOptionPane.WARNING_MESSAGE);
-			}				
+			}
+			
+			if(key != null) {//if insertion was successful
+				sicdTblModel.setValueAt(Status.Lager, 0, 5);
+				sicdTblModel.setValueAt(sicdTypeModel.getSelectedItem(), 0, 1);
+				for(int i = 0; i < sicdTypeTblCellEditor.getCbxSICDTypeModel().getSize(); i++) {
+					try {
+						if(sicdTypeTblCellEditor.getCbxSICDTypeModel().getElementAt(i).getNotation().equals(((SICDType)sicdTypeModel.getSelectedItem()).getNotation())) {
+							sicdTypeTblCellEditor.getCbxSICDTypeModel().setSelectedItem(sicdTypeTblCellEditor.getCbxSICDTypeModel().getElementAt(i));
+						}
+					}catch(NullPointerException e) {//if (monitorTypeTblCellEditor.getCbxMonitorTypeModel().getElementAt(i) == null
+						//do nothing
+					}
+				}	
+			
+			}
 			try {
-				sicdTblModel.setSICDs(SQL_SELECT.sicds((SICDType) sicdTypeModel.getSelectedItem()));
-			} catch (SQLException e) {
+				sicdTblModel.setSICDs(SQL_SELECT.sicds((SICDType) sicdTypeModel.getSelectedItem(), (String)sicdTblModel.getValueAt(0, 2), (Status)sicdTblModel.getValueAt(0, 5)));
+			}catch(SQLException e) {
 				JOptionPane.showMessageDialog(new JFrame(),
 					    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_SELECT sicds(SICDType sicdType)", "SQL Exception warning",
 					    JOptionPane.WARNING_MESSAGE);
@@ -370,28 +550,9 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		
 	}
 	
-	class ShowAllListener implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			((PnlSICD)panel).setAggregateTypeSelectionIndex(-1);
-			update();
-		}
-		
-		protected void update() {
-			try {
-				sicdTblModel.setSICDs(SQL_SELECT.sicds(null));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
-			sicdTblModel.fireTableDataChanged();
-		}
-		
-	}
 	
 	/**
-	 * shoul be set to renderer class and overrided
+	 * should be set to renderer class and overrided
 	 * @author user2
 	 *
 	 */
@@ -418,26 +579,40 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		
 	}
 	
-	class TblAggregateTypeRenderer extends JLabel implements TableCellRenderer{
+	class TblSICDTypeRenderer extends JLabel implements TableCellRenderer{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 2455144833293671793L;
 
-		public TblAggregateTypeRenderer() {
+		public TblSICDTypeRenderer() {
 			super.setOpaque(true);
+			setHorizontalAlignment(CENTER);
+			setVerticalAlignment(CENTER);
 		}
 		
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-			SICDType type = (SICDType) value;
-			setText(type.getNotation());
-			if(isSelected) {
-				setBackground(Color.ORANGE);
-			}else {
-				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			if(row>0) {//for all but the first row
+				if(value instanceof SICDType) {				
+					String notation = ((SICDType)value).getNotation();
+					setText(notation);
+					if(isSelected) {
+						setBackground(Color.ORANGE);
+					}else {
+						setBackground(row%2==0 ? Color.white : Color.lightGray);   
+					}
+					setBorder(null);
+				}					
+			}else if(row==0){//for the first 'search' row
+				Border border = BorderFactory.createLineBorder(Color.ORANGE, 2);
+				setBorder(border);
+				setBackground(Color.white);	
+				
+				if(value instanceof SICDType) {
+					setText(((SICDType) value).getNotation());
+				}else {
+					setText("Alle Elektrodenmodelle");					
+				}
 			}
 			return this;
 		}

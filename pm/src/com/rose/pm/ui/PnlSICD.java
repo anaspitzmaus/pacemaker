@@ -16,6 +16,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.person.Patient;
@@ -23,6 +24,7 @@ import com.rose.pm.Pnl_SetDate;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.CtrlPnlSICD.SICDTypeTblCellEditor;
 import com.rose.pm.ui.Renderer.TblCellPatientRenderer;
 
 import net.miginfocom.swing.MigLayout;
@@ -168,5 +170,9 @@ public class PnlSICD extends PnlBase {
 	
 	protected void setTblImplantDateRenderer(Class<Date> dateClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(dateClass, renderer);		
+	}
+
+	protected void setSICDTypeTblCellEditor(TableCellEditor editor) {
+		table.getColumnModel().getColumn(1).setCellEditor(editor);		
 	}
 }

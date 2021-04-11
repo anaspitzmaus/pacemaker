@@ -66,6 +66,7 @@ public class CtrlPnlICD extends CtrlPnlPM {
 		
 		try {
 			aggregateTblModel = new AggregateTblModel(SQL_SELECT.icd((ICD_Type) aggregateTypeListener.pmType, "", Status.Lager));
+			aggregateTblModel.columnClass[0] = ICD.class; //change the type of the first column to icd.class
 			panel.setTblModel(aggregateTblModel);
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, "ICD-Aggregate konnten nicht abgefragt werden" + e.getMessage(), "Hinweis", JOptionPane.WARNING_MESSAGE);	
@@ -85,6 +86,7 @@ public class CtrlPnlICD extends CtrlPnlPM {
 		//Listener for the JComboBox that displays the types of aggregates
 		aggregateTypeListener = new AggregateTypeListener();
 		((PnlICD)panel).addAggregateTypeListener(aggregateTypeListener);
+		searchNotationListener = new SearchICDNotationListener();
 		tblMouseAdaptor = new TblMouseAdaptor();
 		((PnlICD)panel).addTblMouseAdaptor(tblMouseAdaptor);		
 	}
@@ -218,6 +220,18 @@ public class CtrlPnlICD extends CtrlPnlPM {
 		protected void setAllAggregateText() {
 			setText("Alle ICD-Modelle");
 		}	
+	}
+	
+	protected class SearchICDNotationListener extends CtrlPnlPM.SearchNotationListener{
+		@Override
+		protected void setAggregates() {
+			try {
+				aggregateTblModel.setAggregats(SQL_SELECT.icd((ICD_Type)aggregateTblModel.getValueAt(0, 1), (String) aggregateTblModel.getValueAt(0, 2), (Status) aggregateTblModel.getValueAt(0, 5)));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	class TblMouseAdaptor extends CtrlPnlPM.TblMouseAdaptor{

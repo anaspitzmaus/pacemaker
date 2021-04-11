@@ -130,12 +130,10 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	void setModel() {
 		try {
 			ArrayList<ElectrodeType> electrodeTypes = SQL_SELECT.electrodeTypes(null, "");
-			ElectrodeType[] arr = new ElectrodeType[electrodeTypes.size()]; 	
-			 electrodeTypeModel = new DefaultComboBoxModel<ElectrodeType>();
-	        // ArrayList to Array Conversion 
+			electrodeTypeModel = new DefaultComboBoxModel<ElectrodeType>();
+	       
 	        for (int i = 0; i < electrodeTypes.size(); i++) {
-	            //arr[i] = electrodeTypes.get(i);		
-	            electrodeTypeModel.addElement(electrodeTypes.get(i));
+	           	electrodeTypeModel.addElement(electrodeTypes.get(i));
 		 	}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -150,9 +148,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
+		}	
 	}
 	 
 	 private void setListener() {

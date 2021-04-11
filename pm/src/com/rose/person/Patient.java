@@ -1,13 +1,5 @@
 package com.rose.person;
 
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-//
-//import com.rose.heart.Heart;
-//import com.rose.kgp.db.SQL_INSERT;
-//import com.rose.kgp.disease.Diagnosis;
-
 public class Patient extends Person{
 	
 	public Patient(String surname, String firstname) {

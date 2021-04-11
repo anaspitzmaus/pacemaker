@@ -75,7 +75,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	TblMouseAdaptor tblMouseAdaptor;
 	Editor editor;
 	Editor.DateCellEditor dateCellEditor;
-	
+	SearchNotationListener searchNotationListener;
 	Editor.SearchStatusTblCellEditor statusTblCellEditor;
 	PMTypeTblCellEditor pmTypeTblCellEditor;
 	
@@ -89,8 +89,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		
 		statusTblCellEditor = editor.new SearchStatusTblCellEditor(aggregateTblModel, panel);
 		((PnlPM)panel).setStatusTblCellEditor(statusTblCellEditor);
-		JTextField textField = new JTextField("Text");
-		SearchNotationListener searchNotationListener = new SearchNotationListener();
+		JTextField textField = new JTextField("Text");		
 		textField.getDocument().addDocumentListener(searchNotationListener);		
 		((PnlPM)panel).setNotationCellEditor(new DefaultCellEditor(textField));
 		//panel.table.setAutoCreateRowSorter(true);
@@ -141,7 +140,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		createListener = new CreateListener();
 		((PnlPM)panel).addCreateListener(createListener);
 		aggregateTypeListener = new AggregateTypeListener();
-		((PnlPM)panel).addAggregateTypeListener(aggregateTypeListener);			
+		((PnlPM)panel).addAggregateTypeListener(aggregateTypeListener);	
+		searchNotationListener = new SearchNotationListener();
 	}
 	
 	 protected void setEditor() {
@@ -320,13 +320,12 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	}
 	
 	class AggregateTblModel extends AbstractTableModel{
-
 		
 		private static final long serialVersionUID = -8444808544442905721L;
 
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends PM> aggregates;
-		private final Class[] columnClass = new Class[] {
+		protected Class[] columnClass = new Class[] {
 			 PM.class, AggregateType.class, String.class, LocalDate.class, String.class, Status.class,  Patient.class, Date.class
 		};
 		
@@ -615,15 +614,19 @@ public class CtrlPnlPM extends CtrlPnlBase{
 					txt = "";
 				}
 				aggregateTblModel.setValueAt(txt, 0, 2);
-				try {
-					aggregateTblModel.setAggregats(SQL_SELECT.pacemakers((AggregateType)aggregateTblModel.getValueAt(0, 1), (String) aggregateTblModel.getValueAt(0, 2), (Status) aggregateTblModel.getValueAt(0, 5)));
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				setAggregates();
 				aggregateTblModel.fireTableDataChanged();
 				
-			}	
+			}
+			
+			protected void setAggregates() {
+				try {
+					aggregateTblModel.setAggregats(SQL_SELECT.pacemakers((AggregateType)aggregateTblModel.getValueAt(0, 1), (String) aggregateTblModel.getValueAt(0, 2), (Status) aggregateTblModel.getValueAt(0, 5)));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	 
 	 class ListPMTypeRenderer extends JLabel implements ListCellRenderer<AggregateType>{

@@ -13,13 +13,17 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.text.BadLocationException;
 
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
+import com.rose.pm.material.ICD;
+import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.Material;
 import com.rose.pm.material.MaterialType;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
+import com.rose.pm.material.PM;
 import com.rose.pm.material.Status;
 
 public class Listener {
@@ -141,14 +145,18 @@ public class Listener {
 					((CtrlPnlMonitor.MonitorTblModel)tblModel).setMonitors(SQL_SELECT.monitors((MonitorType)tblModel.getValueAt(0,  1), (String) tblModel.getValueAt(0, 2), (Status) tblModel.getValueAt(0, 5)));
 				}else if(matClass == Electrode.class) {
 					((CtrlPnlElectrode.ElectrodeTblModel)tblModel).setElectrodes(SQL_SELECT.electrodes((ElectrodeType)tblModel.getValueAt(0,  1), (String) tblModel.getValueAt(0, 2), (Status) tblModel.getValueAt(0, 5)));
-					//has to be added here for all types of material
+				}else if(matClass == ICD.class){
+					((CtrlPnlICD.AggregateTblModel)tblModel).setAggregats(SQL_SELECT.icd((ICD_Type)tblModel.getValueAt(0, 1), (String)tblModel.getValueAt(0, 2), (Status)tblModel.getValueAt(0, 5)));
+				}else if(matClass == PM.class) {				
+					((CtrlPnlPM.AggregateTblModel)tblModel).setAggregats(SQL_SELECT.pacemakers((AggregateType)tblModel.getValueAt(0, 1), (String)tblModel.getValueAt(0, 2), (Status)tblModel.getValueAt(0, 5)));
 				}
+				//has to be added here for all types of material
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	    	
 			tblModel.fireTableDataChanged();
-			panel.setFirstRowHeight(40);
+			//panel.setFirstRowHeight(40);
 			
 		}
 			

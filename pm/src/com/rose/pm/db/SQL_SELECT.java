@@ -1062,31 +1062,37 @@ public class SQL_SELECT {
 	 * @return an array list with the selected sicds
 	 * @throws SQLException
 	 */
-	public static ArrayList<SICDType> sicdTypes() throws SQLException{
+	public static ArrayList<SICDType> sicdTypes(Manufacturer manufacturer, String notation) throws SQLException{
 		stmt = DB.getStatement();
 		ArrayList<SICDType> sicdTypes;
 		sicdTypes = new ArrayList<SICDType>();
 		
-		rs = stmt.executeQuery(
-				 "SELECT idsicdtype, sicd_type.notation AS sicdNotation, sicd_type.idmanufacturer, manufacturer.notation AS manufacturerNotation, notice, price "
+		String select = "SELECT idsicdtype, sicd_type.notation AS sicdNotation, sicd_type.idmanufacturer, manufacturer.notation AS manufacturerNotation, notice, price "
 				+ "FROM sm.sicd_type "
 				+ "INNER JOIN sm.manufacturer "
-				+ "ON sm.sicd_type.idmanufacturer = sm.manufacturer.idmanufacturer");
+				+ "ON sm.sicd_type.idmanufacturer = sm.manufacturer.idmanufacturer "
+				+ "WHERE sicd_type.notation LIKE '" + notation + "%'";
+		
+		if(manufacturer instanceof Manufacturer) {
+			select = select.concat(" AND sm.manufacturer.idmanufacturer = " + manufacturer.getId() + "");
+		}
+		
+		rs = stmt.executeQuery(select);	
 		
 		if(rs.isBeforeFirst()){
 			while(rs.next()) {
 				SICDType sicdType = new SICDType(rs.getString("sicdNotation"));
 				sicdType.setId(rs.getInt("idsicdtype"));					
-				if(rs.getString("notice") != null) {
-					sicdType.setNotice(rs.getString("notice"));
-				}else {
-					sicdType.setNotice("");
-				}
+				sicdType.setNotice(rs.getString("notice"));
 				sicdType.setPrice(rs.getDouble("price"));
 				
-				Manufacturer manufacturer = new Manufacturer(rs.getString("manufacturerNotation"));
-				manufacturer.setId(rs.getInt("idmanufacturer"));
-				sicdType.setManufacturer(manufacturer);
+				if(!(manufacturer instanceof Manufacturer)) {					
+					Manufacturer manuf = new Manufacturer(rs.getString("manufacturerNotation"));
+					manuf.setId(rs.getInt("id_manufacturer"));
+					sicdType.setManufacturer(manuf);
+				}else {				
+					sicdType.setManufacturer(manufacturer);
+				}
 				sicdTypes.add(sicdType);
 			}
 		}
@@ -1094,86 +1100,97 @@ public class SQL_SELECT {
 		return sicdTypes;
 	}
 
-	public static ArrayList<? extends SICD> sicds(SICDType type) throws SQLException{
+	public static ArrayList<? extends SICD> sicds(SICDType type, String serialNr, Status status) throws SQLException{
 		stmt = DB.getStatement();
 		ArrayList<SICD> sicds;
 		sicds = new ArrayList<SICD>();
+		PreparedStatement ps;
+		Integer patProv;
 		
-			if(type instanceof SICDType) {//select sicds of a selected model
-				if(type.getId() != null) {
-					rs = stmt.executeQuery(
-						 "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, patnr, implant "
+		String select = "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, patnr, implant "
 						+ "FROM sm.sicd "
 						+ "INNER JOIN sm.sicd_type "
 						+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype "
 						+ "LEFT OUTER JOIN human.patient "
-						+ "ON sm.sicd.idpat_provided = human.patient.idpatient "
-						+ "WHERE sm.sicd.id_sicd_type = " + type.getId() + "");
-					
-					if(rs.isBeforeFirst()){
-						Integer patProv;
-						while(rs.next()) {
-							SICD sicd = new SICD(type);
-							sicd.setId(rs.getInt("idsicd"));
-							sicd.setSerialNr(rs.getString("serialnr"));					
-							sicd.setExpireDate(rs.getDate("expiry").toLocalDate());
-							sicd.setNotice(rs.getString("notice"));
-							sicd.setStatus(Status.valueOf(rs.getString("status")));
-							
-							patProv = rs.getInt("idpat_provided");
-							
-							if(patProv == 0) {
-								sicd.setPatient(null);
-							}else{
-								Patient patient = new Patient("Test", "Test");
-								patient.setId(patProv);
-								patient.setNumber(rs.getInt("patNr"));
-								sicd.setPatient(patient);
-							}	
-							
-							sicd.setDateOfImplantation(rs.getDate("implant"));
-							
-							sicds.add(sicd);
-						}					
-					}			
+						+ "ON sm.sicd.idpat_provided = human.patient.idpatient";
+						
+						
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
+		
+		if(type instanceof SICDType && !serialNr.equals("") && status instanceof Status) {
+			select = select.concat(" WHERE sm.sicd_type.id_sicd_type = ? AND sm.sicd.serialNr LIKE ? AND sm.sicd.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, type.getId());	
+			ps.setString(2, serialNr + "%");
+			ps.setString(3, status.name());
+		}else if(type instanceof SICDType && !serialNr.equals("")){ //type of sicd and serialNr are given
+			select = select.concat(" WHERE sm.sicd_type.id_sicd_type = ? AND sm.sicd.serialNr LIKE ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, type.getId());	
+			ps.setString(2, serialNr + "%");
+		}else if(type instanceof SICDType && status instanceof Status) {//if type of sicd and status are given
+			select = select.concat(" WHERE sm.sicd_type.id_sicd_type = ? AND sm.sicd.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, type.getId());
+			ps.setString(2, status.name());
+		}else if(!serialNr.equals("") && status instanceof Status){//if serialNr and status are given	
+			select = select.concat(" WHERE sm.sicd.serialNr LIKE ? AND sm.sicd.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, serialNr +"%");
+			ps.setString(2, status.name());
+		}else if(type instanceof SICDType) {
+			select = select.concat(" WHERE sm.sicd_type.id_sicd_type = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, type.getId());	
+		}else if(!serialNr.equals("")) {
+			select = select.concat(" WHERE sm.sicd.serialNr LIKE ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, serialNr + "%");
+		}else if(status instanceof Status) {
+			select = select.concat(" WHERE sm.sicd.status = ?");
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, status.name());
+		}else {
+			ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+		}
+			
+		ResultSet rs = ps.executeQuery();
+		if(rs.isBeforeFirst()){
+			SICDType st;
+			
+			while(rs.next()) {
+				if(!(type instanceof SICDType)) {
+					st = new SICDType(rs.getString("notation"));
+					st.setId(rs.getInt("modelId"));
+				}else {
+					st = type;
 				}
-			}else {//select all sicds
-				rs = stmt.executeQuery(
-					 "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, sicd_type.notation AS typeNotation, patnr, implant "
-					+ "FROM sm.sicd "
-					+ "INNER JOIN sm.sicd_type "
-					+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype "
-					+ "LEFT OUTER JOIN human.patient "
-					+ "ON sm.sicd.idpat_provided = human.patient.idpatient");
 				
-				if(rs.isBeforeFirst()){
-					Integer patProv;
-					while(rs.next()) {
-						type = new SICDType(rs.getString("typeNotation"));
-						type.setId(rs.getInt("id_sicd_type"));
-						SICD sicd = new SICD(type);
-						sicd.setId(rs.getInt("idsicd"));
-						sicd.setSerialNr(rs.getString("serialnr"));					
-						sicd.setExpireDate(rs.getDate("expiry").toLocalDate());
-						sicd.setNotice(rs.getString("notice"));
-						sicd.setStatus(Status.valueOf(rs.getString("status")));
-						patProv = rs.getInt("idpat_provided");
+				SICD sicd = new SICD(st);
+				sicd.setId(rs.getInt("idsicd"));
+				sicd.setSerialNr(rs.getString("serialnr"));					
+				sicd.setExpireDate(rs.getDate("expiry").toLocalDate());
+				sicd.setNotice(rs.getString("notice"));
+				sicd.setStatus(Status.valueOf(rs.getString("status")));
+				
+				patProv = rs.getInt("idpat_provided");
+				
+				if(patProv == 0) {
+					sicd.setPatient(null);
+				}else{
+					Patient patient = new Patient("Test", "Test");
+					patient.setId(patProv);
+					patient.setNumber(rs.getInt("patNr"));
+					sicd.setPatient(patient);
+				}	
+				
+				sicd.setDateOfImplantation(rs.getDate("implant"));
 						
-						if(patProv == 0) {
-							sicd.setPatient(null);
-						}else{
-							Patient patient = new Patient("Test", "Test");
-							patient.setId(patProv);
-							patient.setNumber(rs.getInt("patNr"));
-							sicd.setPatient(patient);
-						}
-						
-						sicd.setDateOfImplantation(rs.getDate("implant"));
-						
-						sicds.add(sicd);
-					}					
-				}			
-					
+							
+				sicds.add(sicd);
+							
+				}					
 			}				
 				
 		return sicds;

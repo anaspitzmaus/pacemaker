@@ -73,7 +73,7 @@ class CreateSICDTypeListener implements ActionListener{
 				if(id != null) {
 					type.setId(id);
 					try {
-						ctrlPnlSICDType.getAggregateTypeTableModel().setAggregateTypes(SQL_SELECT.sicdTypes());
+						ctrlPnlSICDType.getAggregateTypeTableModel().setAggregateTypes(SQL_SELECT.sicdTypes(null, ""));
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
