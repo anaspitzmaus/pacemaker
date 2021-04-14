@@ -785,8 +785,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		PM pm;
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
-			if (((PnlPM)panel).getSelectedTblRow() > 0) {			
-				int row = ((PnlPM)panel).getSelectedTblRow() - 1;
+			if (((PnlPM)panel).getSelectedTblRow() > -1) {			
+				int row = ((PnlPM)panel).getSelectedTblRow();
 	            pm = (PM) ((PnlPM)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
 	        }			
 		}

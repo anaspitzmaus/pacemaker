@@ -662,7 +662,9 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 					electrodeTblModel.setElectrodes(SQL_SELECT.electrodes((ElectrodeType) electrodeTypeModel.getSelectedItem(), (String)electrodeTblModel.getValueAt(0, 2), (Status)electrodeTblModel.getValueAt(0, 5)));
 			
 				}catch(SQLException e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(new JFrame(),
+						    e.getErrorCode() + ": "+ e.getMessage()+ "/n/n Class: SQL_SELECT electrodes(ElectrodeType type)", "SQL Exception warning",
+						    JOptionPane.WARNING_MESSAGE);
 				}
 			}
 			electrodeTblModel.fireTableDataChanged();

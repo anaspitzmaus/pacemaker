@@ -507,8 +507,8 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 		Monitor monitor;
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
-			if (((PnlMonitor)panel).getSelectedTblRow() > 0) {			
-				int row = ((PnlMonitor)panel).getSelectedTblRow() - 1;
+			if (((PnlMonitor)panel).getSelectedTblRow() > -1) {			
+				int row = ((PnlMonitor)panel).getSelectedTblRow();
 	            monitor = (Monitor) ((PnlMonitor)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
 	        }			
 		}

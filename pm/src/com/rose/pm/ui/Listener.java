@@ -24,6 +24,8 @@ import com.rose.pm.material.MaterialType;
 import com.rose.pm.material.Monitor;
 import com.rose.pm.material.MonitorType;
 import com.rose.pm.material.PM;
+import com.rose.pm.material.SICD;
+import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
 
 public class Listener {
@@ -149,6 +151,8 @@ public class Listener {
 					((CtrlPnlICD.AggregateTblModel)tblModel).setAggregats(SQL_SELECT.icd((ICD_Type)tblModel.getValueAt(0, 1), (String)tblModel.getValueAt(0, 2), (Status)tblModel.getValueAt(0, 5)));
 				}else if(matClass == PM.class) {				
 					((CtrlPnlPM.AggregateTblModel)tblModel).setAggregats(SQL_SELECT.pacemakers((AggregateType)tblModel.getValueAt(0, 1), (String)tblModel.getValueAt(0, 2), (Status)tblModel.getValueAt(0, 5)));
+				}else if(matClass == SICD.class) {
+					((CtrlPnlSICD.SICDTblModel)tblModel).setSICDs(SQL_SELECT.sicds((SICDType)tblModel.getValueAt(0, 1), (String)tblModel.getValueAt(0, 2), (Status)tblModel.getValueAt(0, 5)));
 				}
 				//has to be added here for all types of material
 			} catch (SQLException e) {
