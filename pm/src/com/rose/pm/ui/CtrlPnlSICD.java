@@ -687,10 +687,16 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 		public void actionPerformed(ActionEvent e) {
 			if(tblRowSelectionListener.getAggregatSelected() instanceof SICD) {
 				if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
-					if(SQL_UPDATE.deleteSICD(tblRowSelectionListener.getAggregatSelected())){
-						sicdTblModel.sicds.remove(tblRowSelectionListener.getAggregatSelected());
-						sicdTblModel.fireTableDataChanged();
+					try {
+						SQL_UPDATE.deleteSICD(tblRowSelectionListener.getAggregatSelected());
+						sicdTblModel.sicds.remove(tblRowSelectionListener.getAggregatSelected());	
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
+					
+					sicdTblModel.fireTableDataChanged();
+					
 				}
 			
 			}

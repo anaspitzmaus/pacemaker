@@ -413,8 +413,9 @@ public class SQL_UPDATE {
 		
 	}
 	
-	public static boolean deleteSICD(SICD sicd) {
-		return true;
+	public static void deleteSICD(SICD sicd) throws SQLException {
+		stmt = DB.getStatement();		
+		stmt.executeUpdate("DELETE FROM sm.sicd WHERE idsicd = " + sicd.getId() + " LIMIT 1");
 	}
 
 	public static void deleteEventRecorderType(ERType type) throws SQLException{
