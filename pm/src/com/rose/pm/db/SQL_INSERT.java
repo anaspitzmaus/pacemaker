@@ -1,5 +1,6 @@
 package com.rose.pm.db;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -7,12 +8,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.rose.person.Patient;
+import com.rose.person.Physician;
 import com.rose.pm.MD5;
+import com.rose.pm.examination.Examination;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ER;
 import com.rose.pm.material.ERType;
@@ -84,43 +89,43 @@ public class SQL_INSERT {
 	 * @param treatmentCaseId the id of the corresponding treatment case
 	 * @return true, if examination could be inserted, otherwise false
 	 */
-//	public static Boolean Examination(Examination exam, Integer treatmentCaseId){
-//		stmt = DB.getStatement();
-//		
-//		 Calendar calendarStart = Calendar.getInstance();
-//		 Calendar calendarEnd = Calendar.getInstance();
-//	      calendarStart.clear();
-//	      calendarEnd.clear();
-//	      //assuming year/month/date information is not important
-//	      calendarStart.set(0, 0, 0, exam.getStart().getHour(), exam.getStart().getMinute(), exam.getStart().getSecond());
-//	      calendarEnd.set(0, 0, 0, exam.getEnd().getHour(), exam.getEnd().getMinute(), exam.getEnd().getSecond());
-//	      java.sql.Timestamp timestampStart = new java.sql.Timestamp(calendarStart.getTimeInMillis());
-//	      java.sql.Timestamp timestampEnd = new java.sql.Timestamp(calendarEnd.getTimeInMillis());
-//	      if(exam.getExaminer() instanceof Physician && exam.getDataFile() instanceof File && exam.getStart() instanceof LocalDateTime && exam.getEnd() instanceof LocalDateTime){
-//	    	  try {
-//	  			DB.getConnection().setAutoCommit(true);
-//	  			stmt.executeUpdate("INSERT INTO examination (id_examtype, id_patient, id_physician, id_treatmentCase, filename, startDateTime, endDateTime) "
-//	  								+ "VALUES ("
-//	  									+ "(SELECT idexamination_type FROM examination_type WHERE notation = '" + exam.getStudyType().name() + "'), "
-//	  									+ "'" + exam.getPatient().getId() + "', "
-//	  									+ "'" + exam.getExaminer().getId() + "', "
-//	  									+ "" + treatmentCaseId + ", "
-//	  									+ "'" + exam.getDataFile().getName() + "', "
-//	  									+ "'" + timestampStart + "', " 
-//	  									+ "'" + timestampEnd + "')");
-//	  			return true;
-//	  								
-//	  		} catch (SQLException e) {
-//	  			if(e.getErrorCode() == 1062){
-//	  				return true;
-//	  			}
-//	  			return false;
-//	  		} 
-//	      }else{
-//	    	  return false;
-//	      }
-//		
-//	}
+	public static Boolean Examination(Examination exam, Integer treatmentCaseId){
+		stmt = DB.getStatement();
+		
+		 Calendar calendarStart = Calendar.getInstance();
+		 Calendar calendarEnd = Calendar.getInstance();
+	      calendarStart.clear();
+	      calendarEnd.clear();
+	      //assuming year/month/date information is not important
+	      calendarStart.set(0, 0, 0, exam.getStart().getHour(), exam.getStart().getMinute(), exam.getStart().getSecond());
+	      calendarEnd.set(0, 0, 0, exam.getEnd().getHour(), exam.getEnd().getMinute(), exam.getEnd().getSecond());
+	      java.sql.Timestamp timestampStart = new java.sql.Timestamp(calendarStart.getTimeInMillis());
+	      java.sql.Timestamp timestampEnd = new java.sql.Timestamp(calendarEnd.getTimeInMillis());
+	      if(exam.getExaminer() instanceof Physician && exam.getDataFile() instanceof File && exam.getStart() instanceof LocalDateTime && exam.getEnd() instanceof LocalDateTime){
+	    	  try {
+	  			DB.getConnection().setAutoCommit(true);
+	  			stmt.executeUpdate("INSERT INTO examination.exam (id_examtype, id_patient, id_physician, id_treatmentCase, filename, startDateTime, endDateTime) "
+	  								+ "VALUES ("
+	  									+ "(SELECT idexamination_type FROM examination_type WHERE notation = '" + exam.getStudyType().name() + "'), "
+	  									+ "'" + exam.getPatient().getId() + "', "
+	  									+ "'" + exam.getExaminer().getId() + "', "
+	  									+ "" + treatmentCaseId + ", "
+	  									+ "'" + exam.getDataFile().getName() + "', "
+	  									+ "'" + timestampStart + "', " 
+	  									+ "'" + timestampEnd + "')");
+	  			return true;
+	  								
+	  		} catch (SQLException e) {
+	  			if(e.getErrorCode() == 1062){
+	  				return true;
+	  			}
+	  			return false;
+	  		} 
+	      }else{
+	    	  return false;
+	      }
+		
+	}
 //	
 //	/**
 //	 * insert a patient 

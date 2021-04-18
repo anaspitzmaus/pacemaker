@@ -7,8 +7,7 @@ import java.util.HashMap;
 
 import com.rose.dataExchange.Study;
 import com.rose.person.Patient;
-import com.rose.pm.db.SQL_INSERT;
-import com.rose.pm.ui.implant.Examination;
+import com.rose.pm.examination.Examination;
 
 public class TreatmentCase {
 	private Patient patient;

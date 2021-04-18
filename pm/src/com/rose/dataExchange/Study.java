@@ -14,8 +14,7 @@ import com.rose.person.Nurse;
 import com.rose.person.Patient;
 import com.rose.person.Physician;
 import com.rose.person.Sex;
-import com.rose.pm.db.SQL_SELECT;
-import com.rose.pm.ui.implant.Examination;
+import com.rose.pm.examination.Examination;
 import com.rose.pm.ui.implant.StudyType;
 
 

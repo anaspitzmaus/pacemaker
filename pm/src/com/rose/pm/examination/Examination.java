@@ -1,4 +1,4 @@
-package com.rose.pm.ui.implant;
+package com.rose.pm.examination;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -7,12 +7,16 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.JPanel;
+
 import com.rose.administration.AccountingType;
 import com.rose.administration.TreatmentCase;
 import com.rose.dataExchange.Study;
 import com.rose.person.Patient;
 import com.rose.person.Physician;
 import com.rose.pm.db.SQL_INSERT;
+import com.rose.pm.ui.implant.StudyType;
+
 
 public abstract class Examination {
 	
@@ -29,6 +33,7 @@ public abstract class Examination {
 	protected Study study;
 	private TreatmentCase treatmentCase;
 	private HashMap<String, HashMap<String, ArrayList<String>>> rawData;
+	private JPanel pnlExam;
 	
 	
 	public LocalDateTime getStart() {
@@ -185,7 +190,7 @@ public abstract class Examination {
 
 	
 	public Boolean storeExamToDB(Integer treatmentCaseId){
-		return null; //(SQL_INSERT.Examination(this, treatmentCaseId));
+		return(SQL_INSERT.Examination(this, treatmentCaseId));
 	}
 
 	
