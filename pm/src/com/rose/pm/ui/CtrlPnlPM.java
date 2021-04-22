@@ -429,9 +429,9 @@ public class CtrlPnlPM extends CtrlPnlBase{
 					break;
 				}
 			}else {
-	            aggregates.get(row).setDateOfImplantation((Date)value);
+	            aggregates.get(row - 1).setDateOfImplantation((Date)value);
 	            try {
-					SQL_UPDATE.dateOfImplant(aggregates.get(row));
+					SQL_UPDATE.dateOfImplant(aggregates.get(row - 1));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -787,7 +787,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		public void valueChanged(ListSelectionEvent arg0) {
 			if (((PnlPM)panel).getSelectedTblRow() > -1) {			
 				int row = ((PnlPM)panel).getSelectedTblRow();
-	            pm = (PM) ((PnlPM)panel).getTableValueAt(row, 0); //get the aggregate from the first column		            
+	            pm = (PM) ((PnlPM)panel).getTableValueAt(row, 0); //get the aggregate from the first column	
+	            
 	        }			
 		}
 		

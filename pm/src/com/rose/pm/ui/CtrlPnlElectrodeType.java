@@ -283,11 +283,11 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	        boolean selected = abstractButton.getModel().isSelected();
 	        
 	        if(selected) {
-				abstractButton.setText("Anker");						
-				
+				abstractButton.setText("Anker");
+				fixMode = "Anker";
 			}else {
-				abstractButton.setText("Schraube");			
-				
+				abstractButton.setText("Schraube");	
+				fixMode = "Schraube";
 			}
 		       	        
 		}		

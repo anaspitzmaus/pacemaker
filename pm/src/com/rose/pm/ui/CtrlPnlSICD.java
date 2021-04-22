@@ -304,9 +304,9 @@ public class CtrlPnlSICD extends CtrlPnlBase{
 					break;
 				}
 			}else {
-				sicds.get(row).setDateOfImplantation((Date)value);
+				sicds.get(row - 1).setDateOfImplantation((Date)value);
 	            try {
-					SQL_UPDATE.dateOfImplant(sicds.get(row));
+					SQL_UPDATE.dateOfImplant(sicds.get(row - 1));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

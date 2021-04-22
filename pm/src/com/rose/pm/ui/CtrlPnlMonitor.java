@@ -306,9 +306,9 @@ public class CtrlPnlMonitor extends CtrlPnlBase {
 					break;
 				}
 			}else {
-	            monitors.get(row).setDateOfImplantation((Date)value);
+	            monitors.get(row - 1).setDateOfImplantation((Date)value);
 	            try {
-					SQL_UPDATE.dateOfImplant(monitors.get(row));
+					SQL_UPDATE.dateOfImplant(monitors.get(row - 1));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

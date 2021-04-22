@@ -305,9 +305,9 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 					break;
 				}
 			}else {
-	            electrodes.get(row).setDateOfImplantation((Date)value);
+	            electrodes.get(row - 1).setDateOfImplantation((Date)value);
 	            try {
-					SQL_UPDATE.dateOfImplant(electrodes.get(row));
+					SQL_UPDATE.dateOfImplant(electrodes.get(row -1));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

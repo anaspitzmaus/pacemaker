@@ -45,10 +45,11 @@ public class CtrlSICD {
 	protected void setListener() {
 		createSICDTypeListener = new CreateSICDTypeListener();
 		ctrlPnlSICDType.addCreateListener(createSICDTypeListener);
+		deleteSICDTypeListener = new DeleteSICDTypeListener();
 		ctrlPnlSICDType.addDeleteListener(deleteSICDTypeListener);
 	}
 	
-class CreateSICDTypeListener implements ActionListener{
+	class CreateSICDTypeListener implements ActionListener{
 		SICDType type;
 		
 		protected void initializeAggregateTypes() {

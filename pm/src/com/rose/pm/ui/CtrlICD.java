@@ -10,6 +10,7 @@ import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 
 import com.rose.pm.material.ICD_Type;
+import com.rose.pm.ui.CtrlAggregates.DeleteTypeListener;
 
 public class CtrlICD extends CtrlAggregates{
 
@@ -24,6 +25,7 @@ public class CtrlICD extends CtrlAggregates{
 	protected void setListener() {
 		createTypeListener = new CreateICDTypeListener();
 		ctrlPnlPMType.addCreateListener(createTypeListener);
+		deleteTypeListener = new DeleteTypeListener();
 		ctrlPnlPMType.addDeleteListener(deleteTypeListener);
 	}
 	

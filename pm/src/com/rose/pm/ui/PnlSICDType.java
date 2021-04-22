@@ -1,5 +1,6 @@
 package com.rose.pm.ui;
 
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.material.AggregateType;
@@ -32,6 +33,8 @@ public class PnlSICDType extends PnlAggregateTypeBase {
 		pnlInput.add(lblPrice, "cell 6 0");
 		pnlInput.add(ftxtPrice, "cell 7 0");
 		pnlInput.add(btnCreate, "cell 8 0");	
+		btnDelete.setHorizontalAlignment(SwingConstants.RIGHT);
+		pnlSouth.add(btnDelete);
 			
 	}
 	
