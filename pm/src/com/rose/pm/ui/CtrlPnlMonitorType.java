@@ -549,8 +549,8 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		MonitorType monitorType;
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
-			if (((PnlMonitorType)panel).getSelectedTblRow() > 0) {			
-				int row = ((PnlMonitorType)panel).getSelectedTblRow() - 1;
+			if (((PnlMonitorType)panel).getSelectedTblRow() > -1) {			
+				int row = ((PnlMonitorType)panel).getSelectedTblRow();
 		        monitorType = (MonitorType) ((PnlMonitorType)panel).getTableValueAt(row, 0); //get the monitor from the first column		            
 		    }			
 		}

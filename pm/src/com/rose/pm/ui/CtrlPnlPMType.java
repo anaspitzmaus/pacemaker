@@ -230,12 +230,14 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		private static final long serialVersionUID = -8444808544442905721L;
 
 		protected ArrayList<String> columnNames;
-		ArrayList<? extends AggregateType> aggregates;
+		ArrayList<? extends AggregateType> aggregateTypes;
 		PM_Kind type;
+		Class[] classes = {AggregateType.class, String.class, String.class, PM_Kind.class, Boolean.class, String.class, Double.class};
 		
 		public PMTypeTblModel(ArrayList<? extends AggregateType> aggregates) {
-			this.aggregates = aggregates;
-			setColumns();		
+			this.aggregateTypes = aggregates;
+			setColumns();	
+			 
 		}
 		
 		protected void setColumns() {
@@ -263,37 +265,41 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		@Override
 		public int getRowCount() {
 			// TODO Auto-generated method stub
-			return this.aggregates.size();
+			return this.aggregateTypes.size();
 		}
 		
 		@Override
 		public Class getColumnClass(int col) {
-			return getValueAt(0, col).getClass();
+			return classes[col];
 		}
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			setType(aggregates.get(rowIndex));
-			
-			
+			if(aggregateTypes.size() > 0) {
+				setType(aggregateTypes.get(rowIndex));
+				
+				
 				switch(columnIndex) {
-				case 0: return aggregates.get(rowIndex);
-				
-				case 1: return aggregates.get(rowIndex).getNotation();
-				
-				case 2: return aggregates.get(rowIndex).getManufacturer().getNotation();
-				
-				case 3: return aggregates.get(rowIndex).getPM_Kind();
-				
-				case 4: return aggregates.get(rowIndex).getMri();
-				
-				case 5: return aggregates.get(rowIndex).getNotice();
-				
-				case 6: return aggregates.get(rowIndex).getPrice();
-				
-				default: return null;
+					case 0: return aggregateTypes.get(rowIndex);
+					
+					case 1: return aggregateTypes.get(rowIndex).getNotation();
+					
+					case 2: return aggregateTypes.get(rowIndex).getManufacturer().getNotation();
+					
+					case 3: return aggregateTypes.get(rowIndex).getPM_Kind();
+					
+					case 4: return aggregateTypes.get(rowIndex).getMri();
+					
+					case 5: return aggregateTypes.get(rowIndex).getNotice();
+					
+					case 6: return aggregateTypes.get(rowIndex).getPrice();
+					
+					default: return null;
 				
 				}	
+			}else {
+				return null;
+			}
 			
 		}
 		
@@ -310,7 +316,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		}
 		
 		protected void setAggregats(ArrayList<? extends AggregateType> pm) {
-			this.aggregates = pm;			
+			this.aggregateTypes = pm;			
 		}
 		
 	}
@@ -761,7 +767,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		public void actionPerformed(ActionEvent e) {
 			if(tblRowSelectionListener.getAggregatSelected() instanceof AggregateType) {
 				if(SQL_UPDATE.deleteAggregatModel(tblRowSelectionListener.getAggregatSelected())){
-					tblModel.aggregates.remove(tblRowSelectionListener.getAggregatSelected());
+					tblModel.aggregateTypes.remove(tblRowSelectionListener.getAggregatSelected());
 					tblModel.fireTableDataChanged();
 				}
 			}

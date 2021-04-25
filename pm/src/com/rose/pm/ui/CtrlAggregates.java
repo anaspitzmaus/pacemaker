@@ -124,7 +124,7 @@ public class CtrlAggregates {
 				AggregateType type = ctrlPnlPMType.getTblRowSelectionListener().getAggregatSelected();
 				if(JOptionPane.showConfirmDialog(null, "Möchten sie den Datensatz wirklich löschen?") == 0) {
 					if(SQL_UPDATE.deleteAggregatModel(type)){
-						ctrlPnlPMType.getAggregateTypeTableModel().aggregates.remove(type);
+						ctrlPnlPMType.getAggregateTypeTableModel().aggregateTypes.remove(type);
 						ctrlPnlPMType.getAggregateTypeTableModel().fireTableDataChanged();
 						//for all types of aggregates
 						for(int i = 0; i< ctrlPnlPM.aggregateTypeModel.getSize(); i++) {

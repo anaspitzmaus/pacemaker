@@ -24,6 +24,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
@@ -327,14 +328,12 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	
 	class TblElectrodesModel extends AbstractTableModel{		
 			
-			/**
-			 * 
-			 */
+			
 			private static final long serialVersionUID = -5397061877255389159L;
 			protected ArrayList<String> columnNames;
 			ArrayList<ElectrodeType> electrodeModels;
 			PM_Kind type;
-			
+			Class[] classes = {ElectrodeType.class, String.class, String.class, Integer.class, String.class, Boolean.class, String.class, Double.class};
 			
 			
 			protected void setElectrodeModels(ArrayList<ElectrodeType> electrodeModels) {
@@ -378,12 +377,12 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 			@SuppressWarnings("unchecked")
 			@Override
 			public Class getColumnClass(int col) {
-				return getValueAt(0, col).getClass();
+				return classes[col];
 			}
 	
 			@Override
 			public Object getValueAt(int rowIndex, int columnIndex) {
-				
+				if(electrodeModels.size() > 0) {
 				
 				
 					switch(columnIndex) {
@@ -405,15 +404,16 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 					
 					default: return null;
 					
-					}	
+					}
+				}else {
+					return null;
+				}
 			}
 				
 	}
 
 	class TblElectrodeModelEMRenderer extends JLabel implements TableCellRenderer{
-		/**
-		 * 
-		 */
+		
 		private static final long serialVersionUID = -7893845222434501963L;
 	
 		public TblElectrodeModelEMRenderer() {
