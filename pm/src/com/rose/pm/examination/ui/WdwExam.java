@@ -7,12 +7,14 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
 import com.rose.pm.examination.Examination;
+import javax.swing.JPanel;
 
 public class WdwExam {
 
 	private JFrame frame;
 	CtrlPnlExamAdmin ctrlPnlExamAdmin;
 	JTabbedPane tabExam;
+	CtrlPnlExamSelect ctrlPnlExamSelect;
 
 	/**
 	 * Launch the application.
@@ -47,6 +49,9 @@ public class WdwExam {
 		
 		ctrlPnlExamAdmin = new CtrlPnlExamAdmin();
 		frame.getContentPane().add(ctrlPnlExamAdmin.getPanel(), BorderLayout.NORTH);
+		
+		ctrlPnlExamSelect = new CtrlPnlExamSelect();
+		frame.getContentPane().add(ctrlPnlExamSelect.getPanel(), BorderLayout.WEST);
 		
 		
 	}

@@ -2,7 +2,6 @@ package com.rose.pm.examination.ui;
 
 
 import java.awt.BorderLayout;
-import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -16,9 +15,7 @@ public class PnlPMImplant extends PnlExam {
 	 * Create the panel.
 	 */
 	public PnlPMImplant() {
-		setLayout(new BorderLayout(0, 0));
-		
-		
+		setLayout(new BorderLayout(0, 0));		
 		
 		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, BorderLayout.CENTER);

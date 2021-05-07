@@ -1,11 +1,13 @@
 package com.rose.pm.examination.ui;
 
-import javax.swing.JPanel;
-
-import javax.swing.JTextArea;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JLabel;
 import java.awt.Font;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.event.DocumentListener;
+
+import net.miginfocom.swing.MigLayout;
 
 public class PnlExamFindings extends JPanel {
 
@@ -23,6 +25,10 @@ public class PnlExamFindings extends JPanel {
 		txtIndication = new JTextArea();
 		add(txtIndication, "cell 1 0,growx,aligny top");
 
+	}
+	
+	void addIndicationListener(DocumentListener l) {
+		txtIndication.getDocument().addDocumentListener(l);
 	}
 
 }
