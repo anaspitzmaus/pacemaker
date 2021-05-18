@@ -31,7 +31,6 @@ public class DlgChange extends JDialog {
 	private JTextField txtNotice;
 	JButton okButton, cancelButton;
 	JLabel lblNotice, lblSerialNr;
-	private JCheckBox checkProvide;
 
 
 
@@ -66,11 +65,6 @@ public class DlgChange extends JDialog {
 			txtNotice.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			contentPanel.add(txtNotice, "cell 1 1,growx");
 			txtNotice.setColumns(10);
-		}
-		{
-			checkProvide = new JCheckBox("checkProvide");
-			checkProvide.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			contentPanel.add(checkProvide, "cell 1 4");
 		}
 		
 		{
@@ -125,15 +119,6 @@ public class DlgChange extends JDialog {
 		
 	}
 
-	protected void addProvideListener(ItemListener provideListener) {
-		checkProvide.addItemListener(provideListener);
-		
-	}
 	
-	protected void setProvidedPatientToCheckBox(Patient patient) {
-		if(patient instanceof Patient) {
-			checkProvide.setText("für aktuellen Patienten (" + patient.getSurname() + ", " + patient.getFirstname() + ") bereitstellen");
-		}
-	}
 
 }
