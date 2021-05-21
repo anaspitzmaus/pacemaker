@@ -7,8 +7,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
+import javax.swing.JScrollPane;
+import javax.swing.JList;
 
 public class PnlDlgInsuranceWest extends JPanel {
 	
@@ -28,12 +31,14 @@ public class PnlDlgInsuranceWest extends JPanel {
 	JLabel lblPostCode;
 	JLabel lblPostBox;
 	JButton btnNew, btnChange, btnDelete;	
+	private JScrollPane scrollPane;
+	private JList listInsurance;
 
 	/**
 	 * Create the panel.
 	 */
 	public PnlDlgInsuranceWest() {
-		setLayout(new MigLayout("", "[][grow][][grow]", "[][][][][][][][]"));
+		setLayout(new MigLayout("", "[][grow][][grow][grow]", "[grow][][][][][][][]"));
 		
 		lblNotation = new JLabel("lblNotation");
 		lblNotation.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -43,6 +48,13 @@ public class PnlDlgInsuranceWest extends JPanel {
 		txtNotation.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		add(txtNotation, "cell 1 0,growx");
 		txtNotation.setColumns(10);
+		
+		scrollPane = new JScrollPane();
+		add(scrollPane, "cell 4 0 1 8,grow");
+		
+		listInsurance = new JList();
+		listInsurance.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		scrollPane.setViewportView(listInsurance);
 		
 		lblPerson = new JLabel("lblPerson");
 		lblPerson.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -219,6 +231,8 @@ public class PnlDlgInsuranceWest extends JPanel {
 	protected void addBtnDeleteListener(ActionListener l) {
 		this.btnDelete.addActionListener(l);
 	}
+	
+	
 	
 	
 	
