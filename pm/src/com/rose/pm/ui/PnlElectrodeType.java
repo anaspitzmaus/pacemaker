@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
@@ -157,6 +158,10 @@ public class PnlElectrodeType extends PnlAggregateTypeBase {
 	
 	protected void addPriceChangeListener(PropertyChangeListener priceListener) {
 		ftxtPrice.addPropertyChangeListener(priceListener);		
+	}
+	
+	protected void setTblHeaderRenderer(DefaultTableCellRenderer r) {
+		table.getTableHeader().setDefaultRenderer(r);
 	}
 
 }

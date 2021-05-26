@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import javax.swing.AbstractButton;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -16,15 +17,18 @@ import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+
 import com.rose.pm.db.SQL_SELECT;
-import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
@@ -54,6 +58,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	TblDoubleRenderer tblDoubleRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
 	PriceListener priceListener;
+	TblHeaderCellRenderer tblHeaderCellRenderer;
 	
 	
 	protected NotationListener getNotationListener() {
@@ -141,6 +146,8 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	}
 	
 	private void setRenderer() {
+		tblHeaderCellRenderer = new TblHeaderCellRenderer();
+		((PnlElectrodeType)panel).setTblHeaderRenderer(tblHeaderCellRenderer);
 		manufacturerRenderer = new ManufacturerRenderer();
 		((PnlElectrodeType)panel).setManufacturerRenderer(manufacturerRenderer);
 		tblElectrodeModelBooleanRenderer = new TblElectrodeModelBooleanRenderer();
@@ -560,6 +567,27 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 			return elModel;
 		}		
 	}
+	
+	 class TblHeaderCellRenderer extends DefaultTableCellRenderer{
+
+		private static final long serialVersionUID = 6728955957827270248L;
+		@Override
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int column) {
+           // super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			PnlHeader pnlHeader = new PnlHeader();
+			pnlHeader.setLblText((String) value);
+            JLabel lbl = new JLabel((String) value);
+            
+            lbl.setBackground(Color.GRAY);
+            lbl.setBorder(new LineBorder(Color.BLACK));
+            lbl.setAlignmentX(CENTER_ALIGNMENT);
+            return pnlHeader;
+            
+		}
+            
+	 }
 	
 	
 	

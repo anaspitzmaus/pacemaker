@@ -278,39 +278,32 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			if(rowIndex > 0) {
+			if(monitorTypes.size() > 0) {
 				switch(columnIndex) {
-					case 0: return monitorTypes.get(rowIndex - 1);
-					case 1: return monitorTypes.get(rowIndex - 1).getNotation();
-					case 2: return monitorTypes.get(rowIndex - 1).getManufacturer();
-					case 3: return monitorTypes.get(rowIndex - 1).getNotice();
-					case 4: return monitorTypes.get(rowIndex - 1).getPrice();
+					case 0: return monitorTypes.get(rowIndex);
+					case 1: return monitorTypes.get(rowIndex).getNotation();
+					case 2: return monitorTypes.get(rowIndex).getManufacturer();
+					case 3: return monitorTypes.get(rowIndex).getNotice();
+					case 4: return monitorTypes.get(rowIndex).getPrice();
 					default: return null;
 				}
 			}else{
-				switch (columnIndex) {
-					case 0: return mt;
-					case 1: return searchNotation;
-					case 2: return manuf;
-					case 3: return notice;
-					case 4: return price;
-					default: return null;
-				}
+				return null;
 			}
 		}
 		
 		
 		
-		@Override
-		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-			if(rowIndex == 0 && columnIndex == 2) {
-				manuf = (Manufacturer)aValue;
-			}else if (rowIndex == 0 && columnIndex == 1){
-				searchNotation = (String)aValue;
-			}else {
-				super.setValueAt(aValue, rowIndex, columnIndex);
-			}
-		}
+//		@Override
+//		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+//			if(rowIndex == 0 && columnIndex == 2) {
+//				manuf = (Manufacturer)aValue;
+//			}else if (rowIndex == 0 && columnIndex == 1){
+//				searchNotation = (String)aValue;
+//			}else {
+//				super.setValueAt(aValue, rowIndex, columnIndex);
+//			}
+//		}
 
 		@Override
 		public Class getColumnClass(int col) {

@@ -166,30 +166,30 @@ public class Listener {
 			
 	}
 	
-	class SearchMaterialTypeListener implements ItemListener{
-		MaterialType materialType;
-		AbstractTableModel tblModel;
-		 
-		 
-		protected MaterialType getMaterialType() {
-			return materialType;
-		}
-		 
-		public SearchMaterialTypeListener(AbstractTableModel tblModel) {
-			this.tblModel = tblModel;
-		}
-
-		@Override
-		 public void itemStateChanged(ItemEvent event) {
-			if (event.getStateChange() == ItemEvent.SELECTED) {
-				try {
-					materialType = (MaterialType) event.getItem();	
-				} catch (ClassCastException e) {
-					materialType = null;				
-				}
-			}else {
-				materialType = null;
-			}
+//	class SearchMaterialTypeListener implements ItemListener{
+//		MaterialType materialType;
+//		AbstractTableModel tblModel;
+//		 
+//		 
+//		protected MaterialType getMaterialType() {
+//			return materialType;
+//		}
+//		 
+//		public SearchMaterialTypeListener(AbstractTableModel tblModel) {
+//			this.tblModel = tblModel;
+//		}
+//
+//		@Override
+//		 public void itemStateChanged(ItemEvent event) {
+//			if (event.getStateChange() == ItemEvent.SELECTED) {
+//				try {
+//					materialType = (MaterialType) event.getItem();	
+//				} catch (ClassCastException e) {
+//					materialType = null;				
+//				}
+//			}else {
+//				materialType = null;
+//			}
 				
 //			try {
 //				tblModel.setValueAt(materialType, 0, 1);
@@ -198,9 +198,9 @@ public class Listener {
 //				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
-			tblModel.fireTableDataChanged();
+//			tblModel.fireTableDataChanged();
 					
-		 }		 
-	 }
+//		 }		 
+//	 }
 	
 }
