@@ -2,8 +2,11 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -29,6 +32,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.material.Electrode;
 import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
@@ -59,6 +63,7 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	TblRowSelectionListener tblRowSelectionListener;
 	PriceListener priceListener;
 	TblHeaderCellRenderer tblHeaderCellRenderer;
+	TblMouseAdaptor tblMouseAdaptor;
 	
 	
 	protected NotationListener getNotationListener() {
@@ -100,6 +105,8 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 		setComponentText();
 		((PnlElectrodeType)panel).setManufacturerIndex(-1);
 		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tblMouseAdaptor = new TblMouseAdaptor();
+		panel.addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
 	private void setListener() {
@@ -146,8 +153,8 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	}
 	
 	private void setRenderer() {
-		tblHeaderCellRenderer = new TblHeaderCellRenderer();
-		((PnlElectrodeType)panel).setTblHeaderRenderer(tblHeaderCellRenderer);
+//		tblHeaderCellRenderer = new TblHeaderCellRenderer();
+//		((PnlElectrodeType)panel).setTblHeaderRenderer(tblHeaderCellRenderer);
 		manufacturerRenderer = new ManufacturerRenderer();
 		((PnlElectrodeType)panel).setManufacturerRenderer(manufacturerRenderer);
 		tblElectrodeModelBooleanRenderer = new TblElectrodeModelBooleanRenderer();
@@ -590,7 +597,21 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	 }
 	
 	
-	
+	 class TblMouseAdaptor extends MouseAdapter{
+		 JTable table;
+		 @Override
+	    public void mouseClicked(MouseEvent mouseEvent){
+	        if(mouseEvent.getClickCount()==2){
+	        	 table =(JTable) mouseEvent.getSource();
+	             Point point = mouseEvent.getPoint();
+	             int row = table.rowAtPoint(point);
+	             if (table.getSelectedRow() != -1 && row >= 0) {
+	            	 CtrlDlgChangeElectrodeModel ctrlDlgChangeElectrodeModel = new CtrlDlgChangeElectrodeModel((ElectrodeType) tblElectrodesModel.getValueAt(row, 0), tblElectrodesModel);
+	            	 ctrlDlgChangeElectrodeModel.getDialog().setVisible(true);
+	             }
+	        }
+		 }
+	 }
 	
 	
 	protected void addCreateListener(ActionListener l) {

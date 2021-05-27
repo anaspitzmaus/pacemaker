@@ -3,6 +3,7 @@ package com.rose.pm.ui;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -162,6 +163,10 @@ public class PnlElectrodeType extends PnlAggregateTypeBase {
 	
 	protected void setTblHeaderRenderer(DefaultTableCellRenderer r) {
 		table.getTableHeader().setDefaultRenderer(r);
+	}
+	
+	protected void addTblMouseAdaptor(MouseListener mouseAdaptor) {
+		table.addMouseListener(mouseAdaptor);		
 	}
 
 }

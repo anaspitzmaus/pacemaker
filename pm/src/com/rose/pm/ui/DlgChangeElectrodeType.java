@@ -4,10 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -18,6 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentListener;
+
 
 import net.miginfocom.swing.MigLayout;
 
@@ -36,6 +39,9 @@ public class DlgChangeElectrodeType extends JDialog {
 	JLabel lblPrice;
 	JFormattedTextField ftxtPrice;
 	JLabel lblNotice;
+	private JLabel lblMRI;
+	private JCheckBox checkMRI;
+	JButton okButton, cancelButton;
 	
 	
 	
@@ -69,7 +75,7 @@ public class DlgChangeElectrodeType extends JDialog {
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new MigLayout("", "[][grow]", "[][][][][]"));
+		contentPanel.setLayout(new MigLayout("", "[][grow]", "[][][][][][]"));
 		{
 			lblNotation = new JLabel("lblNotation");
 			lblNotation.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -124,35 +130,101 @@ public class DlgChangeElectrodeType extends JDialog {
 			txtNotice.setColumns(10);
 		}
 		{
+			lblMRI = new JLabel("lblMRI");
+			lblMRI.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			contentPanel.add(lblMRI, "cell 0 4,alignx left");
+		}
+		{
+			checkMRI = new JCheckBox("checkMRI");
+			checkMRI.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			contentPanel.add(checkMRI, "cell 1 4,alignx left");
+		}
+		{
 			lblPrice = new JLabel("lblPrice");
 			lblPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			contentPanel.add(lblPrice, "cell 0 4,alignx left,aligny bottom");
+			contentPanel.add(lblPrice, "cell 0 5,alignx left,aligny bottom");
 		}
 		{
 			ftxtPrice = new JFormattedTextField();
 			ftxtPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			contentPanel.add(ftxtPrice, "cell 1 4,growx");
+			contentPanel.add(ftxtPrice, "cell 1 5,growx");
 		}
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				okButton = new JButton("OK");
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				cancelButton = new JButton("Cancel");
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
 		}
 	}
 	
+	protected void setLblLengthText(String txt) {
+		lblLength.setText(txt);
+	}
+	
+	protected void setLblMRIText(String txt) {
+		lblMRI.setText(txt);
+	}
+	
+	protected void setLblNotationText(String txt) {
+		lblNotation.setText(txt);
+	}
+	
+	protected void setLblNoticeText(String txt) {
+		lblNotice.setText(txt);
+	}
+	
+	protected void setLblFixModeText(String txt) {
+		lblFix.setText(txt);
+	}
+	
+	protected void setLblPriceText(String txt) {
+		lblPrice.setText(txt);
+	}
+	
+	protected void setRadioAnchorText(String txt) {
+		rdbtnAnker.setText(txt);
+	}
+	
+	protected void setRadioScrewText(String txt) {
+		rdbtnScrew.setText(txt);
+	}
+	
 	protected void setLength(Integer l) {
 		spinLength.setValue(l);
+	}
+	
+	protected void setPrice(Double price) {
+		ftxtPrice.setValue(price);
+	}
+	
+	protected void setMRI(Boolean mri) {
+		checkMRI.setSelected(mri);
+	}
+	
+	protected void setNotation(String notation) {
+		txtNotation.setText(notation);
+	}
+	
+	protected void setNotice(String notice) {
+		txtNotice.setText(notice);
+	}
+	
+	protected void setFixMode(String fixMode) {
+		if(fixMode.equals("Anker")) {
+			rdbtnAnker.setSelected(true);
+		}else {
+			rdbtnScrew.setSelected(true);
+		}
 	}
 
 	protected void addLengthListener(ChangeListener l) {
@@ -170,6 +242,23 @@ public class DlgChangeElectrodeType extends JDialog {
 	protected void addFixModeScrewListener(ActionListener l) {
 		rdbtnScrew.addActionListener(l);
 	}
+
+	protected void addMRIListener(ActionListener l) {
+		checkMRI.addActionListener(l);		
+	}
+
+	protected void addNotationListener(DocumentListener l) {
+		txtNotation.getDocument().addDocumentListener(l);		
+	}
+	
+	protected void addNoticeListener(DocumentListener l) {
+		txtNotice.getDocument().addDocumentListener(l);		
+	}
+
+	protected void addCreateListener(ActionListener l) {
+		okButton.addActionListener(l);		
+	}
+	
 	
 	
 

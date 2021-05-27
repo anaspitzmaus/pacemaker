@@ -227,6 +227,8 @@ public class SQL_UPDATE {
 						+ "notice = '" + electrodeModel.getNotice() + "', "
 						+ "fixMode = '" + electrodeModel.getFixMode() + "', "
 						+ "mri = '" + mri + "', "
+						+ "length = " + electrodeModel.getLength() + ", " 
+						+ "price = " + electrodeModel.getPrice() + ", "
 						+ "id_manufacturer = " + electrodeModel.getManufacturer().getId() + " "
 						+ "WHERE idelectrode_type = " + electrodeModel.getId() + "");
 				return true;
