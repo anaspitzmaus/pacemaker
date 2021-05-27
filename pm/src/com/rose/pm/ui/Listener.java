@@ -37,6 +37,15 @@ public class Listener {
 	 */
 	class NotationListener implements DocumentListener{
 		String notation = "";
+		
+		public NotationListener() {
+			// TODO Auto-generated constructor stub
+		}
+		
+		public NotationListener(String notation) {
+			this.notation = notation;
+		}
+		
 		@Override
 		public void changedUpdate(DocumentEvent e) {			
 			setNotation(e);	

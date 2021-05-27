@@ -2,19 +2,24 @@ package com.rose.pm.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.JRadioButton;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeListener;
+
+import net.miginfocom.swing.MigLayout;
 
 public class DlgChangeElectrodeType extends JDialog {
 
@@ -34,6 +39,13 @@ public class DlgChangeElectrodeType extends JDialog {
 	
 	
 	
+	protected JRadioButton getRdbtnAnker() {
+		return rdbtnAnker;
+	}
+
+	protected JRadioButton getRdbtnScrew() {
+		return rdbtnScrew;
+	}
 
 	/**
 	 * Launch the application.
@@ -86,14 +98,19 @@ public class DlgChangeElectrodeType extends JDialog {
 			contentPanel.add(lblFix, "cell 0 2,alignx left,growy");
 		}
 		{
+			
 			rdbtnAnker = new JRadioButton("rdbtnAnker");
+			rdbtnAnker.setActionCommand("anchor");
 			rdbtnAnker.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			contentPanel.add(rdbtnAnker, "flowx,cell 1 2");
 		}
 		{
 			rdbtnScrew = new JRadioButton("rdbtnScrew");
+			rdbtnScrew.setActionCommand("screw");
 			rdbtnScrew.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			contentPanel.add(rdbtnScrew, "cell 1 2");
+			contentPanel.add(rdbtnScrew, "cell 1 2");		
+			
+			
 		}
 		{
 			lblNotice = new JLabel("lblNotice\r\n");
@@ -137,5 +154,23 @@ public class DlgChangeElectrodeType extends JDialog {
 	protected void setLength(Integer l) {
 		spinLength.setValue(l);
 	}
+
+	protected void addLengthListener(ChangeListener l) {
+		spinLength.addChangeListener(l);		
+	}
+
+	protected void addPriceListener(PropertyChangeListener l) {
+		ftxtPrice.addPropertyChangeListener(l);		
+	}
+
+	protected void addFixModeAnchorListener(ActionListener l) {
+		rdbtnAnker.addActionListener(l);		
+	}
+	
+	protected void addFixModeScrewListener(ActionListener l) {
+		rdbtnScrew.addActionListener(l);
+	}
+	
+	
 
 }
