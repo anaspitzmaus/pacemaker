@@ -2,10 +2,13 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -33,8 +36,10 @@ import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.PM_Kind;
+import com.rose.pm.ui.CtrlPnlElectrodeType.TblMouseAdaptor;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Listener.PriceListener;
 import com.rose.pm.ui.Renderer.TblDoubleRenderer;
@@ -69,6 +74,7 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 	PriceListener priceListener;
 	Renderer renderer;
 	TblDoubleRenderer tblDoubleRenderer;
+	TblMouseAdaptor tblMouseAdaptor;
 	
 	
 	
@@ -90,6 +96,8 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		((PnlPMType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		setComponentText();
+		tblMouseAdaptor = new TblMouseAdaptor();
+		panel.addTblMouseAdaptor(tblMouseAdaptor);
 		
 	}
 	
@@ -775,6 +783,22 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		}
 		
 	}
+	
+	 class TblMouseAdaptor extends MouseAdapter{
+		 JTable table;
+		 @Override
+	    public void mouseClicked(MouseEvent mouseEvent){
+	        if(mouseEvent.getClickCount()==2){
+	        	 table =(JTable) mouseEvent.getSource();
+	             Point point = mouseEvent.getPoint();
+	             int row = table.rowAtPoint(point);
+	             if (table.getSelectedRow() != -1 && row >= 0) {
+	            	 CtrlDlgChangePMType ctrlDlgChangePMType = new CtrlDlgChangePMType((AggregateType) tblModel.getValueAt(row, 0), tblModel);
+	            	 ctrlDlgChangePMType.getDialog().setVisible(true);
+	             }
+	        }
+		 }
+	 }
 
 	protected NotationListener getNotationListener() {
 		return this.notationListener;

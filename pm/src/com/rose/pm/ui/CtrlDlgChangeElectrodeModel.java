@@ -2,13 +2,11 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
-import javax.swing.JFormattedTextField;
+
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -16,18 +14,15 @@ import javax.swing.table.AbstractTableModel;
 
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.ElectrodeType;
-import com.rose.pm.ui.Listener.NotationListener;
 
-public class CtrlDlgChangeElectrodeModel {
+
+public class CtrlDlgChangeElectrodeModel extends CtrlDlgChangeType{
 	DlgChangeElectrodeType dlgChangeElectrodeType;
 	LengthListener lengthListener;
-	PriceListener priceListener;
 	ElectrodeType electrodeType;
-	NotationListener notationListener, noticeListener;
 	MRIListener mriListener;
 	FixModeListener fixModeAnchorListener, fixModeScrewListener;
 	ButtonGroup g;
-	Listener listener;
 	AbstractTableModel tblModel;
 	CreateListener createListener;
 	
@@ -39,9 +34,11 @@ public class CtrlDlgChangeElectrodeModel {
 
 
 	public CtrlDlgChangeElectrodeModel(ElectrodeType eType,  AbstractTableModel model) {
+		super(eType);
 		this.electrodeType = eType;
 		this.tblModel = model;
 		dlgChangeElectrodeType = new DlgChangeElectrodeType();
+		setDialog(dlgChangeElectrodeType);
 		g = new ButtonGroup();
 		g.add(dlgChangeElectrodeType.getRdbtnAnker());
 		g.add(dlgChangeElectrodeType.getRdbtnScrew());
@@ -55,33 +52,26 @@ public class CtrlDlgChangeElectrodeModel {
 		setListener();
 	}
 	
-	private void setComponentText() {
+	protected void setComponentText() {
+		super.setComponentText();
 		dlgChangeElectrodeType.setLblFixModeText("Fixierung:");
 		dlgChangeElectrodeType.setLblLengthText("Länge:");
 		dlgChangeElectrodeType.setLblMRIText("MRT-fähig:");
-		dlgChangeElectrodeType.setLblNotationText("Bezeichnung:");
-		dlgChangeElectrodeType.setLblNoticeText("Anmerkung:");
-		dlgChangeElectrodeType.setLblPriceText("Preis:");
+		dlgChangeElectrodeType.setCheckMRIText("MRT");		
 		dlgChangeElectrodeType.setRadioAnchorText("Anker");
 		dlgChangeElectrodeType.setRadioScrewText("Schraube");
 	}
 	
-	private void setListener() {
+	protected void setListener() {
+		super.setListener();
 		lengthListener = new LengthListener(this.electrodeType.getLength());
 		dlgChangeElectrodeType.addLengthListener(lengthListener);
-		priceListener = new PriceListener(this.electrodeType.getPrice());
-		dlgChangeElectrodeType.addPriceListener(priceListener);
 		fixModeAnchorListener = new FixModeListener(this.electrodeType.getFixMode());
 		dlgChangeElectrodeType.addFixModeAnchorListener(fixModeAnchorListener);
 		fixModeScrewListener = new FixModeListener(this.electrodeType.getFixMode());
 		dlgChangeElectrodeType.addFixModeScrewListener(fixModeAnchorListener);
 		mriListener = new MRIListener(this.electrodeType.getMri());
 		dlgChangeElectrodeType.addMRIListener(mriListener);
-		listener = new Listener();
-		notationListener = listener.new NotationListener(this.electrodeType.getNotation());
-		noticeListener = listener.new NotationListener(this.electrodeType.getNotice());
-		dlgChangeElectrodeType.addNotationListener(notationListener);
-		dlgChangeElectrodeType.addNoticeListener(noticeListener);
 		createListener = new CreateListener();
 		dlgChangeElectrodeType.addCreateListener(createListener);
 	}
@@ -103,33 +93,8 @@ public class CtrlDlgChangeElectrodeModel {
 			length = (Integer) spinner.getValue();
 			
 		}
-	}
-	
-	class PriceListener implements PropertyChangeListener{
-		private Double price = null;
-		
-				
-		protected Double getPrice() {
-			return price;
-		}
+	}	
 
-		public PriceListener(Double price) {
-			this.price = price;
-		}
-		
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			JFormattedTextField field = (JFormattedTextField)evt.getSource();
-			
-			if(field.getValue() != null && field.getValue().getClass() == Long.class) {
-				Long l = (Long) field.getValue();
-				price = l.doubleValue();
-			}else if (field.getValue() != null){
-				price = (Double) field.getValue();
-				
-			}			
-		}	
-	}
 	
 	class FixModeListener implements ActionListener{
 		String fixMode = "Schraube";
@@ -150,18 +115,7 @@ public class CtrlDlgChangeElectrodeModel {
 				
 			}else {
 				fixMode = "Anker";
-			}
-			
-//			AbstractButton abstractButton = (AbstractButton) event.getSource();
-//	        boolean selected = abstractButton.getModel().isSelected();
-//	        
-//	        if(selected) {
-//				abstractButton.setText("Anker");
-//				fixMode = "Anker";
-//			}else {
-//				abstractButton.setText("Schraube");	
-//				fixMode = "Schraube";
-//			}		       	        
+			}       	        
 		}		
 	}
 	
@@ -189,7 +143,7 @@ public class CtrlDlgChangeElectrodeModel {
 		
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if(notationListener.getNotation() != "") {
+			if(!notationListener.getNotation().equals("")) {
 				electrodeType.setNotation(notationListener.getNotation());
 				electrodeType.setNotice(noticeListener.getNotation());
 				electrodeType.setFixMode(fixModeAnchorListener.getFixMode());

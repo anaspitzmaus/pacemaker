@@ -184,6 +184,40 @@ public class SQL_UPDATE {
 		}
 		
 	}
+	
+	public static void AggregateType(AggregateType aggType) throws SQLException{
+		stmt = DB.getStatement();
+		Integer mri = 0;
+		Integer ra = 0;
+		Integer rv = 0;
+		Integer lv = 0;
+		if(aggType.getMri()){
+			mri = 1;
+		}
+		if(aggType.getRa()) {
+			ra = 1;
+		}
+		if (aggType.getRv()) {
+			rv = 1;
+		}
+		if(aggType.getLv()) {
+			lv = 1;
+		}
+		
+		if(aggType.getId() != null) {
+			
+			stmt.executeUpdate("UPDATE pm_type SET "
+					+ "notation = '" + aggType.getNotation() + "', "
+					+ "notice = '" + aggType.getNotice() + "', "
+					+ "mri = '" + mri + "', "
+					+ "ra = '" + ra + "', "
+					+ "rv = '" + rv + "', "
+					+ "lv = '" + lv + "', "
+					+ "price = " + aggType.getPrice() + ", "
+					+ "id_manufacturer = " + aggType.getManufacturer().getId() + " "
+					+ "WHERE idpm_type = " + aggType.getId() + "");		
+		}
+	}
 
 	/**
 	 * update an icd
