@@ -17,7 +17,6 @@ public class CtrlDlgChangePMType extends CtrlDlgChangeType {
 	
 	private AggregateType aggType;
 	private AbstractTableModel tblModel;
-	private DlgChangePmType dlgChangePMType;
 	MRIListener mriListener;	
 	CreateListener createListener;
 	RAListener raListener;
@@ -28,36 +27,37 @@ public class CtrlDlgChangePMType extends CtrlDlgChangeType {
 		super(aggType);
 		this.aggType = aggType;
 		this.tblModel = tblModel;
-		dlgChangePMType = new DlgChangePmType();
-		setDialog(dlgChangePMType);
-		dlgChangePMType.setCheckMRIValue(aggType.getMri());
-		dlgChangePMType.setCheckRAValue(aggType.getRa());
-		dlgChangePMType.setCheckRVValue(aggType.getRv());
-		dlgChangePMType.setCheckLVValue(aggType.getLv());
+		setDialog(new DlgChangePmType());
+		((DlgChangePmType) getDialog()).setCheckMRIValue(aggType.getMri());
+		((DlgChangePmType) getDialog()).setCheckRAValue(aggType.getRa());
+		((DlgChangePmType) getDialog()).setCheckRVValue(aggType.getRv());
+		((DlgChangePmType) getDialog()).setCheckLVValue(aggType.getLv());
+		setComponentText();
+		setListener();
 	}
 	
 	protected void setComponentText() {
 		super.setComponentText();		
-		dlgChangePMType.setLblMRIText("MRT-fähig:");
-		dlgChangePMType.setCheckMRIText("MRT");	
-		dlgChangePMType.setLblPmKindText("Modus:");
-		dlgChangePMType.setCheckRAText("RA");
-		dlgChangePMType.setCheckRVText("RV");
-		dlgChangePMType.setCheckLVText("LV");
+		((DlgChangePmType) getDialog()).setLblMRIText("MRT-fähig:");
+		((DlgChangePmType) getDialog()).setCheckMRIText("MRT");	
+		((DlgChangePmType) getDialog()).setLblPmKindText("Modus:");
+		((DlgChangePmType) getDialog()).setCheckRAText("RA");
+		((DlgChangePmType) getDialog()).setCheckRVText("RV");
+		((DlgChangePmType) getDialog()).setCheckLVText("LV");
 	}
 	
 	protected void setListener() {
 		super.setListener();
 		mriListener = new MRIListener(this.aggType.getMri());
-		dlgChangePMType.addMRIListener(mriListener);
+		((DlgChangePmType) getDialog()).addMRIListener(mriListener);
 		raListener = new RAListener(aggType.getRa());
-		dlgChangePMType.addRAListener(raListener);
+		((DlgChangePmType) getDialog()).addRAListener(raListener);
 		rvListener = new RVListener(aggType.getRv());
-		dlgChangePMType.addRVListener(rvListener);
+		((DlgChangePmType) getDialog()).addRVListener(rvListener);
 		lvListener = new LVListener(aggType.getLv());
-		dlgChangePMType.addLVListener(lvListener);
+		((DlgChangePmType) getDialog()).addLVListener(lvListener);
 		createListener = new CreateListener();
-		dlgChangePMType.addCreateListener(createListener);
+		((DlgChangePmType) getDialog()).addCreateListener(createListener);
 		
 	}
 	
@@ -171,7 +171,7 @@ public class CtrlDlgChangePMType extends CtrlDlgChangeType {
 			
 			
 			tblModel.fireTableDataChanged();
-			dlgChangePMType.dispose();
+			((DlgChangePmType) getDialog()).dispose();
 		}
 		
 	}

@@ -48,7 +48,6 @@ import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 public class CtrlPnlPMType extends CtrlPnlBase{
 
-	//PnlPMType pnlPMType;
 	PMTypeTblModel tblModel; 
 	ComboBoxModel<Manufacturer> manufacturerModel;
 	ManufacturerRenderer manufacturerRenderer;
