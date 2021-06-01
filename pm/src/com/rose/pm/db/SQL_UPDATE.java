@@ -205,17 +205,30 @@ public class SQL_UPDATE {
 		}
 		
 		if(aggType.getId() != null) {
+			if(aggType instanceof ICD_Type) {
+				stmt.executeUpdate("UPDATE icd_type SET "
+						+ "notation = '" + aggType.getNotation() + "', "
+						+ "notice = '" + aggType.getNotice() + "', "
+						+ "mri = '" + mri + "', "
+						+ "ra = '" + ra + "', "
+						+ "rv = '" + rv + "', "
+						+ "lv = '" + lv + "', "
+						+ "price = " + aggType.getPrice() + ", "
+						+ "id_manufacturer = " + aggType.getManufacturer().getId() + " "
+						+ "WHERE idicd_type = " + aggType.getId() + "");		
+		}else {
+				stmt.executeUpdate("UPDATE pm_type SET "
+						+ "notation = '" + aggType.getNotation() + "', "
+						+ "notice = '" + aggType.getNotice() + "', "
+						+ "mri = '" + mri + "', "
+						+ "ra = '" + ra + "', "
+						+ "rv = '" + rv + "', "
+						+ "lv = '" + lv + "', "
+						+ "price = " + aggType.getPrice() + ", "
+						+ "id_manufacturer = " + aggType.getManufacturer().getId() + " "
+						+ "WHERE idpm_type = " + aggType.getId() + "");		
+			}
 			
-			stmt.executeUpdate("UPDATE pm_type SET "
-					+ "notation = '" + aggType.getNotation() + "', "
-					+ "notice = '" + aggType.getNotice() + "', "
-					+ "mri = '" + mri + "', "
-					+ "ra = '" + ra + "', "
-					+ "rv = '" + rv + "', "
-					+ "lv = '" + lv + "', "
-					+ "price = " + aggType.getPrice() + ", "
-					+ "id_manufacturer = " + aggType.getManufacturer().getId() + " "
-					+ "WHERE idpm_type = " + aggType.getId() + "");		
 		}
 	}
 
