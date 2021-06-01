@@ -52,7 +52,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	Listener.ManufacturerListener manufacturerListener;
 	NotationListener notationListener, noticeListener;
 	TblMonitorTypeModel tblMonitorTypeModel;
-	CustomTableCellEditor customTableCellEditor;
+	//CustomTableCellEditor customTableCellEditor;
 	TblRowSelectionListener tblRowSelectionListener;
 	PriceListener priceListener;
 	TblSearchPriceRenderer priceRenderer;
@@ -82,13 +82,13 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		setComponentText();
 		((PnlMonitorType)panel).setManufacturerIndex(-1);
 		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		customTableCellEditor = new CustomTableCellEditor();
-		((PnlMonitorType)panel).setManufacturerCellEditor(customTableCellEditor);
-		JTextField textField = new JTextField("Text");
-		SearchNotationListener searchNotationListener = new SearchNotationListener();
-		textField.getDocument().addDocumentListener(searchNotationListener);
-		((PnlMonitorType)panel).setNotationCellEditor(new DefaultCellEditor(textField));
-		((PnlMonitorType)panel).setFirstRowHeight(40);
+//		customTableCellEditor = new CustomTableCellEditor();
+//		((PnlMonitorType)panel).setManufacturerCellEditor(customTableCellEditor);
+		//JTextField textField = new JTextField("Text");
+		//SearchNotationListener searchNotationListener = new SearchNotationListener();
+		//textField.getDocument().addDocumentListener(searchNotationListener);
+		//((PnlMonitorType)panel).setNotationCellEditor(new DefaultCellEditor(textField));
+		//((PnlMonitorType)panel).setFirstRowHeight(40);
 	}
 	
 	private void setModel() {
@@ -268,7 +268,7 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		
 		@Override
 		public int getRowCount() {
-			return monitorTypes.size() + 1;
+			return monitorTypes.size();
 		}
 
 		@Override
@@ -319,59 +319,59 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 			this.monitorTypes = monitorTypes;
 		}
 
-		@Override
-		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			if(rowIndex == 0 && (columnIndex == 2 || columnIndex ==1)) {
-				return true;
-			}else {
-				return false;
-			}
-		}		
+//		@Override
+//		public boolean isCellEditable(int rowIndex, int columnIndex) {
+//			if(rowIndex == 0 && (columnIndex == 2 || columnIndex ==1)) {
+//				return true;
+//			}else {
+//				return false;
+//			}
+//		}		
 	}
 	
-	 public class CustomTableCellEditor extends AbstractCellEditor implements TableCellEditor {
-	      
-		private static final long serialVersionUID = 3283574841392539652L;
-		private TableCellEditor editor;
-		private JComboBox<Manufacturer> cbxManufacturer;
-		SearchManufacturerListener searchManufacturerListener;
-		private ComboBoxModel<Manufacturer> cbxManufacturerModel;
-		
-		public CustomTableCellEditor() {
-			ArrayList<Manufacturer> manufacturers = SQL_SELECT.manufacturers();
-			Manufacturer[] arr = new Manufacturer[manufacturers.size() + 1]; 		  
-	        // ArrayList to Array Conversion 
-			arr[0] = new Manufacturer(" ");
-	        for (int i = 1; i < manufacturers.size() + 1; i++) {
-	            arr[i] = manufacturers.get(i - 1);		
-	        }
-			cbxManufacturerModel = new DefaultComboBoxModel<Manufacturer>(arr);
-			cbxManufacturer = new JComboBox<Manufacturer>();
-			cbxManufacturer.setModel(cbxManufacturerModel);
-			cbxManufacturer.setRenderer(new ListManufacturerRenderer());
-			searchManufacturerListener = new SearchManufacturerListener();
-			cbxManufacturer.addItemListener(searchManufacturerListener);
-		}
-		
-        @Override
-        public Object getCellEditorValue() {
-            if (editor != null) {
-                return editor.getCellEditorValue();
-            }
-
-            return null;
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            if (column == 2 && row == 0) {
-                editor = new DefaultCellEditor(cbxManufacturer);
-            } 
-
-            return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
-        }      
-        
-    }
+//	 public class CustomTableCellEditor extends AbstractCellEditor implements TableCellEditor {
+//	      
+//		private static final long serialVersionUID = 3283574841392539652L;
+//		private TableCellEditor editor;
+//		private JComboBox<Manufacturer> cbxManufacturer;
+//		SearchManufacturerListener searchManufacturerListener;
+//		private ComboBoxModel<Manufacturer> cbxManufacturerModel;
+//		
+//		public CustomTableCellEditor() {
+//			ArrayList<Manufacturer> manufacturers = SQL_SELECT.manufacturers();
+//			Manufacturer[] arr = new Manufacturer[manufacturers.size() + 1]; 		  
+//	        // ArrayList to Array Conversion 
+//			arr[0] = new Manufacturer(" ");
+//	        for (int i = 1; i < manufacturers.size() + 1; i++) {
+//	            arr[i] = manufacturers.get(i - 1);		
+//	        }
+//			cbxManufacturerModel = new DefaultComboBoxModel<Manufacturer>(arr);
+//			cbxManufacturer = new JComboBox<Manufacturer>();
+//			cbxManufacturer.setModel(cbxManufacturerModel);
+//			cbxManufacturer.setRenderer(new ListManufacturerRenderer());
+//			searchManufacturerListener = new SearchManufacturerListener();
+//			cbxManufacturer.addItemListener(searchManufacturerListener);
+//		}
+//		
+//        @Override
+//        public Object getCellEditorValue() {
+//            if (editor != null) {
+//                return editor.getCellEditorValue();
+//            }
+//
+//            return null;
+//        }
+//
+//        @Override
+//        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+//            if (column == 2 && row == 0) {
+//                editor = new DefaultCellEditor(cbxManufacturer);
+//            } 
+//
+//            return editor.getTableCellEditorComponent(table, value, isSelected, row, column);
+//        }      
+//        
+//    }
 	 
 	class MonitorTypeIdRenderer  extends JLabel implements TableCellRenderer{
 		
@@ -384,20 +384,12 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-			if(row>0) {
-				if(value instanceof MonitorType) {
-					setText(String.valueOf(((MonitorType) value).getId()));			
-				}else {
-					setText("");
-				}
-				if(isSelected) {
-					setBackground(Color.ORANGE);
-				}else {
-					setBackground(row%2==0 ? Color.white : Color.lightGray);   
-				}
+			Integer id = ((MonitorType)value).getId();
+			setText(id.toString());
+			if(isSelected) {
+				setBackground(Color.ORANGE);
 			}else {
-				setBackground(Color.white);
-				setText("");
+				setBackground(row%2==0 ? Color.white : Color.lightGray);  
 			}
 			return this;
 		}
@@ -417,16 +409,13 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
 				int column) {
 			setText(value.toString());
-			if(row>0) {				
+				
 				if(isSelected) {
 					setBackground(Color.ORANGE);
 				}else {
 					setBackground(row%2==0 ? Color.white : Color.lightGray);   
 				}				
-			}else {
-				setBackground(Color.white);				
-				
-			}
+			
 			return this;			
 		}		
 	}
@@ -447,15 +436,13 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 			DecimalFormat df2 = new DecimalFormat("#.##");			
 			setText(df2.format(value) + " €");			
 			setHorizontalAlignment(JLabel.RIGHT);
-			if(row>0) {	
+			
 				if(isSelected) {
 					setBackground(Color.ORANGE);
 				}else {
 					setBackground(row%2==0 ? Color.white : Color.lightGray);  
 				}
-			}else {
-				setBackground(Color.white);	
-			}
+			
 			return this;
 		}		
 	}
