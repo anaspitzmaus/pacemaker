@@ -231,6 +231,26 @@ public class SQL_UPDATE {
 			
 		}
 	}
+	
+	/**
+	 * update of an event recorder type
+	 * @param erType
+	 * @throws SQLException
+	 */
+	public static void ERType(ERType erType) throws SQLException{
+		stmt = DB.getStatement();
+		if(erType.getId() != null) {
+			stmt.executeUpdate("UPDATE eventrec_type SET "
+				+ "notation = '" + erType.getNotation() + "', "
+				+ "notice = '" + erType.getNotice() + "', "
+				+ "price = " + erType.getPrice() + ", "
+				+ "idmanufacturer = " + erType.getManufacturer().getId() + " "
+				+ "WHERE ideventrec_type = " + erType.getId() + "");
+		}
+		
+	}
+	
+	
 
 	/**
 	 * update an icd

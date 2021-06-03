@@ -508,9 +508,6 @@ public class CtrlPnlElectrodeType extends CtrlPnlBase{
 	class TblElectrodeModelBooleanRenderer extends JCheckBox implements TableCellRenderer{
 		
 	
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -7591172567469251176L;
 	
 		public TblElectrodeModelBooleanRenderer() {

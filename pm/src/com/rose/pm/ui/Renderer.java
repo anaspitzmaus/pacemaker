@@ -226,7 +226,7 @@ public class Renderer {
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
-			if(row>0) {
+			
 				if(value instanceof Manufacturer) {
 					setText(((Manufacturer) value).getNotation());				
 				}else {
@@ -238,14 +238,7 @@ public class Renderer {
 					setBackground(row%2==0 ? Color.white : Color.lightGray);   
 				}
 				
-			}else {//if first row				
-				setBackground(Color.white);	
-				if(value instanceof Manufacturer) {
-					setText(((Manufacturer) value).getNotation());
-				}else {
-					setText("");					
-				}
-			}
+			
 			return this;
 			
 		}

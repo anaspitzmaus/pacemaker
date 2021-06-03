@@ -15,6 +15,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import com.rose.pm.material.ERType;
 import com.rose.pm.material.Manufacturer;
+import com.rose.pm.ui.CtrlPnlERType.TblCellManufacturerRenderer;
 import com.rose.pm.ui.CtrlPnlERType.TblERIDRenderer;
 import net.miginfocom.swing.MigLayout;
 
@@ -145,6 +146,11 @@ public class PnlERType extends PnlBase {
 
 	protected void setTblERIDRenderer(Class<ERType> erTypeClass, TblERIDRenderer renderer) {
 		table.setDefaultRenderer(erTypeClass, renderer);		
+	}
+
+
+	protected void setTblCellManufacturerRenderer(Class<Manufacturer> manufacturerClass, TableCellRenderer r) {
+		table.setDefaultRenderer(manufacturerClass, r);
 	}
 
 }

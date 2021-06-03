@@ -2,9 +2,12 @@ package com.rose.pm.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -32,6 +35,7 @@ import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodeModelBooleanRenderer;
 import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodeModelEMRenderer;
 import com.rose.pm.ui.CtrlPnlElectrodeType.TblElectrodeModelStringRenderer;
 import com.rose.pm.ui.CtrlPnlElectrodeType.TblIntegerRenderer;
+import com.rose.pm.ui.CtrlPnlElectrodeType.TblMouseAdaptor;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
@@ -47,10 +51,12 @@ public class CtrlPnlERType extends CtrlPnlBase{
 	Listener.PriceListener priceListener;
 	NotationListener notationListener, noticeListener;	
 	TableERTypeRenderer tableERTypeRenderer;
+	TblCellManufacturerRenderer tblCellManufacturerRenderer;
 	Renderer.TblStringRenderer tblStringRenderer;
 	Renderer.TblDoubleRenderer tblDoubleRenderer;
 	TblERIDRenderer tblERIDRenderer;
 	TblRowSelectionListener tblRowSelectionListener;
+	TblMouseAdaptor tblMouseAdaptor;
 	
 	public CtrlPnlERType() {
 		panel = new PnlERType();
@@ -63,6 +69,8 @@ public class CtrlPnlERType extends CtrlPnlBase{
 		setComponentText();
 		((PnlERType)panel).setManufacturerIndex(-1);
 		((PnlERType)panel).setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tblMouseAdaptor = new TblMouseAdaptor();
+		panel.addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
 	private void setListener() {
@@ -108,8 +116,8 @@ public class CtrlPnlERType extends CtrlPnlBase{
 		tblERIDRenderer = new TblERIDRenderer();
 		((PnlERType)panel).setTblERIDRenderer(ERType.class, tblERIDRenderer);
 		
-//		tableERTypeRenderer = new TableERTypeRenderer();
-//		((PnlERType)panel).setTableERTypeRenderer(ERType.class, tableERTypeRenderer);
+		tblCellManufacturerRenderer = new TblCellManufacturerRenderer();
+		((PnlERType)panel).setTblCellManufacturerRenderer(Manufacturer.class, tblCellManufacturerRenderer);
 		renderer = new Renderer();
 		tblStringRenderer = renderer.new TblStringRenderer();
 		((PnlERType)panel).setTableStringRenderer(String.class, tblStringRenderer);
@@ -212,9 +220,7 @@ public class CtrlPnlERType extends CtrlPnlBase{
 	
 	class ManufacturerRenderer extends JLabel implements ListCellRenderer<Manufacturer>{
 
-		/**
-		 * 
-		 */
+		
 		private static final long serialVersionUID = 6240666262007840856L;
 
 		public ManufacturerRenderer() {
@@ -271,6 +277,7 @@ public class CtrlPnlERType extends CtrlPnlBase{
 
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends ERType> recordTypes;
+		Class[] classes = {ERType.class, String.class, Manufacturer.class, String.class, Double.class};
 		
 		
 		public ERTypeTblModel(ArrayList<? extends ERType> recorders) {
@@ -280,6 +287,7 @@ public class CtrlPnlERType extends CtrlPnlBase{
 			columnNames.add("Bezeichnung");
 			columnNames.add("Hersteller");
 			columnNames.add("Bemerkung");
+			columnNames.add("Preis");
 			
 		}
 		
@@ -302,7 +310,7 @@ public class CtrlPnlERType extends CtrlPnlBase{
 		
 		@Override
 		public Class getColumnClass(int col) {
-			return getValueAt(0, col).getClass();
+			return classes[col];
 		}
 
 		@Override
@@ -313,9 +321,11 @@ public class CtrlPnlERType extends CtrlPnlBase{
 				
 				case 1: return recordTypes.get(rowIndex).getNotation();
 				
-				case 2: return recordTypes.get(rowIndex).getManufacturer().getNotation();
+				case 2: return recordTypes.get(rowIndex).getManufacturer();
 				
 				case 3: return recordTypes.get(rowIndex).getNotice();
+				
+				case 4: return recordTypes.get(rowIndex).getPrice();
 				
 				default: return null;
 			
@@ -378,6 +388,29 @@ public class CtrlPnlERType extends CtrlPnlBase{
 		}				
 	}
 	
+	class TblCellManufacturerRenderer extends JLabel implements TableCellRenderer{
+
+		private static final long serialVersionUID = 2346795143779099744L;
+
+		public TblCellManufacturerRenderer() {
+			super.setOpaque(true);
+		}
+		
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			Manufacturer m = (Manufacturer)value;
+			setText(m.getNotation());
+			if(isSelected) {
+				setBackground(Color.ORANGE);
+			}else {
+				setBackground(row%2==0 ? Color.white : Color.lightGray);   
+			}
+			return this;
+		}
+		
+	}
+	
 	class TblERIDRenderer extends JLabel implements TableCellRenderer{
 
 		
@@ -406,10 +439,6 @@ public class CtrlPnlERType extends CtrlPnlBase{
 
 	class TblStringRenderer extends JLabel implements TableCellRenderer{
 	
-		
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -3832353250998700434L;
 
 
@@ -446,6 +475,22 @@ public class CtrlPnlERType extends CtrlPnlBase{
 		}
 			
 	}
+	
+	 class TblMouseAdaptor extends MouseAdapter{
+		 JTable table;
+		 @Override
+	    public void mouseClicked(MouseEvent mouseEvent){
+	        if(mouseEvent.getClickCount()==2){
+	        	 table =(JTable) mouseEvent.getSource();
+	             Point point = mouseEvent.getPoint();
+	             int row = table.rowAtPoint(point);
+	             if (table.getSelectedRow() != -1 && row >= 0) {
+	            	 CtrlDlgChangeERType ctrlDlgChangeERType = new CtrlDlgChangeERType((ERType) tblModel.getValueAt(row, 0), tblModel);
+	            	 ctrlDlgChangeERType.getDialog().setVisible(true);
+	             }
+	        }
+		 }
+	 }
 	
 
 	protected void addCreateListener(ActionListener createTypeListener) {
