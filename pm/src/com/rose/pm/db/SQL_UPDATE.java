@@ -250,6 +250,24 @@ public class SQL_UPDATE {
 		
 	}
 	
+	/**
+	 * update of a monitor type
+	 * @param monitorType
+	 * @throws SQLException
+	 */
+	public static void MonitorType(MonitorType monitorType) throws SQLException{
+		stmt = DB.getStatement();
+		if(monitorType.getId() != null) {
+			stmt.executeUpdate("UPDATE monitor_type SET "
+				+ "notation = '" + monitorType.getNotation() + "', "
+				+ "notice = '" + monitorType.getNotice() + "', "
+				+ "price = " + monitorType.getPrice() + ", "
+				+ "idmanufacturer = " + monitorType.getManufacturer().getId() + " "
+				+ "WHERE idmonitor_type = " + monitorType.getId() + "");
+		}
+		
+	}
+	
 	
 
 	/**

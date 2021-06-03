@@ -95,8 +95,8 @@ public class Renderer {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
 			DecimalFormat df2 = new DecimalFormat("#.##");
-			
-			setText(df2.format(value) + " €");
+			String euro = "\u20ac";
+			setText(df2.format(value) + " " + euro);
 			setHorizontalAlignment(JLabel.RIGHT);
 			if(isSelected) {
 				setBackground(Color.ORANGE);

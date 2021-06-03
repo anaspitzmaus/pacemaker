@@ -38,6 +38,8 @@ public abstract class DlgChangeType extends JDialog {
 	protected JPanel getContentPanel() {
 		return contentPanel;
 	}
+	
+	
 
 	/**
 	 * Create the dialog.

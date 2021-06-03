@@ -26,9 +26,9 @@ public class CtrlDlgChangeERType extends CtrlDlgChangeType{
 		this.tblModel = tblModel;
 		setDialog(new DlgChangeERType());
 				
-		((DlgChangeERType) getDialog()).setNotation(erType.getNotation());
-		((DlgChangeERType) getDialog()).setNotice(erType.getNotice());		
-		((DlgChangeERType) getDialog()).setPrice(erType.getPrice());
+		getDialog().setNotation(erType.getNotation());
+		getDialog().setNotice(erType.getNotice());		
+		getDialog().setPrice(erType.getPrice());
 		setComponentText();
 		setListener();
 	}

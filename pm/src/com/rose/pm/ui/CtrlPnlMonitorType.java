@@ -3,9 +3,12 @@ package com.rose.pm.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -32,11 +35,14 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.text.BadLocationException;
 
 import com.rose.pm.db.SQL_SELECT;
+import com.rose.pm.material.ERType;
 import com.rose.pm.material.Manufacturer;
 import com.rose.pm.material.MonitorType;
+import com.rose.pm.ui.CtrlPnlERType.TblMouseAdaptor;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Listener.PriceListener;
 import com.rose.pm.ui.Renderer.TblCellManufacturerRenderer;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 
 public class CtrlPnlMonitorType extends CtrlPnlBase{
@@ -56,6 +62,8 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 	TblRowSelectionListener tblRowSelectionListener;
 	PriceListener priceListener;
 	TblSearchPriceRenderer priceRenderer;
+	TblMouseAdaptor tblMouseAdaptor;
+	TblDoubleRenderer tblDoubleRenderer;
 	
 	
 	
@@ -82,6 +90,8 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		setComponentText();
 		((PnlMonitorType)panel).setManufacturerIndex(-1);
 		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tblMouseAdaptor = new TblMouseAdaptor();
+		panel.addTblMouseAdaptor(tblMouseAdaptor);
 //		customTableCellEditor = new CustomTableCellEditor();
 //		((PnlMonitorType)panel).setManufacturerCellEditor(customTableCellEditor);
 		//JTextField textField = new JTextField("Text");
@@ -124,6 +134,8 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 		((PnlMonitorType)panel).setNotationRenderer(String.class, notationRenderer);
 		priceRenderer = new TblSearchPriceRenderer();
 		panel.setDoubleRenderer(Double.class, priceRenderer);
+		tblDoubleRenderer = renderer.new TblDoubleRenderer();
+		((PnlMonitorType)panel).setTblDoubleRenderer(Double.class, tblDoubleRenderer);
 		
 	}
 	
@@ -539,6 +551,22 @@ public class CtrlPnlMonitorType extends CtrlPnlBase{
 			return monitorType;
 		}		
 	}
+	
+	 class TblMouseAdaptor extends MouseAdapter{
+		 JTable table;
+		 @Override
+	    public void mouseClicked(MouseEvent mouseEvent){
+	        if(mouseEvent.getClickCount()==2){
+	        	 table =(JTable) mouseEvent.getSource();
+	             Point point = mouseEvent.getPoint();
+	             int row = table.rowAtPoint(point);
+	             if (table.getSelectedRow() != -1 && row >= 0) {
+	            	 CtrlDlgChangeMonitorType ctrlDlgChangeMonitorType = new CtrlDlgChangeMonitorType((MonitorType) tblMonitorTypeModel.getValueAt(row, 0), tblMonitorTypeModel);
+	            	 ctrlDlgChangeMonitorType.getDialog().setVisible(true);
+	             }
+	        }
+		 }
+	 }
 
 	protected TblMonitorTypeModel getTblModel() {
 		return this.tblMonitorTypeModel;

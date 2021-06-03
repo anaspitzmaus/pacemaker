@@ -11,6 +11,7 @@ import javax.swing.table.AbstractTableModel;
 
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
+import com.rose.pm.material.ICD_Type;
 
 
 public class CtrlDlgChangePMType extends CtrlDlgChangeType {
@@ -32,13 +33,14 @@ public class CtrlDlgChangePMType extends CtrlDlgChangeType {
 		((DlgChangePmType) getDialog()).setCheckRAValue(aggType.getRa());
 		((DlgChangePmType) getDialog()).setCheckRVValue(aggType.getRv());
 		((DlgChangePmType) getDialog()).setCheckLVValue(aggType.getLv());
-		
-		((DlgChangePmType) getDialog()).setNotation(aggType.getNotation());
-		((DlgChangePmType) getDialog()).setNotice(aggType.getNotice());
-		
-		((DlgChangePmType) getDialog()).setPrice(aggType.getPrice());
+				getDialog().setNotation(aggType.getNotation());
+		getDialog().setNotice(aggType.getNotice());
+		getDialog().setPrice(aggType.getPrice());
 		setComponentText();
 		setListener();
+		if(aggType instanceof ICD_Type) {
+			getDialog().setTitle("ICD-Model bearbeiten");
+		}
 	}
 	
 	protected void setComponentText() {
