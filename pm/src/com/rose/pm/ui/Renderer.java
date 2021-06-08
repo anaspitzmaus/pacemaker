@@ -96,7 +96,11 @@ public class Renderer {
 				int row, int column) {
 			DecimalFormat df2 = new DecimalFormat("#.##");
 			String euro = "\u20ac";
-			setText(df2.format(value) + " " + euro);
+			if(value instanceof Number) {
+				setText(df2.format(value) + " " + euro);
+			}else {//e.g. for null value
+				setText("");
+			}
 			setHorizontalAlignment(JLabel.RIGHT);
 			if(isSelected) {
 				setBackground(Color.ORANGE);

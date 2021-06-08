@@ -146,6 +146,8 @@ public class CtrlPnlPMType extends CtrlPnlBase{
 		renderer = new Renderer();
 		tblDoubleRenderer = renderer.new TblDoubleRenderer();
 		((PnlPMType)panel).setTblDoubleRenderer(Double.class, tblDoubleRenderer);
+		
+		
 	}
 
 	

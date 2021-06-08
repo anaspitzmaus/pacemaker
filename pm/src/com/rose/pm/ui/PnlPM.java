@@ -28,6 +28,7 @@ import com.rose.pm.material.Status;
 import com.rose.pm.ui.CtrlPnlPM.PMTypeTblCellEditor;
 import com.rose.pm.ui.Editor.SearchStatusTblCellEditor;
 import com.rose.pm.ui.Renderer.TblCellMaterialIDRenderer;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -186,6 +187,11 @@ public class PnlPM extends PnlBase{
 
 	protected void setTblPMIDRenderer(Class<PM> pmClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(pmClass, renderer);		
+	}
+
+
+	protected void setTblPriceRenderer(Class<Double> doubleClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(doubleClass, renderer);		
 	}	
 
 }

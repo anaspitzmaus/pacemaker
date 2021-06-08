@@ -46,11 +46,10 @@ import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.AggregateType;
-import com.rose.pm.material.ElectrodeType;
 import com.rose.pm.material.PM;
-import com.rose.pm.material.PM_Kind;
 import com.rose.pm.material.Status;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 public class CtrlPnlPM extends CtrlPnlBase{
 
@@ -78,6 +77,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	SearchNotationListener searchNotationListener;
 	Editor.SearchStatusTblCellEditor statusTblCellEditor;
 	PMTypeTblCellEditor pmTypeTblCellEditor;
+	TblDoubleRenderer tblDoubleRenderer;
 	
 	
 	public CtrlPnlPM() {
@@ -197,6 +197,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		 ((PnlPM)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
 		 tblImplantDateRenderer = renderer.new TblCellImplantDateRenderer();
 		 ((PnlPM)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
+		 tblDoubleRenderer = renderer.new TblDoubleRenderer();
+		 ((PnlPM)panel).setTblPriceRenderer(Double.class, tblDoubleRenderer);
 	}
 	
 	/**
@@ -326,7 +328,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends PM> aggregates;
 		protected Class[] columnClass = new Class[] {
-			 PM.class, AggregateType.class, String.class, LocalDate.class, String.class, Status.class,  Patient.class, Date.class
+			 PM.class, AggregateType.class, String.class, LocalDate.class, String.class, Status.class,  Patient.class, Date.class, Double.class
 		};
 		
 		protected PM searchPM = null;
@@ -337,6 +339,8 @@ public class CtrlPnlPM extends CtrlPnlBase{
 		protected Status searchStatus = Status.Lager;
 		protected Patient searchPatient = null;
 		protected Date searchDate = null;
+		protected Double searchPrice = null;
+		
 		
 		public AggregateTblModel(ArrayList<? extends PM> paceMakers) {
 			this.aggregates = paceMakers;
@@ -349,6 +353,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 			columnNames.add("Status");			
 			columnNames.add("Patient");
 			columnNames.add("Implantationsdatum");
+			columnNames.add("Preis");
 		}
 		
 
@@ -394,6 +399,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 					case 5: return aggregates.get(rowIndex - 1).getStatus();
 					case 6: return aggregates.get(rowIndex - 1).getPatient();					
 					case 7: return aggregates.get(rowIndex - 1).getDateOfImplantation();
+					case 8: return aggregates.get(rowIndex - 1).getPrice();
 					
 					default: return null;
 				}
@@ -408,6 +414,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 					case 5: return searchStatus;
 					case 6: return searchPatient;
 					case 7: return searchDate;
+					case 8: return searchPrice;
 					default: return null;
 				}
 			}
