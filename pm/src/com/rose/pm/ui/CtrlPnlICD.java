@@ -17,9 +17,7 @@ import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ICD;
 import com.rose.pm.material.ICD_Type;
 import com.rose.pm.material.Status;
-import com.rose.pm.ui.CtrlPnlPM.AggregateTblModel;
-import com.rose.pm.ui.CtrlPnlPM.PMTypeTblCellEditor;
-import com.rose.pm.ui.CtrlPnlPM.TblMouseAdaptor;
+
 
 public class CtrlPnlICD extends CtrlPnlPM {
 	
@@ -34,8 +32,8 @@ public class CtrlPnlICD extends CtrlPnlPM {
 		setRenderer();
 		((PnlICD)panel).setAggregateTypeSelectionIndex(-1);
 		panel.setTblSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tblMouseAdaptor = new TblMouseAdaptor();
-		((PnlICD)panel).addTblMouseAdaptor(tblMouseAdaptor);
+//		tblMouseAdaptor = new TblMouseAdaptor();
+//		((PnlICD)panel).addTblMouseAdaptor(tblMouseAdaptor);
 	}
 	
 	

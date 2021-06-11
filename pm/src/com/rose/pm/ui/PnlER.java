@@ -26,6 +26,7 @@ import com.rose.pm.material.ER;
 import com.rose.pm.material.ERType;
 import com.rose.pm.material.PM;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -189,6 +190,10 @@ public class PnlER extends PnlBase {
 	
 	protected void setTblImplantDateRenderer(Class<Date> dateClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(dateClass, renderer);		
+	}
+
+	protected void setTblPriceRenderer(Class<Double> doubleClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(doubleClass, renderer);			
 	}
 
 }

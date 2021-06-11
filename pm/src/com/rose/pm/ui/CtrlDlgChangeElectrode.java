@@ -2,13 +2,16 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 
-import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.Electrode;
-import com.rose.pm.ui.CtrlPnlElectrode.ElectrodeTblModel;
+
 
 public class CtrlDlgChangeElectrode extends CtrlDlgChange {
 	
@@ -23,6 +26,13 @@ public class CtrlDlgChangeElectrode extends CtrlDlgChange {
 		dlgChange.setSerialNrText(this.electrode.getSerialNr());
 		dlgChange.setNoticeText(this.electrode.getNotice());
 		ctrlPnlSetDate.setDate(electrode.getExpireDate());
+		
+		priceFormat = DecimalFormat.getInstance();
+		priceFormat.setMinimumFractionDigits(2);
+		priceFormat.setMaximumFractionDigits(2);
+		DefaultFormatterFactory dff = new DefaultFormatterFactory(new NumberFormatter(priceFormat), new NumberFormatter(priceFormat), new NumberFormatter(NumberFormat.getNumberInstance()));
+		dlgChange.setPriceFormatter(dff);
+		dlgChange.setPriceValue(this.electrode.getPrice());
 		setCreateListener();
 	}
 	
@@ -44,9 +54,8 @@ public class CtrlDlgChangeElectrode extends CtrlDlgChange {
 				electrode.setExpireDate(ctrlPnlSetDate.getDate());
 				electrode.setSerialNr(serialNrListener.getNotation());
 				electrode.setNotice(noticeListener.getNotation());
-//				if(provideListener.isPatientProvided()) {
-//					electrode.setPatient(provideListener.getActualPatient());
-//				}
+				electrode.setPrice(priceListener.getPrice());
+
 				updateDBAndTblModel();				
 			}
 		}

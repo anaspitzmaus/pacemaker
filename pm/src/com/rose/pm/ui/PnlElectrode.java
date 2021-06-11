@@ -25,6 +25,7 @@ import com.rose.pm.material.Status;
 import com.rose.pm.ui.CtrlPnlSICD.SICDTypeTblCellEditor;
 import com.rose.pm.ui.Renderer.TblCellLocalDateRenderer;
 import com.rose.pm.ui.Renderer.TblCellMaterialIDRenderer;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -175,6 +176,10 @@ public class PnlElectrode extends PnlBase {
 
 	protected void setLocalDateRenderer(Class<LocalDate> localDateClass, TableCellRenderer renderer) {
 		table.setDefaultRenderer(localDateClass, renderer);
+	}
+
+	protected void setTblPriceRenderer(Class<Double> doubleClass, TableCellRenderer renderer) {
+		table.setDefaultRenderer(doubleClass, renderer);			
 	}
 
 	

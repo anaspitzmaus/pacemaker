@@ -1,5 +1,8 @@
 package com.rose.pm.ui;
 
+
+import java.text.NumberFormat;
+
 import com.rose.pm.material.MaterialType;
 
 public abstract class CtrlDlgChangeType {
@@ -9,6 +12,7 @@ public abstract class CtrlDlgChangeType {
 	Listener.NotationListener notationListener;
 	Listener.NotationListener noticeListener;
 	Listener.PriceListener priceListener;
+	NumberFormat priceFormat;	
 	
 	protected void setDialog(DlgChangeType dialog) {
 		dlgChangeType = dialog;
@@ -19,7 +23,8 @@ public abstract class CtrlDlgChangeType {
 	}
 	
 	public CtrlDlgChangeType(MaterialType materialType) {
-		this.materialType = materialType;		
+		this.materialType = materialType;	
+		
 	}
 	
 	protected void setListener() {

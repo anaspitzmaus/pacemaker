@@ -3,11 +3,9 @@ package com.rose.pm.ui;
 import javax.swing.table.AbstractTableModel;
 
 
-import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.ICD;
-import com.rose.pm.material.ICD_Type;
-import com.rose.pm.ui.CtrlPnlPM.AggregateTblModel;
+
 
 public class CtrlDlgChangeICD extends CtrlDlgChangePM{
 
@@ -27,7 +25,8 @@ public class CtrlDlgChangeICD extends CtrlDlgChangePM{
 		@Override
 		protected void updateDBAndTblModel() {
 			SQL_UPDATE.ICD((ICD) pm);				
-			//((AggregateTblModel)model).setAggregats(SQL_SELECT.icd((ICD_Type) pm.getMaterialType()));			
+			model.fireTableDataChanged();
+			dlgChange.dispose();	
 		}
 		
 	

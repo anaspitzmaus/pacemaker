@@ -170,7 +170,8 @@ public class SQL_UPDATE {
 				stmt.executeUpdate("UPDATE pm_implant SET "
 						+ "serialNr = '" + pmSel.getSerialNr() + "', "
 						+ "expiry = '" + Date.valueOf(pmSel.getExpireDate()) + "', "
-						+ "notice = '" + pmSel.getNotice() + "'"
+						+ "notice = '" + pmSel.getNotice() + "', "
+						+ "price = " + pmSel.getPrice() + " "
 						+ "WHERE id_pm_implant = " + pmSel.getId() + "");
 				return true;
 			} catch (Exception e) {
@@ -179,6 +180,30 @@ public class SQL_UPDATE {
 					    JOptionPane.WARNING_MESSAGE);
 				return false;
 			}
+		}else {
+			return false;
+		}
+		
+	}
+	
+	/**
+	 * update an eventrecorderr
+	 * @param er, the eventrecorder, that has to be updated
+	 * @return true if update was successful, else return false
+	 * @throws an SQLException
+	 */
+	public static Boolean Eventrecorder(ER er) throws SQLException {
+		stmt = DB.getStatement();
+		if(er.getId() != null) {
+			
+			stmt.executeUpdate("UPDATE eventrec SET "
+					+ "serialNr = '" + er.getSerialNr() + "', "
+					+ "expire = '" + Date.valueOf(er.getExpireDate()) + "', "
+					+ "notice = '" + er.getNotice() + "', "
+					+ "price = " + er.getPrice() + " "
+					+ "WHERE ideventrec = " + er.getId() + "");
+			return true;
+			
 		}else {
 			return false;
 		}
@@ -283,7 +308,8 @@ public class SQL_UPDATE {
 				stmt.executeUpdate("UPDATE icd SET "
 						+ "serialNr = '" + icd.getSerialNr() + "', "
 						+ "expiry = '" + Date.valueOf(icd.getExpireDate()) + "', "
-						+ "notice = '" + icd.getNotice() + "'"
+						+ "notice = '" + icd.getNotice() + "', "
+						+ "price = " + icd.getPrice() + " "
 						+ "WHERE id_icd = " + icd.getId() + "");
 				return true;
 			} catch (Exception e) {
@@ -394,7 +420,8 @@ public class SQL_UPDATE {
 				stmt.executeUpdate("UPDATE electrode SET "
 						+ "notice = '" + electrode.getNotice() + "', "
 						+ "serialNr = '" + electrode.getSerialNr() + "', "
-						+ "expire = '" + Date.valueOf(electrode.getExpireDate()) + "' "
+						+ "expire = '" + Date.valueOf(electrode.getExpireDate()) + "', "
+						+ "price = " + electrode.getPrice() + " "						
 						+ "WHERE idelectrode = " + electrode.getId() + "");
 				
 				return true;

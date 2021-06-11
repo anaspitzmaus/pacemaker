@@ -119,8 +119,7 @@ public class Listener {
 				Long l = (Long) field.getValue();
 				price = l.doubleValue();
 			}else if (field.getValue() != null){
-				price = (Double) field.getValue();
-				System.out.println(price);
+				price = (Double) field.getValue();				
 			}
 		}	
 		

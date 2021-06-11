@@ -1,5 +1,6 @@
 package com.rose.pm.ui;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 
 import javax.swing.JDialog;
@@ -7,6 +8,7 @@ import javax.swing.JDialog;
 import com.rose.person.Patient;
 import com.rose.pm.Ctrl_PnlSetDate;
 import com.rose.pm.ui.Listener.NotationListener;
+import com.rose.pm.ui.Listener.PriceListener;
 
 
 
@@ -15,7 +17,8 @@ public class CtrlDlgChange {
 	Ctrl_PnlSetDate ctrlPnlSetDate;
 	Listener listener;
 	NotationListener serialNrListener, noticeListener;
-	//ProvideListener provideListener;
+	PriceListener priceListener;
+	NumberFormat priceFormat;	
 	Patient patient;
 	
 	
@@ -29,6 +32,7 @@ public class CtrlDlgChange {
 		initiateDialog();
 		dlgChange.setLblSerialNrText("Seriennummer:");
 		dlgChange.setLblNoticeText("Bemerkung:");
+		dlgChange.setLblPriceText("Preis:");
 		ctrlPnlSetDate = new Ctrl_PnlSetDate("dd.MM.yyyy", LocalDate.now(), LocalDate.now());
 		ctrlPnlSetDate.getPanel().setLabelDateText("Ablaufdatum:");
 		dlgChange.placePnlDate(ctrlPnlSetDate.getPanel());
@@ -46,8 +50,8 @@ public class CtrlDlgChange {
 		dlgChange.addSerialNrListener(serialNrListener);
 		noticeListener = listener.new NotationListener();
 		dlgChange.addNoticeListener(noticeListener);
-//		provideListener = listener.new ProvideListener();
-//		dlgChange.addProvideListener(provideListener);
+		priceListener = listener.new PriceListener();
+		dlgChange.addPriceListener(priceListener);
 	}
 	
 	

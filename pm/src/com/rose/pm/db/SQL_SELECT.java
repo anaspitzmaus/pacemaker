@@ -585,7 +585,7 @@ public class SQL_SELECT {
 		PreparedStatement ps;
 		Integer patProv;
 		
-		String select = "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation AS typeNotation, expiry, serialNr, idpat_provided, pm_implant.notice, pm_implant.status, patnr, implant "
+		String select = "SELECT pm_implant.id_pm_implant, pm_implant.id_exam, pm_implant.pm_type, pm_type.notation AS typeNotation, expiry, serialNr, idpat_provided, pm_implant.notice, pm_implant.status, patnr, implant, pm_implant.price "
 					+ "FROM sm.pm_implant "
 					+ "INNER JOIN sm.pm_type "
 					+ "ON sm.pm_implant.pm_type = sm.pm_type.idpm_type "
@@ -649,7 +649,7 @@ public class SQL_SELECT {
 					pm.setExpireDate(rs.getDate("expiry").toLocalDate());
 					pm.setNotice(rs.getString("notice"));
 					pm.setStatus(Status.valueOf(rs.getString("status")));
-					
+					pm.setPrice(rs.getDouble("price"));
 					patProv = rs.getInt("idpat_provided");
 					
 					if(patProv == 0) {
@@ -684,7 +684,7 @@ public class SQL_SELECT {
 		PreparedStatement ps;
 		Integer patProv;
 		
-		String select = "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation AS typeNotation, expiry, serialNr, icd.notice, icd.status, idpat_provided, patnr, implant "
+		String select = "SELECT icd.id_icd, icd.id_exam, icd.icd_type, icd_type.notation AS typeNotation, expiry, serialNr, icd.notice, icd.status, idpat_provided, patnr, implant, icd.price "
 					+ "FROM sm.icd "
 					+ "INNER JOIN sm.icd_type "
 					+ "ON sm.icd.icd_type = sm.icd_type.idicd_type "
@@ -748,7 +748,7 @@ public class SQL_SELECT {
 						icd.setExpireDate(rs.getDate("expiry").toLocalDate());
 						icd.setNotice(rs.getString("notice"));
 						icd.setStatus(Status.valueOf(rs.getString("status")));
-						
+						icd.setPrice(rs.getDouble("price"));
 						patProv = rs.getInt("idpat_provided");
 						
 						if(patProv == 0) {
@@ -823,7 +823,7 @@ public class SQL_SELECT {
 		PreparedStatement ps;
 		Integer patProv;
 		
-		String select = "SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided, patnr, implant "
+		String select = "SELECT idelectrode AS electrodeId, serialNr, electrode.notice AS notice, expire, electrode_type.notation AS notation, electrode_type.idelectrode_type AS modelId, status, idpat_provided, patnr, implant, electrode.price "
 				+ "FROM sm.electrode "
 				+ "INNER JOIN sm.electrode_type "
 				+ "ON sm.electrode_type.idelectrode_type = sm.electrode.id_electrode_type "
@@ -887,7 +887,8 @@ public class SQL_SELECT {
 					electrode.setNotice(rs.getString("notice"));
 					electrode.setSerialNr(rs.getString("serialNr"));
 					electrode.setExpireDate(rs.getDate("expire").toLocalDate());
-					electrode.setStatus(Status.valueOf(rs.getString("status")));				
+					electrode.setStatus(Status.valueOf(rs.getString("status")));
+					electrode.setPrice(rs.getDouble("price"));
 					
 					patProv = rs.getInt("idpat_provided");
 					
@@ -956,7 +957,7 @@ public class SQL_SELECT {
 		Integer patProv;
 		if(type == null) {
 			rs = stmt.executeQuery(
-				"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status, eventrec_type.notation AS typeNotation, idpat_provided, patnr, implant "
+				"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status, eventrec_type.notation AS typeNotation, idpat_provided, patnr, implant, eventrec.price "
 				+ "FROM sm.eventrec "
 				+ "INNER JOIN sm.eventrec_type "
 				+ "ON sm.eventrec.idType = sm.eventrec_type.ideventrec_type "
@@ -973,6 +974,7 @@ public class SQL_SELECT {
 					recorder.setExpireDate(rs.getDate("expire").toLocalDate());
 					recorder.setSerialNr(rs.getString("serialnr"));
 					recorder.setStatus(Status.valueOf(rs.getString("status")));
+					recorder.setPrice(rs.getDouble("price"));
 					
 					patProv = rs.getInt("idpat_provided");
 					
@@ -991,7 +993,7 @@ public class SQL_SELECT {
 			}
 		}else if (type.getId() instanceof Integer) {//if type of eventrecorder is know
 			rs = stmt.executeQuery(
-					"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status, idpat_provided, patnr, implant "
+					"SELECT ideventrec, eventrec.idtype, expire, serialnr, eventrec.notice AS notice, status, idpat_provided, patnr, implant, eventrec.price "
 					+ "FROM sm.eventrec "
 					+ "INNER JOIN sm.eventrec_type "
 					+ "ON sm.eventrec.idType = sm.eventrec_type.ideventrec_type "
@@ -1007,7 +1009,7 @@ public class SQL_SELECT {
 					recorder.setExpireDate(rs.getDate("expire").toLocalDate());
 					recorder.setSerialNr(rs.getString("serialnr"));
 					recorder.setStatus(Status.valueOf(rs.getString("status")));
-					
+					recorder.setPrice(rs.getDouble("price"));
 					patProv = rs.getInt("idpat_provided");
 					
 					if(patProv == 0) {
@@ -1107,7 +1109,7 @@ public class SQL_SELECT {
 		PreparedStatement ps;
 		Integer patProv;
 		
-		String select = "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, sicd_type.notation, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, patnr, implant "
+		String select = "SELECT sicd.idsicd, sicd.idexam, sicd.id_sicd_type, sicd_type.notation, expiry, serialnr, sicd.notice, sicd.status, sicd.idpat_provided, patnr, implant, sicd.price "
 						+ "FROM sm.sicd "
 						+ "INNER JOIN sm.sicd_type "
 						+ "ON sm.sicd.id_sicd_type = sm.sicd_type.idsicdtype "
@@ -1173,7 +1175,7 @@ public class SQL_SELECT {
 				sicd.setExpireDate(rs.getDate("expiry").toLocalDate());
 				sicd.setNotice(rs.getString("notice"));
 				sicd.setStatus(Status.valueOf(rs.getString("status")));
-				
+				sicd.setPrice(rs.getDouble("price"));
 				patProv = rs.getInt("idpat_provided");
 				
 				if(patProv == 0) {
@@ -1248,7 +1250,7 @@ public class SQL_SELECT {
 		PreparedStatement ps;
 		Integer patProv;
 		
-		String select = "SELECT idmonitor, monitor.idmonitor_type, expire, serialNr, monitor.notice AS notice, status, monitor_type.notation AS typeNotation, idpat_provided, patnr, implant "
+		String select = "SELECT idmonitor, monitor.idmonitor_type, expire, serialNr, monitor.notice AS notice, status, monitor_type.notation AS typeNotation, idpat_provided, patnr, implant, monitor.price "
 				+ "FROM sm.monitor "
 				+ "INNER JOIN sm.monitor_type "
 				+ "ON sm.monitor.idmonitor_type = sm.monitor_type.idmonitor_type "
@@ -1310,6 +1312,8 @@ public class SQL_SELECT {
 				monitor.setExpireDate(rs.getDate("expire").toLocalDate());
 				monitor.setNotice(rs.getString("notice"));
 				monitor.setStatus(Status.valueOf(rs.getString("status")));
+				monitor.setPrice(rs.getDouble("price"));
+				
 				patProv = rs.getInt("idpat_provided");
 				
 				if(patProv == 0) {

@@ -4,18 +4,18 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentListener;
 
-import com.rose.person.Patient;
 import com.rose.pm.Pnl_SetDate;
 
 import net.miginfocom.swing.MigLayout;
@@ -31,6 +31,8 @@ public class DlgChange extends JDialog {
 	private JTextField txtNotice;
 	JButton okButton, cancelButton;
 	JLabel lblNotice, lblSerialNr;
+	private JLabel lblPrice;
+	private JFormattedTextField ftxtPrice;
 
 
 
@@ -65,6 +67,16 @@ public class DlgChange extends JDialog {
 			txtNotice.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			contentPanel.add(txtNotice, "cell 1 1,growx");
 			txtNotice.setColumns(10);
+		}
+		{
+			lblPrice = new JLabel("lblPrice");
+			lblPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			contentPanel.add(lblPrice, "cell 0 2,alignx left");
+		}
+		{
+			ftxtPrice = new JFormattedTextField();
+			ftxtPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			contentPanel.add(ftxtPrice, "cell 1 2,growx");
 		}
 		
 		{
@@ -103,7 +115,7 @@ public class DlgChange extends JDialog {
 	
 	
 	protected void placePnlDate(Pnl_SetDate pnlSetDate) {
-		contentPanel.add(pnlSetDate, "cell 0 2 2 1, alignx left");
+		contentPanel.add(pnlSetDate, "cell 0 3 2 1, alignx left");
 	}
 	
 	protected void addSerialNrListener(DocumentListener l) {
@@ -115,8 +127,23 @@ public class DlgChange extends JDialog {
 	}
 
 	protected void addCreateListener(ActionListener createListener) {
-		okButton.addActionListener(createListener);
-		
+		okButton.addActionListener(createListener);		
+	}
+
+	protected void setLblPriceText(String txt) {
+		lblPrice.setText(txt);		
+	}
+	
+	protected void setPriceFormatter(AbstractFormatterFactory dff) {
+		ftxtPrice.setFormatterFactory(dff);
+	}
+
+	protected void addPriceListener(PropertyChangeListener listener) {
+		ftxtPrice.addPropertyChangeListener(listener);		
+	}
+
+	protected void setPriceValue(Double price) {
+		ftxtPrice.setValue(price);		
 	}
 
 	

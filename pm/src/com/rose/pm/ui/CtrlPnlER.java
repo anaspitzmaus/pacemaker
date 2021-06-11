@@ -42,6 +42,7 @@ import com.rose.pm.ui.Editor.DateCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblCellImplantDateRenderer;
 import com.rose.pm.ui.Renderer.TblCellPatientRenderer;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 public class CtrlPnlER extends CtrlPnlBase{
 	Ctrl_PnlSetDate ctrlPnlSetDate;
@@ -66,6 +67,7 @@ public class CtrlPnlER extends CtrlPnlBase{
 	Editor.DateCellEditor dateCellEditor;
 	Renderer.TblCellImplantDateRenderer tblImplantDateRenderer;
 	TblCellPatientRenderer tblPatientRenderer;
+	TblDoubleRenderer tblDoubleRenderer;
 	
 	public CtrlPnlER() {
 		createPanel();
@@ -175,6 +177,8 @@ public class CtrlPnlER extends CtrlPnlBase{
 		 ((PnlER)panel).setTblPatientRenderer(Patient.class, tblPatientRenderer);
 		 tblImplantDateRenderer = renderer.new TblCellImplantDateRenderer();
 		 ((PnlER)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
+		 tblDoubleRenderer = renderer.new TblDoubleRenderer();
+		 ((PnlER)panel).setTblPriceRenderer(Double.class, tblDoubleRenderer);
 	}
 	
 	class ERTypeRenderer extends JLabel implements ListCellRenderer<ERType>{
@@ -240,7 +244,7 @@ public class CtrlPnlER extends CtrlPnlBase{
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends ER> recorders;
 		private final Class[] columnClass = new Class[] {
-			 ER.class, ERType.class, String.class, LocalDate.class, Status.class, String.class, Patient.class, Date.class
+			 ER.class, ERType.class, String.class, LocalDate.class, Status.class, String.class, Patient.class, Date.class, Double.class
 		};
 		
 		public ERTblModel(ArrayList<? extends ER> recorders) {
@@ -254,6 +258,7 @@ public class CtrlPnlER extends CtrlPnlBase{
 			columnNames.add("Bemerkung");
 			columnNames.add("Patient");
 			columnNames.add("Implantationsdatum");
+			columnNames.add("Preis");
 		}
 		
 		@Override
@@ -299,6 +304,8 @@ public class CtrlPnlER extends CtrlPnlBase{
 			case 6: return recorders.get(rowIndex).getPatient();
 			
 			case 7: return recorders.get(rowIndex).getDateOfImplantation();
+			
+			case 8: return recorders.get(rowIndex).getPrice();
 			
 			default: return null;
 			

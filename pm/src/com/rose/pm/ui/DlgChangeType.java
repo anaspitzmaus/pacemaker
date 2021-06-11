@@ -11,11 +11,14 @@ import java.text.NumberFormat;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
+import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 
 
 
@@ -145,6 +148,10 @@ public abstract class DlgChangeType extends JDialog {
 	
 	protected void addCreateListener(ActionListener l) {
 		okButton.addActionListener(l);
+	}
+
+	protected void setPriceFormat(DefaultFormatterFactory dff) {
+		ftxtPrice.setFormatterFactory(dff);		
 	}
 
 }

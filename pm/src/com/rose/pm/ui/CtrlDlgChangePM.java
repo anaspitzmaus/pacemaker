@@ -2,15 +2,18 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 
 
-import com.rose.pm.db.SQL_SELECT;
 import com.rose.pm.db.SQL_UPDATE;
-import com.rose.pm.material.AggregateType;
+
 import com.rose.pm.material.PM;
-import com.rose.pm.ui.CtrlPnlPM.AggregateTblModel;
+
 
 public class CtrlDlgChangePM extends CtrlDlgChange{
 	
@@ -25,6 +28,14 @@ public class CtrlDlgChangePM extends CtrlDlgChange{
 		dlgChange.setSerialNrText(this.pm.getSerialNr());
 		dlgChange.setNoticeText(this.pm.getNotice());
 		ctrlPnlSetDate.setDate(pm.getExpireDate());
+		
+		priceFormat = DecimalFormat.getInstance();
+		priceFormat.setMinimumFractionDigits(2);
+		priceFormat.setMaximumFractionDigits(2);
+		DefaultFormatterFactory dff = new DefaultFormatterFactory(new NumberFormatter(priceFormat), new NumberFormatter(priceFormat), new NumberFormatter(NumberFormat.getNumberInstance()));
+		dlgChange.setPriceFormatter(dff);
+		dlgChange.setPriceValue(this.pm.getPrice());
+		
 		setCreateListener();
 	}
 	
@@ -46,20 +57,17 @@ public class CtrlDlgChangePM extends CtrlDlgChange{
 				pm.setExpireDate(ctrlPnlSetDate.getDate());
 				pm.setSerialNr(serialNrListener.getNotation());
 				pm.setNotice(noticeListener.getNotation());
-//				if(provideListener.isPatientProvided()) {
-//					pm.setPatient(provideListener.getActualPatient());
-//				}
+				pm.setPrice(priceListener.getPrice());
 				
 				updateDBAndTblModel();
-				model.fireTableDataChanged();
-				dlgChange.dispose();
+				
 			}
 		}
 		
 		
 		protected void updateDBAndTblModel() {
 			SQL_UPDATE.Pacemaker(pm);				
-			//((AggregateTblModel)model).setAggregats(SQL_SELECT.pacemakers((AggregateType) pm.getMaterialType()));			
+					
 			model.fireTableDataChanged();
 			dlgChange.dispose();
 		}

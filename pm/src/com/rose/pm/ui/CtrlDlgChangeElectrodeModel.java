@@ -2,6 +2,8 @@ package com.rose.pm.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -11,6 +13,8 @@ import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 
 import com.rose.pm.db.SQL_UPDATE;
 import com.rose.pm.material.ElectrodeType;
@@ -32,7 +36,6 @@ public class CtrlDlgChangeElectrodeModel extends CtrlDlgChangeType{
 	}
 
 
-
 	public CtrlDlgChangeElectrodeModel(ElectrodeType eType,  AbstractTableModel model) {
 		super(eType);
 		this.electrodeType = eType;
@@ -41,7 +44,8 @@ public class CtrlDlgChangeElectrodeModel extends CtrlDlgChangeType{
 		setDialog(dlgChangeElectrodeType);
 		g = new ButtonGroup();
 		g.add(dlgChangeElectrodeType.getRdbtnAnker());
-		g.add(dlgChangeElectrodeType.getRdbtnScrew());
+		g.add(dlgChangeElectrodeType.getRdbtnScrew());	
+		
 		dlgChangeElectrodeType.setLength(electrodeType.getLength());
 		dlgChangeElectrodeType.setNotation(electrodeType.getNotation());
 		dlgChangeElectrodeType.setNotice(electrodeType.getNotice());

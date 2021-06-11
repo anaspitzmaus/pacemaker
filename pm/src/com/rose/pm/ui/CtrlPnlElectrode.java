@@ -58,6 +58,7 @@ import com.rose.pm.ui.Editor.SearchStatusTblCellEditor;
 import com.rose.pm.ui.Listener.NotationListener;
 import com.rose.pm.ui.Renderer.TblCellLocalDateRenderer;
 import com.rose.pm.ui.Renderer.TblCellMaterialIDRenderer;
+import com.rose.pm.ui.Renderer.TblDoubleRenderer;
 
 
 public class CtrlPnlElectrode extends CtrlPnlBase{
@@ -84,6 +85,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 	Editor editor;
 	Editor.SearchStatusTblCellEditor searchStatusTblCellEditor;	
 	Editor.DateCellEditor dateCellEditor;
+	TblDoubleRenderer tblDoubleRenderer;
 	
 	public CtrlPnlElectrode() {
 		createPanel();
@@ -191,6 +193,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		 ((PnlElectrode)panel).setTblImplantDateRenderer(Date.class, tblImplantDateRenderer);
 		 tblCellLocalDateRenderer = renderer.new TblCellLocalDateRenderer();
 		 ((PnlElectrode)panel).setLocalDateRenderer(LocalDate.class, tblCellLocalDateRenderer);
+		 tblDoubleRenderer = renderer.new TblDoubleRenderer();
+		 ((PnlElectrode)panel).setTblPriceRenderer(Double.class, tblDoubleRenderer);
 	 }
 	 
 	 private Boolean isElectrodeProvided(Electrode electrode) {		
@@ -208,7 +212,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		protected ArrayList<String> columnNames;
 		ArrayList<? extends Electrode> electrodes;
 		@SuppressWarnings("rawtypes")
-		Class[] classes = {Electrode.class, ElectrodeType.class, String.class, LocalDate.class, String.class, Status.class, Patient.class, Date.class};
+		Class[] classes = {Electrode.class, ElectrodeType.class, String.class, LocalDate.class, String.class, Status.class, Patient.class, Date.class, Double.class};
 		
 		protected Electrode searchElectrode = null;
 		protected ElectrodeType searchElectrodeType = null;
@@ -218,6 +222,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		protected Status searchStatus = Status.Lager;
 		protected Patient searchPatient = null;
 		protected Date searchDate = null;
+		protected Double searchPrice = null;
 		
 		public ElectrodeTblModel(ArrayList<? extends Electrode> electrodes) {
 			this.electrodes = electrodes;
@@ -230,6 +235,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 			columnNames.add("Status");
 			columnNames.add("Patient");
 			columnNames.add("Implantationsdatum");
+			columnNames.add("Preis");
 		}
 		
 		
@@ -272,7 +278,8 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 					case 4: return electrodes.get(rowIndex - 1).getNotice();					
 					case 5: return electrodes.get(rowIndex - 1).getStatus();					
 					case 6: return electrodes.get(rowIndex - 1).getPatient();					
-					case 7: return electrodes.get(rowIndex - 1).getDateOfImplantation();					
+					case 7: return electrodes.get(rowIndex - 1).getDateOfImplantation();
+					case 8: return electrodes.get(rowIndex - 1).getPrice();
 					default: return null;
 				}			
 			}else{
@@ -285,6 +292,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 					case 5: return searchStatus;
 					case 6: return searchPatient;
 					case 7: return searchDate;
+					case 8: return searchPrice;
 					default: return null;
 				}
 			}				
