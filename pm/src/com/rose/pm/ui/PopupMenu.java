@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.table.AbstractTableModel;
 
+import com.rose.administration.ui.CtrlDlgAccountSimple;
 import com.rose.person.Patient;
 import com.rose.pm.db.SQL_INSERT;
 import com.rose.pm.db.SQL_SELECT;
@@ -195,6 +196,9 @@ public class PopupMenu extends JPopupMenu {
 				
 			} catch (SQLException e2) {
 				System.out.println(e2.getMessage());
+			} finally {
+				CtrlDlgAccountSimple ctrlDlgAccountSimple = new CtrlDlgAccountSimple();
+				ctrlDlgAccountSimple.getDialog().setVisible(true);
 			}
 										
 	    }
