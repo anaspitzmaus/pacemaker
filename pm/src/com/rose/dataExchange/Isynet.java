@@ -1,4 +1,4 @@
-package com.rose;
+package com.rose.dataExchange;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,6 +14,7 @@ import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.rose.administration.Insurance;
 import com.rose.person.Patient;
 import com.rose.pm.ui.settings.CtrlSetPathPatInfo;
 
@@ -99,6 +100,10 @@ public class Isynet{
 				//number of patient
 				Integer nr = Integer.parseInt(data.get(3600));
 				patient.setNumber(nr);
+				
+				//insurance of patient
+				String insurance = data.get(9070);
+				patient.setInsurance(new Insurance(insurance));
 			}
 		}
 		

@@ -14,7 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.rose.Isynet;
+import com.rose.dataExchange.Isynet;
 import com.rose.person.Patient;
 import com.rose.pm.MyImages;
 

@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.rose.Isynet;
+import com.rose.dataExchange.Isynet;
 import com.rose.pm.MyImages;
 import com.rose.pm.ui.settings.DlgPath;
 

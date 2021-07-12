@@ -128,6 +128,10 @@ public class Patient extends Person{
 	public Insurance getInsurance() {
 		return this.insurance;
 	}
+
+	public void setInsurance(Insurance insurance) {
+		this.insurance = insurance;		
+	}
 	
 //	/**
 //	 * calls the method to store the patient to the database

@@ -21,9 +21,9 @@ public class CtrlDlgAccountSimple {
 		return dlgAccountSimple;
 	}
 	
-	public CtrlDlgAccountSimple(Material material) {
+	public CtrlDlgAccountSimple(Patient patient, Material material) {
 		this.material = material;
-		this.patient = material.getPatient();
+		this.patient = patient;
 		dlgAccountSimple = new DlgAccountSimple();	
 		setComponentText();
 		setModel();

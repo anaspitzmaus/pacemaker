@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.table.AbstractTableModel;
 
+import com.rose.administration.Insurance;
 import com.rose.administration.ui.CtrlDlgAccountSimple;
 import com.rose.person.Patient;
 import com.rose.pm.db.SQL_INSERT;
@@ -33,10 +34,12 @@ public class PopupMenu extends JPopupMenu {
 	Patient patient;
 	Material material;
 	AbstractTableModel model;
+	Insurance insurance;
 	
 	
 	
     public PopupMenu(Patient patient, Material material, AbstractTableModel model) {
+    	this.insurance = patient.getInsurance();
     	this.patient = patient;
     	this.material = material;
     	this.model = model;
@@ -185,6 +188,7 @@ public class PopupMenu extends JPopupMenu {
 				//get the id of the patient and set the id to the patient
 				try {
 					patient = SQL_SELECT.patient(patient.getNumber());
+					patient.setInsurance(insurance);
 					material.setPatient(patient);
 					material.setStatus(Status.Implantiert);
 					model.fireTableDataChanged();
@@ -197,7 +201,7 @@ public class PopupMenu extends JPopupMenu {
 			} catch (SQLException e2) {
 				System.out.println(e2.getMessage());
 			} finally {
-				CtrlDlgAccountSimple ctrlDlgAccountSimple = new CtrlDlgAccountSimple(material);
+				CtrlDlgAccountSimple ctrlDlgAccountSimple = new CtrlDlgAccountSimple(patient, material);
 				ctrlDlgAccountSimple.getDialog().setVisible(true);
 			}
 										
