@@ -2,19 +2,21 @@ package com.rose.administration.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import com.rose.administration.AccountingType;
+import com.rose.pm.examination.E_ExamKinds;
+import com.rose.pm.examination.Examination;
 
 import net.miginfocom.swing.MigLayout;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
 
 public class DlgAccountSimple extends JDialog {
 
@@ -23,8 +25,62 @@ public class DlgAccountSimple extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtInsurance;
 	JComboBox<AccountingType> cbxAccount;
+	private JTextField txtExamNr;
+	JLabel lblAccount;
+	JLabel lblInsurance;
+	JLabel lblExamKind;
+	JComboBox<E_ExamKinds> cbxExamKind;
+	JLabel lblDate;
+	JLabel lblExamNr;
+	JButton okButton;
+	JButton cancelButton;
 	
 	
+	
+	protected JTextField getTxtInsurance() {
+		return txtInsurance;
+	}
+
+	protected JComboBox<AccountingType> getCbxAccount() {
+		return cbxAccount;
+	}
+
+	protected JTextField getTxtExamNr() {
+		return txtExamNr;
+	}
+
+	protected JLabel getLblAccount() {
+		return lblAccount;
+	}
+
+	protected JLabel getLblInsurance() {
+		return lblInsurance;
+	}
+
+	protected JLabel getLblExamKind() {
+		return lblExamKind;
+	}
+
+	protected JComboBox<E_ExamKinds> getCbxExamKind() {
+		return cbxExamKind;
+	}
+
+	protected JLabel getLblDate() {
+		return lblDate;
+	}
+
+	protected JLabel getLblExamNr() {
+		return lblExamNr;
+	}
+
+	protected JButton getOkButton() {
+		return okButton;
+	}
+
+	protected JButton getCancelButton() {
+		return cancelButton;
+	}
+
 	public static void main(String[] args) {
 		try {
 			DlgAccountSimple dialog = new DlgAccountSimple();
@@ -39,13 +95,14 @@ public class DlgAccountSimple extends JDialog {
 	 * Create the dialog.
 	 */
 	public DlgAccountSimple() {
+		setTitle("Administration");
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new MigLayout("", "[][grow]", "[][]"));
+		contentPanel.setLayout(new MigLayout("", "[][grow]", "[][][][][]"));
 		{
-			JLabel lblAccount = new JLabel("Abrechnung:");
+			lblAccount = new JLabel("Abrechnung:");
 			lblAccount.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			contentPanel.add(lblAccount, "cell 0 0,alignx left");
 		}
@@ -55,7 +112,7 @@ public class DlgAccountSimple extends JDialog {
 			contentPanel.add(cbxAccount, "cell 1 0,growx");
 		}
 		{
-			JLabel lblInsurance = new JLabel("Versicherung:");
+			lblInsurance = new JLabel("Versicherung:");
 			lblInsurance.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			contentPanel.add(lblInsurance, "cell 0 1,alignx left");
 		}
@@ -66,17 +123,43 @@ public class DlgAccountSimple extends JDialog {
 			txtInsurance.setColumns(10);
 		}
 		{
+			lblExamKind = new JLabel("lblExamKind");
+			lblExamKind.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			contentPanel.add(lblExamKind, "cell 0 2,alignx left");
+		}
+		{
+			cbxExamKind = new JComboBox<E_ExamKinds>();
+			cbxExamKind.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			contentPanel.add(cbxExamKind, "cell 1 2,growx");
+		}
+		{
+			lblDate = new JLabel("lblDate");
+			lblDate.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			contentPanel.add(lblDate, "cell 0 3,alignx left");
+		}
+		{
+			lblExamNr = new JLabel("lblExamNr");
+			lblExamNr.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			contentPanel.add(lblExamNr, "cell 0 4,alignx left");
+		}
+		{
+			txtExamNr = new JTextField();
+			txtExamNr.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			contentPanel.add(txtExamNr, "cell 1 4,growx");
+			txtExamNr.setColumns(10);
+		}
+		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				okButton = new JButton("OK");
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				cancelButton = new JButton("Cancel");
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}

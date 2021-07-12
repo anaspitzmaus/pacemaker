@@ -20,6 +20,11 @@ public class Insurance {
 	public Insurance(String notation) {
 		this.notation = notation;
 	}
+
+
+	public String getNotation() {
+		return this.notation;
+	}
 	
 	
 }

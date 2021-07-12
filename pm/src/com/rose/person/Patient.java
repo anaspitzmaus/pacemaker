@@ -1,5 +1,7 @@
 package com.rose.person;
 
+import com.rose.administration.Insurance;
+
 public class Patient extends Person{
 	
 	public Patient(String surname, String firstname) {
@@ -13,6 +15,7 @@ public class Patient extends Person{
 	protected Double weight, bsa;
 	protected Integer age;
 	protected Integer dbID, outID, inID;	
+	protected Insurance insurance;
 //	ArrayList<Diagnosis> diagnoses;
 //	protected Heart heart;
 	
@@ -120,6 +123,10 @@ public class Patient extends Person{
 
 	public void setBSA(Double bsa) {
 		this.bsa = bsa;
+	}
+
+	public Insurance getInsurance() {
+		return this.insurance;
 	}
 	
 //	/**

@@ -197,7 +197,7 @@ public class PopupMenu extends JPopupMenu {
 			} catch (SQLException e2) {
 				System.out.println(e2.getMessage());
 			} finally {
-				CtrlDlgAccountSimple ctrlDlgAccountSimple = new CtrlDlgAccountSimple();
+				CtrlDlgAccountSimple ctrlDlgAccountSimple = new CtrlDlgAccountSimple(material);
 				ctrlDlgAccountSimple.getDialog().setVisible(true);
 			}
 										
