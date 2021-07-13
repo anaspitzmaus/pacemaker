@@ -39,33 +39,33 @@ public class PopupMenu extends JPopupMenu {
 	
 	
     public PopupMenu(Patient patient, Material material, AbstractTableModel model) {
-    	this.insurance = patient.getInsurance();
-    	this.patient = patient;
-    	this.material = material;
-    	this.model = model;
-    	switch (material.getStatus()) {
-		case Lager:
-			itemProvide = new JMenuItem("bereitgestellt");
-    		itemImplanted = new JMenuItem("implantiert");
-    		add(itemProvide);
-    		add(itemImplanted);
-			break;
-		case Bereitgestellt:
-			itemProvide = new JMenuItem("Bereitstellung lösen");
-			add(itemProvide);
-			break;
-			
-		case Implantiert:
-			itemImplanted = new JMenuItem("Implantation lösen");
-			add(itemImplanted);
-			break;
-		default:
-			break;
-		}
-    	
-        
-        setListener();
-        
+    	if(patient instanceof Patient) {//only if patient is not null
+	    	this.insurance = patient.getInsurance();
+	    	this.patient = patient;
+	    	this.material = material;
+	    	this.model = model;
+	    	switch (material.getStatus()) {
+			case Lager:
+				itemProvide = new JMenuItem("bereitgestellt");
+	    		itemImplanted = new JMenuItem("implantiert");
+	    		add(itemProvide);
+	    		add(itemImplanted);
+				break;
+			case Bereitgestellt:
+				itemProvide = new JMenuItem("Bereitstellung lösen");
+				add(itemProvide);
+				break;
+				
+			case Implantiert:
+				itemImplanted = new JMenuItem("Implantation lösen");
+				add(itemImplanted);
+				break;
+			default:
+				break;
+			}
+    	        
+	    	setListener();
+    	}
     }
     
    
@@ -155,12 +155,7 @@ public class PopupMenu extends JPopupMenu {
 					//set the material provided to the patient
 					implantMaterial();
 				}
-				try {
-					SQL_UPDATE.setPatProvided(material);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				
 			}			
 			
 		}
@@ -168,7 +163,14 @@ public class PopupMenu extends JPopupMenu {
 		private void deleteImplanted() {
 			material.setPatient(null);
 			material.setStatus(Status.Lager);
-			model.fireTableDataChanged();			
+			material.setDateOfImplantation(null);
+			model.fireTableDataChanged();	
+			try {
+				SQL_UPDATE.setPatProvided(material);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		private void implantMaterial() {
@@ -177,8 +179,8 @@ public class PopupMenu extends JPopupMenu {
 				Integer patId = SQL_INSERT.patient(patient);
 				if(patId instanceof Integer) {
 					material.setPatient(patient);
-					material.setStatus(Status.Implantiert);
-					model.fireTableDataChanged();
+					openImplantDialog();
+					
 					
 					//update database that material is implanted to a patient
 				}
@@ -187,11 +189,11 @@ public class PopupMenu extends JPopupMenu {
 				//Patient always exists at database
 				//get the id of the patient and set the id to the patient
 				try {
-					patient = SQL_SELECT.patient(patient.getNumber());
-					patient.setInsurance(insurance);
+					Patient patientTemp = SQL_SELECT.patient(patient.getNumber());
+					patient.setId(patientTemp.getId()); 
 					material.setPatient(patient);
-					material.setStatus(Status.Implantiert);
-					model.fireTableDataChanged();
+					openImplantDialog();
+					
 				} catch (SQLException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
@@ -200,12 +202,14 @@ public class PopupMenu extends JPopupMenu {
 				
 			} catch (SQLException e2) {
 				System.out.println(e2.getMessage());
-			} finally {
-				CtrlDlgAccountSimple ctrlDlgAccountSimple = new CtrlDlgAccountSimple(patient, material);
-				ctrlDlgAccountSimple.getDialog().setVisible(true);
-			}
+			} 
 										
 	    }
+		
+		private void openImplantDialog() {
+			CtrlDlgAccountSimple ctrlDlgAccountSimple = new CtrlDlgAccountSimple(patient, material, model);
+			ctrlDlgAccountSimple.getDialog().setVisible(true);
+		}
     	
     }
     

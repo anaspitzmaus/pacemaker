@@ -3,6 +3,7 @@ package com.rose.administration.ui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,7 +15,6 @@ import javax.swing.border.EmptyBorder;
 
 import com.rose.administration.AccountingType;
 import com.rose.pm.examination.E_ExamKinds;
-import com.rose.pm.examination.Examination;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -81,16 +81,7 @@ public class DlgAccountSimple extends JDialog {
 		return cancelButton;
 	}
 
-	public static void main(String[] args) {
-		try {
-			DlgAccountSimple dialog = new DlgAccountSimple();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
+	
 	/**
 	 * Create the dialog.
 	 */
@@ -164,6 +155,14 @@ public class DlgAccountSimple extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+	
+	protected void addOKListener(ActionListener listener) {
+		okButton.addActionListener(listener);
+	}
+	
+	protected void addDatePanel(JPanel pnl) {
+		contentPanel.add(pnl, "cell 1 3, growx");
 	}
 
 }
