@@ -3,6 +3,7 @@ package com.rose.pm.material;
 import java.time.LocalDate;
 import java.util.Date;
 
+import com.rose.administration.AccountingType;
 import com.rose.person.Patient;
 
 public abstract class Material {
@@ -15,7 +16,20 @@ public abstract class Material {
 	Integer id;
 	LocalDate expireDate;
 	Date implantDate;
+	AccountingType accountingType;
 	
+	
+	
+	public AccountingType getAccountingType() {
+		return accountingType;
+	}
+
+
+	public void setAccountingType(AccountingType accountingType) {
+		this.accountingType = accountingType;
+	}
+
+
 	public Date getDateOfImplantation() {
 		return implantDate;
 	}

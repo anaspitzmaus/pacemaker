@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.rose.administration.AccountingType;
 import com.rose.person.Patient;
 import com.rose.pm.material.AggregateType;
 import com.rose.pm.material.ER;
@@ -1333,6 +1334,11 @@ public class SQL_SELECT {
 		ps.close();
 		//con.close();
 		return monitors;
+	}
+
+	public static int getIndexOfAccountingType(AccountingType accountingType) {
+		
+		return 0;
 	}
 
 	

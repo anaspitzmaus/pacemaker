@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import com.rose.administration.AccountingType;
+import com.rose.administration.ui.CtrlDlgAccountSimple.AccountListener;
 import com.rose.pm.examination.E_ExamKinds;
 
 import net.miginfocom.swing.MigLayout;
@@ -163,6 +164,14 @@ public class DlgAccountSimple extends JDialog {
 	
 	protected void addDatePanel(JPanel pnl) {
 		contentPanel.add(pnl, "cell 1 3, growx");
+	}
+
+	protected void addAccountListener(ActionListener accountListener) {
+		cbxAccount.addActionListener(accountListener);		
+	}
+
+	protected AccountingType getAccountingType() {
+		return (AccountingType) cbxAccount.getSelectedItem();
 	}
 
 }

@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.table.AbstractTableModel;
 
 import com.rose.administration.AccountingType;
@@ -30,6 +31,7 @@ public class CtrlDlgAccountSimple {
 	OKListener okListener;
 	AbstractTableModel tblModel;
 	Ctrl_PnlSetDate ctrlPnlSetDate;
+	AccountListener accountListener;
 	
 	public DlgAccountSimple getDialog() {
 		return dlgAccountSimple;
@@ -70,6 +72,9 @@ public class CtrlDlgAccountSimple {
 	private void setListener() {
 		okListener = new OKListener();
 		dlgAccountSimple.addOKListener(okListener);
+		accountListener = new AccountListener();
+		dlgAccountSimple.addAccountListener(accountListener);
+		accountListener.accType = dlgAccountSimple.getAccountingType(); //that the first (selected) item to the variable		
 	}
 	
 	class OKListener implements ActionListener{
@@ -79,6 +84,7 @@ public class CtrlDlgAccountSimple {
 			material.setStatus(Status.Implantiert);
 			Date date = Date.from(ctrlPnlSetDate.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
 			material.setDateOfImplantation(date);
+			material.setAccountingType(accountListener.getAccountingType());
 			tblModel.fireTableDataChanged();
 			try {
 				SQL_UPDATE.setPatProvided(material);
@@ -87,6 +93,21 @@ public class CtrlDlgAccountSimple {
 				e1.printStackTrace();
 			}
 			dlgAccountSimple.dispose();
+		}
+		
+	}
+	
+	class AccountListener implements ActionListener{
+		AccountingType accType;
+		
+		protected AccountingType getAccountingType() {
+			return this.accType;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JComboBox<AccountingType> cb = (JComboBox<AccountingType>)e.getSource();
+	        accType = (AccountingType)cb.getSelectedItem();			
 		}
 		
 	}

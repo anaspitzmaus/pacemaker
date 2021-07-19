@@ -582,7 +582,7 @@ public class SQL_UPDATE {
 		
 		//do the statement
 		if(table != "" && id != "") {
-			String update = "UPDATE sm." + table + " SET status = ?, idpat_provided = ?, implant = ? WHERE " + id + " = ?";
+			String update = "UPDATE sm." + table + " SET status = ?, idpat_provided = ?, implant = ? , account_type = ? WHERE " + id + " = ?";
 			Connection con = DB.getConnection();
 			DB.getConnection().setAutoCommit(true);
 			PreparedStatement ps = con.prepareStatement(update, Statement.RETURN_GENERATED_KEYS);
@@ -598,7 +598,7 @@ public class SQL_UPDATE {
 				ps.setDate(3, null);
 			}
 			ps.setInt(4, material.getId());	
-			
+			ps.setInt(5, SQL_SELECT.getIndexOfAccountingType(material.getAccountingType()));
 			ps.executeUpdate();
 			ps.close();
 		}
