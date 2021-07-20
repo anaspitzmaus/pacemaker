@@ -100,7 +100,7 @@ public class TreatmentCase {
 				this.getPatient().setInID(this.getPatient().getNumber());
 			}else if(this.getPatient().getNumber() < 100000){
 				//declare as CardioIntegral
-				this.accountingType = AccountingType.integrierte_Versorgung;
+				this.accountingType = AccountingType.cardio_integral;
 				this.outPatientID = this.getPatient().getNumber(); //set the outPatient id
 				this.getPatient().setOutID(this.getPatient().getNumber());//caution!! outPatient id
 			}

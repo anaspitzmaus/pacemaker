@@ -582,7 +582,7 @@ public class SQL_UPDATE {
 		
 		//do the statement
 		if(table != "" && id != "") {
-			String update = "UPDATE sm." + table + " SET status = ?, idpat_provided = ?, implant = ? , account_type = ? WHERE " + id + " = ?";
+			String update = "UPDATE sm." + table + " SET status = ?, idpat_provided = ?, implant = ? , idaccount_type = ? WHERE " + id + " = ?";
 			Connection con = DB.getConnection();
 			DB.getConnection().setAutoCommit(true);
 			PreparedStatement ps = con.prepareStatement(update, Statement.RETURN_GENERATED_KEYS);
@@ -597,8 +597,14 @@ public class SQL_UPDATE {
 			}catch(NullPointerException e) {
 				ps.setDate(3, null);
 			}
-			ps.setInt(4, material.getId());	
-			ps.setInt(5, SQL_SELECT.getIndexOfAccountingType(material.getAccountingType()));
+			Integer idAccType = SQL_SELECT.getIndexOfAccountingType(material.getAccountingType());
+			if (idAccType instanceof Integer) {
+				ps.setInt(4, idAccType);
+			}else {
+				ps.setNull(4, Types.INTEGER);
+			}
+			
+			ps.setInt(5, material.getId());				
 			ps.executeUpdate();
 			ps.close();
 		}

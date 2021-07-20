@@ -1336,9 +1336,27 @@ public class SQL_SELECT {
 		return monitors;
 	}
 
-	public static int getIndexOfAccountingType(AccountingType accountingType) {
+	public static Integer getIndexOfAccountingType(AccountingType accountingType) throws SQLException{
+		PreparedStatement ps;
+		Integer id = null;
+		String select = "SELECT idaccount_type FROM admin.account_type WHERE notation = ?";
+		Connection con = DB.getConnection();
+		DB.getConnection().setAutoCommit(true);
 		
-		return 0;
+		ps = con.prepareStatement(select, Statement.RETURN_GENERATED_KEYS);
+		if(accountingType instanceof AccountingType) {
+			ps.setString(1, accountingType.name());	
+		
+			ResultSet rs = ps.executeQuery();
+		
+			if(rs.isBeforeFirst()){
+				rs.next();
+				id = rs.getInt("idaccount_type");
+			}
+		}
+		return id;
+		
+		
 	}
 
 	
