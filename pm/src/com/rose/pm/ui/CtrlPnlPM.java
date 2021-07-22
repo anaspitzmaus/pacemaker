@@ -831,7 +831,7 @@ public class CtrlPnlPM extends CtrlPnlBase{
 	        	 JTable table =(JTable) mouseEvent.getSource();
 	             Point point = mouseEvent.getPoint();
 	             row = table.rowAtPoint(point);
-	             if (table.getSelectedRow() != -1 && row >= 0) {
+	             if (table.getSelectedRow() != -1 && row > 0) {
 	                initiateDialog();
 	             }
 	        } else if(SwingUtilities.isRightMouseButton(mouseEvent) == true){

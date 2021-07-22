@@ -93,8 +93,7 @@ public class CtrlDlgAccountSimple {
 				e1.printStackTrace();
 			}
 			dlgAccountSimple.dispose();
-		}
-		
+		}		
 	}
 	
 	class AccountListener implements ActionListener{

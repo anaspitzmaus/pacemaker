@@ -35,7 +35,7 @@ public class PnlElectrode extends PnlBase {
 	private static final long serialVersionUID = 656734936297482035L;
 	JLabel lblElectrodeType;
 	JComboBox<ElectrodeType> cbxElectrodeType;
-	JButton btnShowAll;
+	//JButton btnShowAll;
 	
 	
 	
@@ -47,18 +47,18 @@ public class PnlElectrode extends PnlBase {
 		lblElectrodeType.setText(txt);
 	}	
 		
-	protected void setBtnShowAllText(String txt) {
-		btnShowAll.setText(txt);
-	}
+//	protected void setBtnShowAllText(String txt) {
+//		btnShowAll.setText(txt);
+//	}
 	/**
 	 * Create the panel.
 	 */
 	public PnlElectrode() {
 		pnlInput.setLayout(new MigLayout("", "[][][][][][][grow][]", "[][]"));
 		
-		btnShowAll = new JButton("btnShowAll");
-		btnShowAll.setFont(font);
-		pnlInput.add(btnShowAll, "cell 1 0");
+//		btnShowAll = new JButton("btnShowAll");
+//		btnShowAll.setFont(font);
+//		pnlInput.add(btnShowAll, "cell 1 0");
 		
 		lblElectrodeType = new JLabel("lblPM_Type");
 		lblElectrodeType.setFont(font);
@@ -122,9 +122,9 @@ public class PnlElectrode extends PnlBase {
 		cbxElectrodeType.setSelectedIndex(index);		
 	}
 	
-	protected void addShowAllListener(ActionListener l) {
-		btnShowAll.addActionListener(l);
-	}
+//	protected void addShowAllListener(ActionListener l) {
+//		btnShowAll.addActionListener(l);
+//	}
 
 	protected void setElectrodeRenderer(Class<Electrode> elclass, TableCellRenderer r) {
 		table.setDefaultRenderer(elclass, r);

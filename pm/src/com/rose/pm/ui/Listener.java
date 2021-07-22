@@ -27,6 +27,7 @@ import com.rose.pm.material.PM;
 import com.rose.pm.material.SICD;
 import com.rose.pm.material.SICDType;
 import com.rose.pm.material.Status;
+import com.rose.pm.ui.CtrlPnlElectrode.ElectrodeTblModel;
 
 public class Listener {
 
@@ -175,7 +176,13 @@ public class Listener {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}	    	
+			}
+//			if(tblModel instanceof ElectrodeTblModel) {
+//				if(status == Status.Implantiert) {
+//					((ElectrodeTblModel)tblModel).setColumnName(3,"Implantationsdatum");
+//					tblModel.fireTableStructureChanged();
+//				}
+//			}
 			tblModel.fireTableDataChanged();
 			//panel.setFirstRowHeight(40);
 			

@@ -96,16 +96,21 @@ public class Renderer {
 				int row, int column) {
 			DecimalFormat df2 = new DecimalFormat("#.##");
 			String euro = "\u20ac";
-			if(value instanceof Number) {
-				setText(df2.format(value) + " " + euro);
-			}else {//e.g. for null value
-				setText("");
-			}
-			setHorizontalAlignment(JLabel.RIGHT);
-			if(isSelected) {
-				setBackground(Color.ORANGE);
+			if(row>0) {
+				if(value instanceof Number) {
+					setText(df2.format(value) + " " + euro);
+				}else {//e.g. for null value
+					setText("");
+				}
+				setHorizontalAlignment(JLabel.RIGHT);
+				if(isSelected) {
+					setBackground(Color.ORANGE);
+				}else {
+					setBackground(row%2==0 ? Color.white : Color.lightGray);  
+				}
 			}else {
-				setBackground(row%2==0 ? Color.white : Color.lightGray);  
+				setBackground(Color.white);	
+				setText("");
 			}
 			return this;
 		}

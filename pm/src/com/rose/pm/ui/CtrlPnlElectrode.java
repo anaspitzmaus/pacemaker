@@ -126,7 +126,7 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		((PnlElectrode)panel).setLblNoticeText("Bemerkung:");
 		((PnlElectrode)panel).setBtnCreateText("Einfügen");
 		((PnlElectrode)panel).setBtnDeleteText("Löschen");
-		((PnlElectrode)panel).setBtnShowAllText("Alle Modelle");
+//		((PnlElectrode)panel).setBtnShowAllText("Alle Modelle");
 	}
 	
 	void setModel() {
@@ -256,6 +256,11 @@ public class CtrlPnlElectrode extends CtrlPnlBase{
 		public String getColumnName(int column) {
 	        return columnNames.get(column);
 	    }
+		
+		
+		public void setColumnName(int column, String name) {
+			columnNames.set(column, name);
+		}
 
 		@Override
 		public int getRowCount() {
