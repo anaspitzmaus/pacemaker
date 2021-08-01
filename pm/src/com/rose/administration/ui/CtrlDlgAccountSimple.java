@@ -82,6 +82,7 @@ public class CtrlDlgAccountSimple {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			material.setStatus(Status.Implantiert);
+			material.setPatient(patient);
 			Date date = Date.from(ctrlPnlSetDate.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
 			material.setDateOfImplantation(date);
 			material.setAccountingType(accountListener.getAccountingType());

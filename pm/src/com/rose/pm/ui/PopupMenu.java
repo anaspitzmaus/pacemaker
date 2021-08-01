@@ -178,7 +178,6 @@ public class PopupMenu extends JPopupMenu {
 			try {
 				Integer patId = SQL_INSERT.patient(patient);
 				if(patId instanceof Integer) {
-					material.setPatient(patient);
 					openImplantDialog();
 					
 					
